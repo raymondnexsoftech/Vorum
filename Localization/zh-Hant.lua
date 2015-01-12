@@ -32,6 +32,14 @@ local LOCAL_SETTINGS = {
 return {
 			name = "繁體中文",
 			list = {
+					notice = "告示",
+					post = "新增",
+					me = "自己",
+					setting = "設定",
+
+
+
+
 					helloString = "你好",
 					listString = {
 									"第一行測試句",

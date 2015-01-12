@@ -32,6 +32,16 @@ local LOCAL_SETTINGS = {
 return {
 			name = "English",
 			list = {
+					-- Main Tab
+					notice = "Notice",
+					post = "Post",
+					me = "Me",
+					setting = "Setting",
+
+					
+
+
+
 					helloString = "Hello",
 					listString = {
 									"Row 1",

@@ -22,9 +22,10 @@ require ( "DebugUtility.Debug" )
 -- program start
 ---------------------------------------------------------------
 
-display.setStatusBar( display.HiddenStatusBar )
+-- display.setStatusBar( display.HiddenStatusBar )
 
-
+-- storyboard.gotoScene("Scene.SplashScreen")
+storyboard.gotoScene("Scene.VorumTabScene")
 
 
 --[[ Uncomment to monitor app's lua memory/texture memory usage in terminal...

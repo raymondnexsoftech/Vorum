@@ -18,7 +18,6 @@ local LOCAL_SETTINGS = {
 local SUPPORTED_LANGUAGE = {
 							"en",
 							"zh-Hant",
-							"zh-Hans",
 							}
 
 local SUPPORTED_LANGUAGE_MAJOR_TABLE

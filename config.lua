@@ -3,8 +3,8 @@ application =
 {
 	content = 
 	{
-		width = 320,
-		height = 320*heightRatio,
+		width = 640,
+		height = 640 * heightRatio,
 		fps = 60,
                 antialias = true,
                 xalign = "center",
