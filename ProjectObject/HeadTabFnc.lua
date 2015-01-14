@@ -27,7 +27,7 @@ local tabbarFnc = require( "ProjectObject.TabbarFnc" )
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
-local isHeaderCanHide = true
+local isTabbarCanHide = true
 local isHeadAndTabCanHide = true
 local transitionTime = 100
 
@@ -94,21 +94,23 @@ function headTabFnc.scrollViewCallback(event)
 			event.target.htLastYSpeed = 0
 		end
 		if (event.phase == "moved") then
-			local scrollViewX, scrollViewY = event.target:getContentPosition()
-			local scrollViewYLimitPos = event.target:getView()._topPadding
-			local delta = event.y - event.target.htLastY
-			if (scrollViewY < scrollViewYLimitPos) then
-				local lastScrollViewY = scrollViewY - delta
-				if (lastScrollViewY >= scrollViewYLimitPos) then
-					delta = scrollViewY - scrollViewYLimitPos
+			if (event.target.htLastY) then
+				local scrollViewX, scrollViewY = event.target:getContentPosition()
+				local scrollViewYLimitPos = event.target:getView()._topPadding
+				local delta = event.y - event.target.htLastY
+				if (scrollViewY < scrollViewYLimitPos) then
+					local lastScrollViewY = scrollViewY - delta
+					if (lastScrollViewY >= scrollViewYLimitPos) then
+						delta = scrollViewY - scrollViewYLimitPos
+					end
+					local offset, offsetInPercentage = headerFnc.setHeaderPosDelta(delta)
+					if (isTabbarCanHide) then
+						tabbarFnc.setTabbarOffset(offsetInPercentage)
+					end
+				else
+					headerFnc.toStablePosition(0, true)
+					tabbarFnc.setTabbarOffset(0)
 				end
-				local offset, offsetInPercentage = headerFnc.setHeaderPosDelta(delta)
-				if (isTabbarCanHide) then
-					tabbarFnc.setTabbarOffset(offsetInPercentage)
-				end
-			else
-				headerFnc.toStablePosition(0, true)
-				tabbarFnc.setTabbarOffset(0)
 			end
 		end
 		if ((event.phase == "ended") or (event.phase == "cancelled")) then

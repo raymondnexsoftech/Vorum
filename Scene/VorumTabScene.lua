@@ -21,6 +21,7 @@ local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
 require ( "DebugUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
+local scrollViewForPost = require( "ProjectObject.ScrollViewForPost" )
 local headerView = require( "ProjectObject.HeaderView" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
 
@@ -67,29 +68,64 @@ function scene:createScene( event )
 		headTabFnc.scrollViewCallback(event)
 	end
 
-	scrollView = widget.newScrollView{
-										left = 0,
-										top = 0,
-										width = display.contentWidth,
-										height = display.contentHeight,
-										topPadding = header.headerHeight,
-										-- scrollHeight = display.contentHeight * 2,
-										horizontalScrollDisabled = true,
-										listener = svListener
-									}
-	local svBg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
-	svBg.anchorX = 0
-	svBg.anchorY = 0
-	svBg:setFillColor(0, 1, 0)
-	scrollView:insert(svBg)	
-	local testRect = display.newRect(100, 300, 100, 100)
-	testRect:setFillColor(1, 0, 0)
-	scrollView:insert(testRect)
-	local testRect2 = display.newRect(100, 700, 100, 100)
-	testRect2:setFillColor(1, 1, 0)
-	scrollView:insert(testRect2)
-	testRect2:addEventListener("touch", function(event) if (event.phase == "ended") then storyboard.gotoScene("Scene.meTabScene"); end return true; end)
-	scrollView:setScrollHeight(display.contentHeight * 2)
+	scrollView = scrollViewForPost.newScrollView{
+													left = 0,
+													top = 0,
+													width = display.contentWidth,
+													height = display.contentHeight,
+													topPadding = header.headerHeight,
+													-- scrollHeight = display.contentHeight * 2,
+													horizontalScrollDisabled = true,
+													listener = svListener
+												}
+	local function rectListener(event)
+		scrollView:checkFocusToScrollView(event)
+		if (event.phase == "ended") then
+			local idx = event.target.parent.idx
+			local origRowHeight = scrollView:getPost(idx).postCurrentHeight
+			if (origRowHeight > 300) then
+				scrollView:changePostHeight(idx, 200)
+			else
+				scrollView:changePostHeight(idx, 400)
+			end
+		end
+		return true
+	end
+
+	for i = 0, 10 do
+		local group = display.newGroup()
+		local rect = display.newRect(group, 0, 0, display.contentHeight, 200)
+		rect.anchorX = 0
+		rect.anchorY = 0
+		rect:setFillColor(i/10, 1-(i/10), 0)
+		scrollView:addNewPost(group, 200)
+		rect:addEventListener("touch", rectListener)
+	end
+	-- local svBg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
+	-- svBg.anchorX = 0
+	-- svBg.anchorY = 0
+	-- svBg:setFillColor(0, 1, 0)
+	-- scrollView:insert(svBg)
+	-- -- local testRect = display.newRect(100, 300, 100, 100)
+	-- -- testRect:setFillColor(1, 0, 0)
+	-- -- scrollView:insert(testRect)
+	-- -- local testRect2 = display.newRect(100, 700, 100, 100)
+	-- -- testRect2:setFillColor(1, 1, 0)
+	-- -- scrollView:insert(testRect2)
+	-- local group1 = display.newGroup()
+	-- local testRect = display.newRect(group1, 0, 0, display.contentWidth, 100)
+	-- testRect.anchorX = 0
+	-- testRect.anchorY = 0
+	-- testRect:setFillColor(1, 0, 0)
+	-- scrollView:addNewPost(group1, 150)
+	-- local group2 = display.newGroup()
+	-- local testRect2 = display.newRect(group2, 0, 0, display.contentWidth, 100)
+	-- testRect2.anchorX = 0
+	-- testRect2.anchorY = 0
+	-- testRect2:setFillColor(1, 1, 0)
+	-- scrollView:addNewPost(group2, 150)
+	-- testRect2:addEventListener("touch", function(event) if (event.phase == "ended") then storyboard.gotoScene("Scene.MeTabScene"); end return true; end)
+	-- scrollView:setScrollHeight(display.contentHeight * 2)
 	group:insert(scrollView)
 end
 
