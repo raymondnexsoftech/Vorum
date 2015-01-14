@@ -1,7 +1,7 @@
 ---------------------------------------------------------------
--- VorumTabScene.lua
+-- TemplateScene.lua
 --
--- Scene for Vorum Tab
+-- Template for Scene
 ---------------------------------------------------------------
 
 -- uncomment the below code to get the directory of the file
@@ -9,7 +9,7 @@
 
 -- Local Constant Setting
 local LOCAL_SETTINGS = {
-						NAME = "VorumTabScene",			-- Scene name to show in console
+						NAME = "TemplateScene",			-- Scene name to show in console
 						RES_DIR = "",					-- Common resource directory for scene
 						DOC_DIR = "",					-- Common document directory for scene
 						}
@@ -20,9 +20,6 @@ local LOCAL_SETTINGS = {
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
 require ( "DebugUtility.Debug" )
-local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
-local headerView = require( "ProjectObject.HeaderView" )
-local headTabFnc = require( "ProjectObject.HeadTabFnc" )
 
 ---------------------------------------------------------------
 -- Constants
@@ -50,47 +47,7 @@ function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
 	local group = self.view
 
-	local header = headTabFnc.getHeader()
-	local newHeaderGroup, headerHeight = headerView.createHeaderGroup(header, "vorum")
-	if (newHeaderGroup) then
-		header = headTabFnc.createNewHeader(newHeaderGroup, headerHeight)
-	end
-	local tabbar = headTabFnc.getTabbar()
-	if (tabbar == nil) then
-		tabbar = headTabFnc.createNewTabbar(projectObjectSetting.tabbar)
-	end
-	headTabFnc.setDisplayStatus(true)
-
-	-- testing
-	local scrollView
-	local function svListener(event)
-		headTabFnc.scrollViewCallback(event)
-	end
-
-	scrollView = widget.newScrollView{
-										left = 0,
-										top = 0,
-										width = display.contentWidth,
-										height = display.contentHeight,
-										topPadding = header.headerHeight,
-										-- scrollHeight = display.contentHeight * 2,
-										horizontalScrollDisabled = true,
-										listener = svListener
-									}
-	local svBg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
-	svBg.anchorX = 0
-	svBg.anchorY = 0
-	svBg:setFillColor(0, 1, 0)
-	scrollView:insert(svBg)	
-	local testRect = display.newRect(100, 300, 100, 100)
-	testRect:setFillColor(1, 0, 0)
-	scrollView:insert(testRect)
-	local testRect2 = display.newRect(100, 700, 100, 100)
-	testRect2:setFillColor(1, 1, 0)
-	scrollView:insert(testRect2)
-	testRect2:addEventListener("touch", function(event) if (event.phase == "ended") then storyboard.gotoScene("Scene.meTabScene"); end return true; end)
-	scrollView:setScrollHeight(display.contentHeight * 2)
-	group:insert(scrollView)
+	-- Place the code below
 end
 
 local function onKeyEvent( event )

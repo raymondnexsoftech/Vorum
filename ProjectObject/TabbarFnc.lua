@@ -22,11 +22,13 @@ local widget = require ( "widget" )
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
+local DEFAULT_TRANSITION_TIME = 100
 
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
 local tabbarObject = nil
+local tabbarTransition = nil
 
 ---------------------------------------------------------------
 -- Functions Prototype
@@ -72,6 +74,22 @@ end
 
 function tabbarFnc.getTabbar()
 	return tabbarObject
+end
+
+function tabbarFnc.setTabbarOffset(offsetInPercentage)
+	if (tabbarObject.parent) then
+		tabbarObject.y = display.contentHeight + offsetInPercentage * tabbarObject.height
+	end
+end
+
+function tabbarFnc.moveTabbar(offsetInPercentage, transitionTime)
+	if (tabbarObject.parent) then
+		local newTabbarY = display.contentHeight + offsetInPercentage * tabbarObject.height
+		if (transitionTime == nil) then
+			transitionTime = DEFAULT_TRANSITION_TIME
+		end
+		transition.to(tabbarObject, {y = newTabbarY, time = transitionTime})
+	end
 end
 
 return tabbarFnc
