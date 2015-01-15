@@ -68,10 +68,12 @@ function scene:createScene( event )
 		headTabFnc.scrollViewCallback(event)
 	end
 
+	local leftOffset = 50
+
 	scrollView = scrollViewForPost.newScrollView{
-													left = 0,
+													left = leftOffset,
 													top = 0,
-													width = display.contentWidth,
+													width = display.contentWidth - leftOffset,
 													height = display.contentHeight,
 													topPadding = header.headerHeight,
 													-- scrollHeight = display.contentHeight * 2,
@@ -93,14 +95,28 @@ function scene:createScene( event )
 		return true
 	end
 
+	local function delBtnListener(event)
+		scrollView:checkFocusToScrollView(event)
+		if (event.phase == "ended") then
+			local idx = event.target.parent.idx
+			scrollView:deletePost(idx)
+		end
+		return true
+	end
+
 	for i = 0, 10 do
 		local group = display.newGroup()
-		local rect = display.newRect(group, 0, 0, display.contentHeight, 200)
+		local rect = display.newRect(group, 0, 0, display.contentWidth - leftOffset - 50, 200)
 		rect.anchorX = 0
 		rect.anchorY = 0
 		rect:setFillColor(i/10, 1-(i/10), 0)
+		local delBtn = display.newRect(group, rect.contentWidth, 0, 50, 200)
+		delBtn.anchorX = 0
+		delBtn.anchorY = 0
+		delBtn:setFillColor(1, 1, 0)
 		scrollView:addNewPost(group, 200)
 		rect:addEventListener("touch", rectListener)
+		delBtn:addEventListener("touch", delBtnListener)
 	end
 	-- local svBg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	-- svBg.anchorX = 0

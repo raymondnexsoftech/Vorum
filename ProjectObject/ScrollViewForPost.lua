@@ -81,7 +81,7 @@ function scrollViewForPost.newScrollView(options)
 	function scrollView:getScrollHeightForPost()
 		local totalRow = #self.postArray
 		if (totalRow > 0) then
-			local scrollHeight = self.postArray[totalRow].y + self.postArray[totalRow].postCurrentHeight
+			local scrollHeight = self.postArray[totalRow].curY + self.postArray[totalRow].postCurrentHeight
 			if (self.postSpace > 0) then
 				return scrollHeight + self.postSpace
 			else
@@ -125,7 +125,7 @@ function scrollViewForPost.newScrollView(options)
 	end
 
 	local function postTransition(scrollView, postIdx, heightDiff, transitionTime)
-		local postTotal = scrollView:getPostTotal()
+		local postTotal = #scrollView.postArray
 		local scrollViewVisibleAreaLeft, scrollViewVisibleAreaTop = scrollView:getContentPosition()
 		local scrollViewVisibleAreaBottom = scrollView:getView()._height + (-scrollViewVisibleAreaTop)
 		local changeHeightCompleteListener = scrollView.changeHeightCompleteListener
@@ -193,8 +193,37 @@ function scrollViewForPost.newScrollView(options)
 		end
 	end
 
-	function scrollView:deletePost(idx)
+	local function removePostFromScrollView(post, scrollView, idx)
+		display.remove(post)
+		table.remove(scrollView.postArray, idx)
+		scrollView:setScrollHeight(scrollView:getScrollHeightForPost())
+		local postTotal = #scrollView.postArray
+		for i = 1, postTotal do
+			scrollView.postArray[i].idx = i
+		end
+	end
 
+	-- scrollView:deletePost(postIdx, [transitionTime], [deleteCompleteListener])
+	function scrollView:deletePost(...)
+		local postIdx = arg[1]
+		local argIdx = 2
+		local transitionTime, changeHeightCompleteListener
+		if (type(arg[argIdx]) == "number") then
+			transitionTime = arg[argIdx]
+			argIdx = argIdx + 1
+		else
+			transitionTime = DEFAULT_CHANGE_HEIGHT_TIME
+		end
+		if (type(arg[argIdx]) == "function") then
+			deleteCompleteListener = arg[argIdx]
+			argIdx = argIdx + 1
+		end
+		local post = self:getPost(postIdx)
+		if (post) then
+			transition.to(post, {x = -scrollView:getView()._width, alpha = 0, time = transitionTime, onComplete = function(obj) removePostFromScrollView(obj, self, postIdx); if (deleteCompleteListener) then deleteCompleteListener(); end end})
+			local heightDiff = -(post.postCurrentHeight + self.postSpace)
+			postTransition(self, postIdx, heightDiff, transitionTime)
+		end
 	end
 
 	return scrollView
