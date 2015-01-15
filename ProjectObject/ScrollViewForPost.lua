@@ -81,19 +81,32 @@ function scrollViewForPost.newScrollView(options)
 	function scrollView:getScrollHeightForPost()
 		local totalRow = #self.postArray
 		if (totalRow > 0) then
-			return self.postArray[totalRow].y + self.postArray[totalRow].postCurrentHeight + self.postSpace
+			local scrollHeight = self.postArray[totalRow].y + self.postArray[totalRow].postCurrentHeight
+			if (self.postSpace > 0) then
+				return scrollHeight + self.postSpace
+			else
+				return scrollHeight
+			end
 		else
 			return self.postSpace
 		end
 	end
 
 	function scrollView:addNewPost(view, postHeight)
-		view.y = self:getScrollHeightForPost()
+		local newY = self:getScrollHeightForPost()
+		if (self.postSpace < 0) then
+			newY = newY + self.postSpace
+		end
+		view.curY = newY
+		view.y = newY
 		self:insert(view)
 		view.idx = #self.postArray + 1
 		self.postArray[view.idx] = view
 		view.postCurrentHeight = postHeight
-		local scrollHeight = view.y + postHeight + self.postSpace
+		local scrollHeight = view.y + postHeight
+		if (self.postSpace > 0) then
+			scrollHeight = scrollHeight + self.postSpace
+		end
 		setScrollViewScrollHeight(self, scrollHeight)
 		return view.idx
 	end
@@ -111,8 +124,54 @@ function scrollViewForPost.newScrollView(options)
 		end
 	end
 
+	local function postTransition(scrollView, postIdx, heightDiff, transitionTime)
+		local postTotal = scrollView:getPostTotal()
+		local scrollViewVisibleAreaLeft, scrollViewVisibleAreaTop = scrollView:getContentPosition()
+		local scrollViewVisibleAreaBottom = scrollView:getView()._height + (-scrollViewVisibleAreaTop)
+		local changeHeightCompleteListener = scrollView.changeHeightCompleteListener
+		local newScrollHeightForPost = scrollView:getScrollHeightForPost() + heightDiff
+		if (heightDiff < 0) then
+			local curRowIdx = postIdx + 1
+			while (curRowIdx <= postTotal) do
+				local curRow = scrollView.postArray[curRowIdx]
+				curRow.curY = curRow.curY + heightDiff
+				transition.to(curRow, {y = curRow.curY, time = transitionTime, onComplete = changeHeightCompleteListener})
+				changeHeightCompleteListener = nil
+				curRowIdx = curRowIdx + 1
+				if (curRow.y + heightDiff > scrollViewVisibleAreaBottom) then
+					break;
+				end
+			end
+			for i = curRowIdx, postTotal do
+				local curRow = scrollView.postArray[i]
+				curRow.curY = curRow.curY + heightDiff
+				curRow.y = curRow.curY
+			end
+			setScrollViewScrollHeight(scrollView, newScrollHeightForPost, transitionTime)
+		elseif (heightDiff > 0) then
+			local curRowIdx = postIdx + 1
+			while (curRowIdx <= postTotal) do
+				local curRow = scrollView.postArray[curRowIdx]
+				curRow.curY = curRow.curY + heightDiff
+				transition.to(curRow, {y = curRow.curY, time = transitionTime, onComplete = changeHeightCompleteListener})
+				changeHeightCompleteListener = nil
+				curRowIdx = curRowIdx + 1
+				if (curRow.y > scrollViewVisibleAreaBottom) then
+					break;
+				end
+			end
+			for i = curRowIdx, postTotal do
+				local curRow = scrollView.postArray[i]
+				curRow.curY = curRow.curY + heightDiff
+				curRow.y = curRow.curY
+			end
+			setScrollViewScrollHeight(scrollView, newScrollHeightForPost, transitionTime)
+		end
+	end
+
+	-- scrollView:changePostHeight(postIdx, newHeight, [transitionTime], [changeHeightCompleteListener])
 	function scrollView:changePostHeight(...)
-		local rowIdx = arg[1]
+		local postIdx = arg[1]
 		local newHeight = arg[2]
 		local argIdx = 3
 		local transitionTime, changeHeightCompleteListener
@@ -126,52 +185,16 @@ function scrollViewForPost.newScrollView(options)
 			changeHeightCompleteListener = arg[argIdx]
 			argIdx = argIdx + 1
 		end
-		local post = scrollView:getPost(rowIdx)
+		local post = self:getPost(postIdx)
 		if (post) then
-			local postTotal = scrollView:getPostTotal()
-			local scrollViewVisibleAreaLeft, scrollViewVisibleAreaTop = self:getContentPosition()
-			local scrollViewVisibleAreaBottom = self:getView()._height + (-scrollViewVisibleAreaTop)
 			local heightDiff = newHeight - post.postCurrentHeight
-			local changeHeightCompleteListener = self.changeHeightCompleteListener
-			local newScrollHeightForPost = scrollView:getScrollHeightForPost() + heightDiff
-			if (newHeight < post.postCurrentHeight) then
-				local curRowIdx = rowIdx + 1
-				while (curRowIdx <= postTotal) do
-					local curRow = self.postArray[curRowIdx]
-					transition.to(curRow, {y = curRow.y + heightDiff, time = transitionTime, onComplete = changeHeightCompleteListener})
-					changeHeightCompleteListener = nil
-					curRowIdx = curRowIdx + 1
-					if (curRow.y + heightDiff > scrollViewVisibleAreaBottom) then
-						break;
-					end
-				end
-				for i = curRowIdx, postTotal do
-					local curRow = self.postArray[i]
-					curRow.y = curRow.y + heightDiff
-				end
-				setScrollViewScrollHeight(self, newScrollHeightForPost, transitionTime)
-			elseif (newHeight > post.postCurrentHeight) then
-				local curRowIdx = rowIdx + 1
-				while (curRowIdx <= postTotal) do
-					local curRow = self.postArray[curRowIdx]
-					transition.to(curRow, {y = curRow.y + heightDiff, time = transitionTime, onComplete = changeHeightCompleteListener})
-					changeHeightCompleteListener = nil
-					curRowIdx = curRowIdx + 1
-					if (curRow.y > scrollViewVisibleAreaBottom) then
-						break;
-					end
-				end
-				for i = curRowIdx, postTotal do
-					local curRow = self.postArray[i]
-					curRow.y = curRow.y + heightDiff
-				end
-				setScrollViewScrollHeight(self, newScrollHeightForPost, transitionTime)
-			end
+			postTransition(self, postIdx, heightDiff, transitionTime)
 			post.postCurrentHeight = newHeight
 		end
 	end
 
 	function scrollView:deletePost(idx)
+
 	end
 
 	return scrollView

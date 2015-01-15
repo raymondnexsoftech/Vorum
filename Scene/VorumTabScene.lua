@@ -76,7 +76,8 @@ function scene:createScene( event )
 													topPadding = header.headerHeight,
 													-- scrollHeight = display.contentHeight * 2,
 													horizontalScrollDisabled = true,
-													listener = svListener
+													listener = svListener,
+													-- postSpace = -50
 												}
 	local function rectListener(event)
 		scrollView:checkFocusToScrollView(event)
