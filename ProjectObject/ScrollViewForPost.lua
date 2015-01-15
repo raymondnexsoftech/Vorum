@@ -72,6 +72,7 @@ function scrollViewForPost.newScrollView(options)
 	local scrollView = widget.newScrollView(options)
 	scrollView.postSpace = options.postSpace or DEFAULT_POST_SPACE
 	scrollView.postArray = {}
+	scrollView.isDeletingPost = false
 
 	function scrollView:getPostTotal()
 		return #self.postArray
@@ -199,16 +200,22 @@ function scrollViewForPost.newScrollView(options)
 	local function removePostFromScrollView(post, scrollView, idx)
 		display.remove(post)
 		table.remove(scrollView.postArray, idx)
-		setScrollViewScrollHeight(scrollView, scrollView:getScrollHeightForPost(), 0)
-		-- scrollView:setScrollHeight(scrollView:getScrollHeightForPost())
-		local postTotal = #scrollView.postArray
-		for i = 1, postTotal do
-			scrollView.postArray[i].idx = i
+		if (scrollView.parent) then
+			setScrollViewScrollHeight(scrollView, scrollView:getScrollHeightForPost(), 0)
+			-- scrollView:setScrollHeight(scrollView:getScrollHeightForPost())
+			local postTotal = #scrollView.postArray
+			for i = 1, postTotal do
+				scrollView.postArray[i].idx = i
+			end
+			scrollView.isDeletingPost = false
 		end
 	end
 
 	-- scrollView:deletePost(postIdx, [transitionTime], [deleteCompleteListener])
 	function scrollView:deletePost(...)
+		if (self.isDeletingPost) then
+			return false
+		end
 		local postIdx = arg[1]
 		local argIdx = 2
 		local transitionTime, changeHeightCompleteListener
@@ -228,6 +235,8 @@ function scrollViewForPost.newScrollView(options)
 			local heightDiff = -(post.postCurrentHeight + self.postSpace)
 			postTransition(self, postIdx, heightDiff, transitionTime)
 		end
+		self.isDeletingPost = true
+		return true
 	end
 
 	return scrollView

@@ -85,30 +85,8 @@ function headTabFnc.setTransitionTime(time)
 	transitionTime = time
 end
 
-local function isScrollViewCannotScroll(scrollView)
-	local scrollViewGroup
-	if (scrollView.getView) then
-		scrollViewGroup = scrollView:getView()
-	else
-		scrollViewGroup = scrollView
-	end
-	if (scrollViewGroup._height > scrollViewGroup._scrollHeight) then
-		return true
-	end
-	return false
-end
-
-function headTabFnc.checkScrollViewScrollHeight(scrollView)
-	if (isScrollViewCannotScroll(scrollView)) then
-		headTabFnc.setDisplayStatus(true)
-	end
-end
-
 function headTabFnc.scrollViewCallback(event)
 	if (isHeadAndTabCanHide) then
-		-- if (isScrollViewCannotScroll(event.target)) then
-		-- 	return
-		-- end
 		if (event.phase == "began") then
 			event.target.htLastY = StartY
 			event.target.htLastTime = nil
