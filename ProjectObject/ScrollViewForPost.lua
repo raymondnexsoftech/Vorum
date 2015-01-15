@@ -46,17 +46,20 @@ local function touchDisplacement(event)
 end
 
 local function setScrollViewScrollHeight(scrollView, scrollHeight, transitionTime)
-	local scrollViewVisibleHeight = scrollView:getView()._height
+	local scrollViewGroup = scrollView:getView()
+	local scrollViewVisibleHeight = scrollViewGroup._height
 	local newScrollHeight = 0
 	if (scrollHeight > scrollViewVisibleHeight) then
 		newScrollHeight = scrollHeight
 	else
 		newScrollHeight = scrollViewVisibleHeight
 	end
+	print(newScrollHeight)
 	scrollView:setScrollHeight(newScrollHeight)
 	local scrollX, scrollY = scrollView:getContentPosition()
 	local scrollVisibleBottomY = -scrollY + scrollViewVisibleHeight
 	if (newScrollHeight < scrollVisibleBottomY) then
+		local destY
 		scrollView:scrollToPosition
 		{
 			y = -newScrollHeight + scrollViewVisibleHeight,
@@ -196,7 +199,8 @@ function scrollViewForPost.newScrollView(options)
 	local function removePostFromScrollView(post, scrollView, idx)
 		display.remove(post)
 		table.remove(scrollView.postArray, idx)
-		scrollView:setScrollHeight(scrollView:getScrollHeightForPost())
+		setScrollViewScrollHeight(scrollView, scrollView:getScrollHeightForPost(), 0)
+		-- scrollView:setScrollHeight(scrollView:getScrollHeightForPost())
 		local postTotal = #scrollView.postArray
 		for i = 1, postTotal do
 			scrollView.postArray[i].idx = i

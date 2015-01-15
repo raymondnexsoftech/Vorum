@@ -100,6 +100,7 @@ function scene:createScene( event )
 		if (event.phase == "ended") then
 			local idx = event.target.parent.idx
 			scrollView:deletePost(idx)
+			-- headTabFnc.checkScrollViewScrollHeight(scrollView)
 		end
 		return true
 	end
