@@ -24,6 +24,7 @@ local widget = require ( "widget" )
 ---------------------------------------------------------------
 local DEFAULT_POST_SPACE = 10
 local DEFAULT_CHANGE_HEIGHT_TIME = 100
+local LAST_N_POST_TO_REQUEST_DATA = 3
 
 ---------------------------------------------------------------
 -- Variables
@@ -54,7 +55,6 @@ local function setScrollViewScrollHeight(scrollView, scrollHeight, transitionTim
 	else
 		newScrollHeight = scrollViewVisibleHeight
 	end
-	print(newScrollHeight)
 	scrollView:setScrollHeight(newScrollHeight)
 	local scrollX, scrollY = scrollView:getContentPosition()
 	local scrollVisibleBottomY = -scrollY + scrollViewVisibleHeight
@@ -68,10 +68,65 @@ local function setScrollViewScrollHeight(scrollView, scrollHeight, transitionTim
 	end
 end
 
+local function isPostVisible(scrollView, idx)
+	local post = scrollView:getPost(idx)
+	if (post) then
+		local scrollViewX, scrollViewY = scrollView:getContentPosition()
+		local scrollViewHeight = scrollView:getView()._height
+		if ((post.curY < -scrollViewY + scrollViewHeight) and (post.curY + post.postCurrentHeight > -scrollViewY)) then
+		elseif ((post.curY > -scrollViewY + scrollViewHeight) and (post.curY + post.postCurrentHeight > -scrollViewY)) then
+		end
+	end
+end
+
+local function scrollViewListener(event)
+	local scrollView = event.target
+	if (scrollView._isWidget ~= true) then
+		scrollView = scrollView.parent
+	end
+	if (event.limitReached) then
+		if (event.direction == "up") then
+			if (type(scrollView.requestDataListener) == "function") then
+				scrollView.requestDataListener(true)
+			end
+			scrollView.isRequestDataListenerCalled = true
+		end
+	elseif (scrollView.isRequestDataListenerCalled ~= true) then
+		local postIdxForRequestData = scrollView:getPostTotal() - LAST_N_POST_TO_REQUEST_DATA
+		if (postIdxForRequestData < 1) then
+			postIdxForRequestData = 1
+		end
+		local post = scrollView:getPost(postIdxForRequestData)
+		if (post) then
+			local scrollViewX, scrollViewY = scrollView:getContentPosition()
+			if (post.curY > -scrollViewY) then
+				if (type(scrollView.requestDataListener) == "function") then
+					scrollView.requestDataListener(false)
+				end
+				scrollView.isRequestDataListenerCalled = true
+			end
+		else
+			scrollView.isRequestDataListenerCalled = true
+		end
+	end
+	if (type(scrollView.userListener) == "function") then
+		scrollView.userListener(event)
+	end
+end
+
+--	options added:
+--		postSpace: space between posts
+--		requestDataListener(isRequestByReachBottom): listener on scroll view need to request new data
+
 function scrollViewForPost.newScrollView(options)
+	local userListener = options.listener
+	options.listener = scrollViewListener
 	local scrollView = widget.newScrollView(options)
+	scrollView.userListener = userListener
 	scrollView.postSpace = options.postSpace or DEFAULT_POST_SPACE
 	scrollView.postArray = {}
+	scrollView.isRequestDataListenerCalled = false
+	scrollView.requestDataListener = options.requestDataListener
 	scrollView.isDeletingPost = false
 
 	function scrollView:getPostTotal()
@@ -79,7 +134,10 @@ function scrollViewForPost.newScrollView(options)
 	end
 
 	function scrollView:getPost(idx)
-		return self.postArray[idx]
+		if (idx > 0) then
+			return self.postArray[idx]
+		end
+		return nil
 	end
 
 	function scrollView:getScrollHeightForPost()
@@ -112,6 +170,7 @@ function scrollViewForPost.newScrollView(options)
 			scrollHeight = scrollHeight + self.postSpace
 		end
 		setScrollViewScrollHeight(self, scrollHeight)
+		scrollView.isRequestDataListenerCalled = false
 		return view.idx
 	end
 

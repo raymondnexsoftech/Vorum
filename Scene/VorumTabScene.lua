@@ -69,6 +69,10 @@ function scene:createScene( event )
 	end
 
 	local leftOffset = 50
+	
+	local function requestDataListener(isRequestByReachBottom)
+		print("request data", tostring(isRequestByReachBottom))
+	end
 
 	scrollView = scrollViewForPost.newScrollView{
 													left = leftOffset,
@@ -79,6 +83,7 @@ function scene:createScene( event )
 													-- scrollHeight = display.contentHeight * 2,
 													horizontalScrollDisabled = true,
 													listener = svListener,
+													requestDataListener = requestDataListener,
 													-- postSpace = -50
 												}
 	local function rectListener(event)
