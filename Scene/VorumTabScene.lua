@@ -74,6 +74,11 @@ function scene:createScene( event )
 		print("request data", tostring(isRequestByReachBottom))
 	end
 
+	local function reloadDataListener()
+		local isShowActivityIndicator = false
+		return isShowActivityIndicator
+	end
+
 	scrollView = scrollViewForPost.newScrollView{
 													left = leftOffset,
 													top = 0,
@@ -84,6 +89,7 @@ function scene:createScene( event )
 													horizontalScrollDisabled = true,
 													listener = svListener,
 													requestDataListener = requestDataListener,
+													reloadDataListener = reloadDataListener,
 													-- postSpace = -50
 												}
 	local function rectListener(event)
@@ -149,6 +155,7 @@ function scene:createScene( event )
 	-- scrollView:addNewPost(group2, 150)
 	-- testRect2:addEventListener("touch", function(event) if (event.phase == "ended") then storyboard.gotoScene("Scene.MeTabScene"); end return true; end)
 	-- scrollView:setScrollHeight(display.contentHeight * 2)
+	headTabFnc.setActiveScrollView(scrollView)
 	group:insert(scrollView)
 end
 

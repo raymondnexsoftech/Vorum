@@ -84,6 +84,9 @@ local function scrollViewListener(event)
 	if (scrollView._isWidget ~= true) then
 		scrollView = scrollView.parent
 	end
+	if (false) then
+		-- TODO: on scrollview dragging to bottom
+	end
 	if (event.limitReached) then
 		if (event.direction == "up") then
 			if (type(scrollView.requestDataListener) == "function") then
@@ -127,6 +130,7 @@ function scrollViewForPost.newScrollView(options)
 	scrollView.postArray = {}
 	scrollView.isRequestDataListenerCalled = false
 	scrollView.requestDataListener = options.requestDataListener
+	scrollView.reloadDataListener = options.reloadDataListener
 	scrollView.isDeletingPost = false
 
 	function scrollView:getPostTotal()

@@ -27,6 +27,7 @@ local tabbarFnc = require( "ProjectObject.TabbarFnc" )
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
+local activeScrollView = nil
 local isTabbarCanHide = true
 local isHeadAndTabCanHide = true
 local transitionTime = 100
@@ -40,12 +41,24 @@ local transitionTime = 100
 ---------------------------------------------------------------
 local headTabFnc = {}
 
+local function onStatusBarPressedListener()
+	if ((activeScrollView ~= nil) and (activeScrollView.parent ~= nil)) then
+		local scrollViewTopPadding = activeScrollView:getView()._topPadding
+		activeScrollView:scrollToPosition{
+												y = scrollViewTopPadding,
+												time = transitionTime,
+											}
+	end
+	local transitionDistance, transitionTime = headerFnc.toStablePosition(transitionTime, true)
+	tabbarFnc.moveTabbar(0, transitionTime)
+end
+
 function headTabFnc.getHeader()
 	return headerFnc.getHeader()
 end
 
 function headTabFnc.createNewHeader(headerGroup, headerHeight)
-	return headerFnc.createNewHeader(headerGroup, headerHeight)
+	return headerFnc.createNewHeader(headerGroup, headerHeight, onStatusBarPressedListener)
 end
 
 function headTabFnc.getTabbar()
@@ -83,6 +96,12 @@ end
 
 function headTabFnc.setTransitionTime(time)
 	transitionTime = time
+end
+
+function headTabFnc.setActiveScrollView(scrollView)
+	if (scrollView.parent) then
+		activeScrollView = scrollView
+	end
 end
 
 function headTabFnc.scrollViewCallback(event)

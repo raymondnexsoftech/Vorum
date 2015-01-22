@@ -29,6 +29,7 @@ local DEFAULT_TRANSITION_TIME = 100
 local headerDisplayObject
 local headerObject
 local isHeaderBtnEnable
+local onStatusBarPressedListener
 
 ---------------------------------------------------------------
 -- Functions Prototype
@@ -39,17 +40,55 @@ local isHeaderBtnEnable
 ---------------------------------------------------------------
 local headerFnc = {}
 
-function headerFnc.createNewHeader(headerGroup, headerHeight)
+local function headerTouchListener(event)
+	print(event.y)
+	if (event.phase == "began") then
+		if (event.y < headerObject.statusBarHeight) then
+			event.target.isStatusBarPressed = true
+			display.getCurrentStage():setFocus(event.target)
+		end
+		return true
+	elseif (event.target.isStatusBarPressed) then
+		if (event.phase == "ended") then
+			if (event.y < headerObject.statusBarHeight) then
+				if (type(onStatusBarPressedListener) == "function") then
+					onStatusBarPressedListener()
+				end
+			end
+			display.getCurrentStage():setFocus(nil)
+			event.target.isStatusBarPressed = false
+		elseif (event.phase == "cancelled") then
+			display.getCurrentStage():setFocus(nil)
+			event.target.isStatusBarPressed = false
+		end
+		return true
+	end
+	if (isHeaderBtnEnable ~= true) then
+		return true
+	elseif (false) then	-- TODO: check if header is not fully shown
+		return true
+	end
+end
+
+function headerFnc.createNewHeader(headerGroup, headerHeight, onStatusBarPressedListenerCallBack)
 	if (headerObject) then
 		display.remove(headerObject)
-		display.remove(statusBarBg)
 	end
+	onStatusBarPressedListener = onStatusBarPressedListenerCallBack
+	headerObject = display.newGroup()
+	headerObject:insert(headerGroup)
 	headerObject = headerGroup
 	headerObject.headerHeight = headerHeight
 	headerDisplayObject = headerGroup.headerDisplayGroup
 	-- headerObject.statusBarHeight = display.topStatusBarContentHeight / display.contentScaleY
 	headerObject.statusBarHeight = display.topStatusBarContentHeight
-	headerObject = headerGroup
+	local headerMask = display.newRect(headerObject, 0, 0, display.contentWidth, headerHeight)
+	headerMask.anchorX = 0
+	headerMask.anchorY = 0
+	headerMask.alpha = 0
+	headerMask.isHitTestable = true
+	headerMask:addEventListener("touch", headerTouchListener)
+	headerObject:addEventListener("touch", function(event) return true; end)
 	isHeaderBtnEnable = true
 	return headerObject
 end
