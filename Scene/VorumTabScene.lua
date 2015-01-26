@@ -64,20 +64,49 @@ function scene:createScene( event )
 
 	-- testing
 	local scrollView
+	local leftOffset = 50
+
+	local rectListener
+	local delBtnListener
+
 	local function svListener(event)
 		headTabFnc.scrollViewCallback(event)
 	end
 
-	local leftOffset = 50
+	local function addElevenPost(scrollView)
+		for i = 0, 10 do
+			local group = display.newGroup()
+			local rect = display.newRect(group, 0, 0, display.contentWidth - leftOffset - 50, 200)
+			rect.anchorX = 0
+			rect.anchorY = 0
+			rect:setFillColor(i/10, 1-(i/10), 0)
+			local delBtn = display.newRect(group, rect.contentWidth, 0, 50, 200)
+			delBtn.anchorX = 0
+			delBtn.anchorY = 0
+			delBtn:setFillColor(1, 1, 0)
+			scrollView:addNewPost(group, 200)
+			rect:addEventListener("touch", rectListener)
+			delBtn:addEventListener("touch", delBtnListener)
+		end
+	end
 	
-	local function requestDataListener(isRequestByReachBottom)
+	local function requestDataListener(scrollView, isRequestByReachBottom)
 		print("request data", tostring(isRequestByReachBottom))
+		if (scrollView:getPostTotal() < 20) then
+			timer.performWithDelay(math.random(500, 2000), function() addElevenPost(scrollView); end)
+		end
 	end
 
-	local function reloadDataListener()
-		local isShowActivityIndicator = false
-		return isShowActivityIndicator
+	local function reloadDataListener(scrollView)
+		print("reload data")
+		timer.performWithDelay(math.random(2000, 2000), function() scrollView:deleteAllPost(); headTabFnc.setDisplayStatus(true); addElevenPost(scrollView); end)
+		-- local isShowActivityIndicator = false
+		-- return isShowActivityIndicator
 	end
+
+	-- local refreshIcon = display.newRect(0, 0, 100, 100)
+	local refreshIcon = display.newPolygon(0, 0, {-40, -50, 40, -50, 0, 50})
+	refreshIcon:setFillColor(1, 0, 0)
 
 	scrollView = scrollViewForPost.newScrollView{
 													left = leftOffset,
@@ -90,9 +119,17 @@ function scene:createScene( event )
 													listener = svListener,
 													requestDataListener = requestDataListener,
 													reloadDataListener = reloadDataListener,
+													refreshHeader = {
+																		height = 0,
+																		icon = refreshIcon,
+																		iconMaxRotation = 180,
+																		textToPull = "",
+																		textToRelease = "",
+																		loadingText = "",
+																	},
 													-- postSpace = -50
 												}
-	local function rectListener(event)
+	rectListener = function(event)
 		scrollView:checkFocusToScrollView(event)
 		if (event.phase == "ended") then
 			local idx = event.target.parent.idx
@@ -106,7 +143,7 @@ function scene:createScene( event )
 		return true
 	end
 
-	local function delBtnListener(event)
+	delBtnListener = function(event)
 		scrollView:checkFocusToScrollView(event)
 		if (event.phase == "ended") then
 			local idx = event.target.parent.idx
@@ -116,20 +153,8 @@ function scene:createScene( event )
 		return true
 	end
 
-	for i = 0, 10 do
-		local group = display.newGroup()
-		local rect = display.newRect(group, 0, 0, display.contentWidth - leftOffset - 50, 200)
-		rect.anchorX = 0
-		rect.anchorY = 0
-		rect:setFillColor(i/10, 1-(i/10), 0)
-		local delBtn = display.newRect(group, rect.contentWidth, 0, 50, 200)
-		delBtn.anchorX = 0
-		delBtn.anchorY = 0
-		delBtn:setFillColor(1, 1, 0)
-		scrollView:addNewPost(group, 200)
-		rect:addEventListener("touch", rectListener)
-		delBtn:addEventListener("touch", delBtnListener)
-	end
+	addElevenPost(scrollView)
+
 	-- local svBg = display.newRect(0, 0, display.contentWidth, display.contentHeight)
 	-- svBg.anchorX = 0
 	-- svBg.anchorY = 0
