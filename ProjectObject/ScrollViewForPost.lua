@@ -214,18 +214,6 @@ local function setRefreshHeaderTextPos(textObj, startX, maxWidth, y)
 	textObj.y = y
 end
 
-local function resetDataRequestStatus(scrollView)
-	local refreshHeader = scrollView.refreshHeader
-	if (refreshHeader.refreshIcon) then
-		refreshHeader.refreshIcon.rotation = 0
-	end
-	refreshHeader.textToPull.alpha = 1
-	refreshHeader.textToRelease.alpha = 0
-	refreshHeader.loadingText.alpha = 0
-	scrollView.isReloadDataListenerCalled = false
-	scrollView.isRequestDataListenerCalled = false
-end
-
 local function postTransition(scrollView, postIdx, heightDiff, transitionTime)
 	local postTotal = #scrollView.postArray
 	local scrollViewVisibleAreaLeft, scrollViewVisibleAreaTop = scrollView:getContentPosition()
@@ -406,7 +394,7 @@ function scrollViewForPost.newScrollView(options)
 			scrollHeight = scrollHeight + self.postSpace
 		end
 		setScrollViewScrollHeight(self, scrollHeight)
-		resetDataRequestStatus(self)
+		scrollView:resetDataRequestStatus()
 		return view.idx
 	end
 
@@ -494,6 +482,20 @@ function scrollViewForPost.newScrollView(options)
 			time = 1,
 			onComplete = function() self.isDeletingPost = false; end,
 		}
+	end
+
+	function scrollView:resetDataRequestStatus()
+		local refreshHeader = self.refreshHeader
+		if (refreshHeader) then
+			if (refreshHeader.refreshIcon) then
+				refreshHeader.refreshIcon.rotation = 0
+			end
+			refreshHeader.textToPull.alpha = 1
+			refreshHeader.textToRelease.alpha = 0
+			refreshHeader.loadingText.alpha = 0
+		end
+		self.isReloadDataListenerCalled = false
+		self.isRequestDataListenerCalled = false
 	end
 
 	return scrollView
