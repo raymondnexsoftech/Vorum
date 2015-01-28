@@ -153,6 +153,29 @@ function scene:createScene( event )
 		return true
 	end
 
+	local function scrollViewHeadObjTouchListener(event)
+		scrollView:checkFocusToScrollView(event)
+		if (event.phase == "ended") then
+			local origRowHeight = event.target.contentHeight
+			if (origRowHeight > 150) then
+				scrollView:setScrollViewHeadHeight(100)
+				event.target.height = 100
+			else
+				scrollView:setScrollViewHeadHeight(200)
+				event.target.height = 200
+			end
+		end
+		return true
+	end
+
+	local scrollViewHead = display.newGroup()
+	local scrollViewHeadObj = display.newRect(scrollViewHead, 0, 0, display.contentWidth - leftOffset, 100)
+	scrollViewHeadObj.anchorX = 0
+	scrollViewHeadObj.anchorY = 0
+	scrollViewHeadObj:setFillColor(0, 0, 1)
+	scrollView:setScrollViewHead(scrollViewHead, 100)
+	scrollViewHeadObj:addEventListener("touch", scrollViewHeadObjTouchListener)
+
 	addElevenPost(scrollView)
 
 	-- local svBg = display.newRect(0, 0, display.contentWidth, display.contentHeight)

@@ -353,6 +353,39 @@ function scrollViewForPost.newScrollView(options)
 		end
 	end
 
+	function scrollView:setScrollViewHeadHeight(height)
+		if (self.headView) then
+			local heightDiff = height
+			if (self.headViewHeight) then
+				heightDiff = heightDiff - self.headViewHeight
+			end
+			self.headViewHeight = height
+			if (heightDiff ~= 0) then
+				local postTotal = self:getPostTotal()
+				for i = 1, postTotal do
+					local post = self:getPost(i)
+					post.y = post.y + heightDiff
+					post.curY = post.curY + heightDiff
+				end
+			end
+		end
+	end
+
+	function scrollView:setScrollViewHead(headView, height)
+		if (self.headView) then
+			display.remove(self.headView)
+		end
+		if ((headView ~= nil) and (height >= 0)) then
+			self.headView = headView
+			headView.y = 0
+			self:insert(headView)
+		else
+			self.headView = nil
+			height = 0
+		end
+		self:setScrollViewHeadHeight(height)
+	end
+
 	function scrollView:getPostTotal()
 		return #self.postArray
 	end
@@ -374,7 +407,11 @@ function scrollViewForPost.newScrollView(options)
 				return scrollHeight
 			end
 		else
-			return self.postSpace
+			if (self.headViewHeight) then
+				return self.postSpace + self.headViewHeight
+			else
+				return self.postSpace
+			end
 		end
 	end
 
