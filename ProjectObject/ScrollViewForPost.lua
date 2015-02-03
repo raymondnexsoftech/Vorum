@@ -437,6 +437,11 @@ function scrollViewForPost.newScrollView(options)
 
 	function scrollView:checkFocusToScrollView(event)
 		local touchDisp = touchDisplacement(event)
+		if (event.phase == "began") then
+			if (self:getView()._velocity ~= 0) then
+				self:takeFocus(event)
+			end
+		end
 		if (touchDisp ~= nil) then
 			if (touchDisp > 10) then
 				if (math.abs(event.yStart - event.y) < 5) then
