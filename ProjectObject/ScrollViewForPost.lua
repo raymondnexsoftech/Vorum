@@ -66,15 +66,17 @@ local function setScrollViewScrollHeight(scrollView, scrollHeight, transitionTim
 		newScrollHeight = scrollViewVisibleHeight
 	end
 	scrollView:setScrollHeight(newScrollHeight)
-	if (scrollView.isDeletingPost ~= true) then
+	if ((scrollView.isDeletingPost ~= true) and (scrollView.isScrolling ~= true)) then
 		local scrollX, scrollY = scrollView:getContentPosition()
 		local scrollVisibleBottomY = -scrollY + scrollViewVisibleHeight
 		if (newScrollHeight < scrollVisibleBottomY) then
 			local destY
+			scrollView.isScrolling = true
 			scrollView:scrollToPosition
 			{
 				y = -newScrollHeight + scrollViewVisibleHeight,
 				time = transitionTime,
+				onComplete = function() scrollView.isScrolling = false; end,
 			}
 		end
 	end
@@ -100,6 +102,7 @@ local function scrollViewListener(event)
 	local scrollViewTopPadding = scrollView:getView()._topPadding
 	local scrollViewPullDownDistance = scrollViewY - DEFAULT_REFRESH_START_OFFSET - scrollViewTopPadding
 	if (event.limitReached) then
+		scrollView:getView()._velocity = 0
 		if (event.direction == "up") then
 			if ((type(scrollView.requestDataListener) == "function") and (scrollView.isRequestDataListenerCalled ~= true)) then
 				scrollView.requestDataListener(scrollView, true)
@@ -122,6 +125,7 @@ local function scrollViewListener(event)
 					refreshHeader.textToPull.alpha = 0
 					refreshHeader.textToRelease.alpha = 0
 					refreshHeader.loadingText.alpha = 1
+					scrollView:getView()._topPadding = scrollView.origTopPadding + refreshHeader.headerHeight
 				else
 					if (refreshHeader.refreshIcon) then
 						transition.to(refreshHeader.refreshIcon, {rotation = 0, time = DEFAULT_CHANGE_HEIGHT_TIME})
@@ -225,7 +229,7 @@ local function postTransition(scrollView, postIdx, heightDiff, transitionTime)
 		while (curRowIdx <= postTotal) do
 			local curRow = scrollView.postArray[curRowIdx]
 			curRow.curY = curRow.curY + heightDiff
-			transition.to(curRow, {y = curRow.curY, time = transitionTime, onComplete = changeHeightCompleteListener})
+			transition.to(curRow, {y = curRow.curY, time = transitionTime, transition = easing.outSine, onComplete = changeHeightCompleteListener})
 			changeHeightCompleteListener = nil
 			curRowIdx = curRowIdx + 1
 			if (curRow.y + heightDiff > scrollViewVisibleAreaBottom) then
@@ -243,7 +247,7 @@ local function postTransition(scrollView, postIdx, heightDiff, transitionTime)
 		while (curRowIdx <= postTotal) do
 			local curRow = scrollView.postArray[curRowIdx]
 			curRow.curY = curRow.curY + heightDiff
-			transition.to(curRow, {y = curRow.curY, time = transitionTime, onComplete = changeHeightCompleteListener})
+			transition.to(curRow, {y = curRow.curY, time = transitionTime, transition = easing.outSine, onComplete = changeHeightCompleteListener})
 			changeHeightCompleteListener = nil
 			curRowIdx = curRowIdx + 1
 			if (curRow.y > scrollViewVisibleAreaBottom) then
@@ -279,6 +283,7 @@ function scrollViewForPost.newScrollView(options)
 	local userListener = options.listener
 	options.listener = scrollViewListener
 	local scrollView = widget.newScrollView(options)
+	scrollView.origTopPadding = options.topPadding
 	scrollView.userListener = userListener
 	scrollView.postSpace = options.postSpace or DEFAULT_POST_SPACE
 	scrollView.postArray = {}
@@ -288,6 +293,7 @@ function scrollViewForPost.newScrollView(options)
 	scrollView.requestDataListener = options.requestDataListener
 	scrollView.reloadDataListener = options.reloadDataListener
 	scrollView.isDeletingPost = false
+	scrollView.isScrolling = false
 	if (options.refreshHeader) then
 		local refreshHeaderOption = options.refreshHeader
 		if (refreshHeaderOption.height ~= nil) then
@@ -430,8 +436,8 @@ function scrollViewForPost.newScrollView(options)
 		if (self.postSpace > 0) then
 			scrollHeight = scrollHeight + self.postSpace
 		end
+		self:resetDataRequestStatus()
 		setScrollViewScrollHeight(self, scrollHeight)
-		scrollView:resetDataRequestStatus()
 		return view.idx
 	end
 
@@ -516,13 +522,14 @@ function scrollViewForPost.newScrollView(options)
 		end
 		self.postArray = {}
 		local scrollViewGroup = scrollView:getView()
+		self:resetDataRequestStatus()
 		self:setScrollHeight(scrollViewGroup._height)
-		self.isDeletingPost = true
+		self.isScrolling = true
 		self:scrollToPosition
 		{
 			y = scrollViewGroup._topPadding,
 			time = 1,
-			onComplete = function() self.isDeletingPost = false; end,
+			onComplete = function() self.isScrolling = false; end,
 		}
 	end
 
@@ -535,6 +542,7 @@ function scrollViewForPost.newScrollView(options)
 			refreshHeader.textToPull.alpha = 1
 			refreshHeader.textToRelease.alpha = 0
 			refreshHeader.loadingText.alpha = 0
+			self:getView()._topPadding = self.origTopPadding
 		end
 		self.isReloadDataListenerCalled = false
 		self.isRequestDataListenerCalled = false

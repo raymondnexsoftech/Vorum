@@ -74,19 +74,21 @@ function scene:createScene( event )
 	end
 
 	local function addElevenPost(scrollView)
-		for i = 0, 10 do
-			local group = display.newGroup()
-			local rect = display.newRect(group, 0, 0, display.contentWidth - leftOffset - 50, 200)
-			rect.anchorX = 0
-			rect.anchorY = 0
-			rect:setFillColor(i/10, 1-(i/10), 0)
-			local delBtn = display.newRect(group, rect.contentWidth, 0, 50, 200)
-			delBtn.anchorX = 0
-			delBtn.anchorY = 0
-			delBtn:setFillColor(1, 1, 0)
-			scrollView:addNewPost(group, 200)
-			rect:addEventListener("touch", rectListener)
-			delBtn:addEventListener("touch", delBtnListener)
+		if (scrollView.parent) then
+			for i = 0, 10 do
+				local group = display.newGroup()
+				local rect = display.newRect(group, 0, 0, display.contentWidth - leftOffset - 50, 200)
+				rect.anchorX = 0
+				rect.anchorY = 0
+				rect:setFillColor(i/10, 1-(i/10), 0)
+				local delBtn = display.newRect(group, rect.contentWidth, 0, 50, 200)
+				delBtn.anchorX = 0
+				delBtn.anchorY = 0
+				delBtn:setFillColor(1, 1, 0)
+				scrollView:addNewPost(group, 200)
+				rect:addEventListener("touch", rectListener)
+				delBtn:addEventListener("touch", delBtnListener)
+			end
 		end
 	end
 	
