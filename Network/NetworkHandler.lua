@@ -179,7 +179,7 @@ function networkHandler.requestNetwork(apiParamsArray, listener, keyForRequest)
 													end
 													print(debugStr .. "\n\n")
 												end
-												if (listener(newNetworkRequest.event) == false) then
+												if ((type(listener) == "function") and (listener(newNetworkRequest.event) == false)) then
 													if (displayDebugInfo == true) then
 														print("  Network Request \"" .. keyForRequest .. "\" Retry " .. tostring(newNetworkRequest.retryTimes) .. " times")
 													end
