@@ -104,19 +104,16 @@ local function scrollViewListener(event)
 	if (event.limitReached) then
 		scrollView:getView()._velocity = 0
 		if (event.direction == "up") then
+			scrollView.isRequestDataListenerCalled = true
 			if ((type(scrollView.requestDataListener) == "function") and (scrollView.isRequestDataListenerCalled ~= true)) then
 				scrollView.requestDataListener(scrollView, true)
 			end
-			scrollView.isRequestDataListenerCalled = true
 		end
 	elseif ((scrollViewPullDownDistance > 0) and (scrollView.refreshHeader ~= nil)) then
 		local refreshHeader = scrollView.refreshHeader
 		if (scrollView.isReloadDataListenerCalled ~= true) then
 			if (event.phase == "ended") then
 				if (scrollViewPullDownDistance > refreshHeader.headerHeight) then
-					if (type(scrollView.reloadDataListener) == "function") then
-						scrollView.reloadDataListener(scrollView, true)
-					end
 					scrollView.isReloadDataListenerCalled = true
 					scrollView.isRequestDataListenerCalled = true
 					if (refreshHeader.refreshIcon) then
@@ -126,6 +123,9 @@ local function scrollViewListener(event)
 					refreshHeader.textToRelease.alpha = 0
 					refreshHeader.loadingText.alpha = 1
 					scrollView:getView()._topPadding = scrollView.origTopPadding + refreshHeader.headerHeight
+					if (type(scrollView.reloadDataListener) == "function") then
+						scrollView.reloadDataListener(scrollView, true)
+					end
 				else
 					if (refreshHeader.refreshIcon) then
 						transition.to(refreshHeader.refreshIcon, {rotation = 0, time = DEFAULT_CHANGE_HEIGHT_TIME})
@@ -160,10 +160,10 @@ local function scrollViewListener(event)
 		local post = scrollView:getPost(postIdxForRequestData)
 		if (post) then
 			if (post.curY - scrollView:getView()._height < -scrollViewY) then
+				scrollView.isRequestDataListenerCalled = true
 				if (type(scrollView.requestDataListener) == "function") then
 					scrollView.requestDataListener(scrollView, false)
 				end
-				scrollView.isRequestDataListenerCalled = true
 			end
 		else
 			scrollView.isRequestDataListenerCalled = true
