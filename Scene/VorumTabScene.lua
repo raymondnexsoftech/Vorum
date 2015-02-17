@@ -51,11 +51,8 @@ function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
 	local group = self.view
 
-	local header = headTabFnc.getHeader()
-	local newHeaderGroup, headerHeight = headerView.createHeaderGroup(header, "vorum")
-	if (newHeaderGroup) then
-		header = headTabFnc.createNewHeader(newHeaderGroup, headerHeight)
-	end
+	local headerObjects = headerView.createVorumHeaderObjects(true)
+	local header = headTabFnc.changeHeaderView(headerObjects)
 	local tabbar = headTabFnc.getTabbar()
 	if (tabbar == nil) then
 		tabbar = headTabFnc.createNewTabbar(projectObjectSetting.tabbar)
@@ -134,6 +131,13 @@ function scene:createScene( event )
 	rectListener = function(event)
 		scrollView:checkFocusToScrollView(event)
 		if (event.phase == "ended") then
+
+	local headerObjects = headerView.createVorumHeaderObjects(false)
+	headerObjects.leftButton:addEventListener("touch", function(event) print("F") end)
+	local transitionParam = {time = 1000, dir = "left", transition = easing.inOutElastic }
+	local header = headTabFnc.changeHeaderView(headerObjects, transitionParam)
+
+
 			local idx = event.target.parent.idx
 			local origRowHeight = scrollView:getPost(idx).postCurrentHeight
 			if (origRowHeight > 300) then

@@ -57,9 +57,18 @@ function headTabFnc.getHeader()
 	return headerFnc.getHeader()
 end
 
-function headTabFnc.createNewHeader(headerGroup, headerHeight)
-	return headerFnc.createNewHeader(headerGroup, headerHeight, onStatusBarPressedListener)
+function headTabFnc.createNewHeader(bg)
+	return headerFnc.createNewHeader(bg)
 end
+
+function headTabFnc.changeHeaderView(...)
+	arg[#arg + 1] = onStatusBarPressedListener
+	return headerFnc.changeHeaderView(unpack(arg))
+end
+
+-- function headTabFnc.createNewHeader(headerGroup, headerHeight)
+-- 	return headerFnc.createNewHeader(headerGroup, headerHeight, onStatusBarPressedListener)
+-- end
 
 function headTabFnc.getTabbar()
 	return tabbarFnc.getTabbar()
