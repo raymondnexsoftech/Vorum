@@ -93,6 +93,8 @@ function scene:createScene( event )
 		print("request data", tostring(isRequestByReachBottom))
 		if (scrollView:getPostTotal() < 20) then
 			timer.performWithDelay(math.random(500, 2000), function() addElevenPost(scrollView); end)
+		else
+			scrollView:resetDataRequestStatus()
 		end
 	end
 
