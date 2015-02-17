@@ -169,6 +169,15 @@ local function scrollViewListener(event)
 			scrollView.isRequestDataListenerCalled = true
 		end
 	end
+	if ((scrollViewPullDownDistance < 0) and (scrollView.refreshHeader ~= nil)) then
+		local refreshHeader = scrollView.refreshHeader
+		if (refreshHeader.refreshIcon) then
+			refreshHeader.refreshIcon.rotation = 0
+		end
+		refreshHeader.textToPull.alpha = 1
+		refreshHeader.textToRelease.alpha = 0
+		refreshHeader.loadingText.alpha = 0
+	end
 	if (type(scrollView.userListener) == "function") then
 		scrollView.userListener(event)
 	end
