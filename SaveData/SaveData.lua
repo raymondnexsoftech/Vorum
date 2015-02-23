@@ -51,6 +51,9 @@ function saveData.save(...)
 	end
 	baseDir = baseDir or system.DocumentsDirectory
 	data = arg[argIdx]
+	if (type(data) ~= "table") then
+		return false
+	end
 	encryptionKey = arg[argIdx + 1]
 
 	local tempPath = system.pathForFile("", baseDir)
@@ -68,7 +71,7 @@ function saveData.save(...)
 	end
 
 	local filePath = system.pathForFile(path, baseDir)
-	local file = io.open( path, "w" )
+	local file = io.open( filePath, "w" )
 	if (file == nil) then
 		return false
 	end
@@ -101,7 +104,7 @@ function saveData.load(...)
 	local path, baseDir, encryptionKey
 	path = arg[1]
 	local argIdx = 2
-	if (type(arg[argIdx] == "userData")) then
+	if (type(arg[argIdx]) == "userdata") then
 		baseDir = arg[argIdx]
 		argIdx = argIdx + 1
 	end
@@ -109,7 +112,7 @@ function saveData.load(...)
 	encryptionKey = arg[argIdx]
 
 	local filePath = system.pathForFile(path, baseDir)
-	local file = io.open( path, "r" )
+	local file = io.open( filePath, "r" )
 	if (file == nil) then
 		return false
 	end
@@ -120,7 +123,11 @@ function saveData.load(...)
 	local returnData
 	if (encryptionKey) then
 		local key = crypto.digest( crypto.sha256, encryptionKey )
-		returnData = json.decode(cipher:decrypt(mime.unb64(dataFromFile), key))
+		local decryptedData = cipher:decrypt(mime.unb64(dataFromFile), key)
+		if (string.sub(decryptedData, 1, 1) ~= "{") then
+			return false
+		end
+		returnData = json.decode(decryptedData)
 	else
 		returnData = json.decode(dataFromFile)
 	end
