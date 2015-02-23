@@ -7,6 +7,10 @@ settings = {
 		supported = { "portrait" },		-- { "landscapeLeft", "landscapeRight" },
 	},
 
+	plugins =
+	{
+		["plugin.openssl"] = { publisherId = "com.coronalabs", },
+	},
 	
 	iphone = {
 		plist = {
