@@ -73,15 +73,15 @@ function saveData.save(...)
 		return false
 	end
 
-	local dataToStore = {}
-	for k, v in pairs(data) do
-		local typeOfVariable = type(v)
-		if ((typeOfVariable == "function") or (typeOfVariable == "userdata")) then
-			debugLog("The type of data in key \"" .. k .. "\" is \"" .. typeOfVariable .."\", which is not supported in save data. This field will be ignored.")
-		else
-			dataToStore[k] = v
-		end
-	end
+	local dataToStore = data
+	-- for k, v in pairs(data) do
+	-- 	local typeOfVariable = type(v)
+	-- 	if ((typeOfVariable == "function") or (typeOfVariable == "userdata")) then
+	-- 		debugLog("The type of data in key \"" .. k .. "\" is \"" .. typeOfVariable .."\", which is not supported in save data. This field will be ignored.")
+	-- 	else
+	-- 		dataToStore[k] = v
+	-- 	end
+	-- end
 	local dataToFile
 	if (encryptionKey) then
 		local key = crypto.digest( crypto.sha256, encryptionKey )
