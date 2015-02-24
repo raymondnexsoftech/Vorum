@@ -13,7 +13,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
-require ( "DebugUtility.DebugSetting")
+require ( "SystemUtility.DebugSetting")
 
 ---------------------------------------------------------------
 -- Constants

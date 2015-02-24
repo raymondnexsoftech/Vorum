@@ -16,7 +16,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local widget = require ( "widget" )
 
 ---------------------------------------------------------------

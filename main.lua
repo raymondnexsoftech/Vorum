@@ -8,7 +8,7 @@
 -- Require Parts
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 
 ---------------------------------------------------------------
 -- Constants

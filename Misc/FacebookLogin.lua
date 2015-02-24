@@ -1,7 +1,7 @@
 ---------------------------------------------------------------
--- Template.lua
+-- FacebookLogin.lua
 --
--- Template for normal lua
+-- Functions to handle Facebook Login
 ---------------------------------------------------------------
 
 -- uncomment the below code to get the directory of the file
@@ -16,7 +16,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local networkFunction = require("Network.NetworkFunction")
 local json = require("json")
 local localization = require("Localization.Localization")

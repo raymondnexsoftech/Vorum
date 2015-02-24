@@ -17,7 +17,7 @@ local LOCAL_SETTINGS = {
 -- Require Parts
 ---------------------------------------------------------------
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 
 ---------------------------------------------------------------
 -- Constants
