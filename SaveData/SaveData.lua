@@ -17,15 +17,26 @@ local LOCAL_SETTINGS = {
 -- Require Parts
 ---------------------------------------------------------------
 require ( "SystemUtility.Debug" )
+local moduleUtility = require("SystemUtility.ModuleUtility")
+local lfs = require("lfs")
 local json = require("json")
-local openssl = require( "plugin.openssl" )
-local crypto = require( "crypto" )
-local mime = require ( "mime" )
+local openssl, crypto, mime
+if (moduleUtility.checkModuleExist("plugin.openssl")) then
+	openssl = require( "plugin.openssl" )
+	crypto = require( "crypto" )
+	mime = require ( "mime" )
+else
+	debugLog("WARNING: cannot use encryption in save data")
+end
 
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
-local cipher = openssl.get_cipher ( "aes-256-cbc" )
+
+local cipher
+if (openssl) then
+	cipher = openssl.get_cipher ( "aes-256-cbc" )
+end
 
 ---------------------------------------------------------------
 -- Variables
@@ -86,11 +97,11 @@ function saveData.save(...)
 	-- 	end
 	-- end
 	local dataToFile
-	if (encryptionKey) then
+	if ((encryptionKey == nil) or (encryptionKey == "") or (openssl == nil)) then
+		dataToFile = json.encode(dataToStore)
+	else
 		local key = crypto.digest( crypto.sha256, encryptionKey )
 		dataToFile = mime.b64(cipher:encrypt(json.encode(dataToStore), key))
-	else
-		dataToFile = json.encode(dataToStore)
 	end
 	file:write(dataToFile)
 	io.close( file )
@@ -121,15 +132,15 @@ function saveData.load(...)
 	file = nil
 
 	local returnData
-	if (encryptionKey) then
+	if ((encryptionKey == nil) or (encryptionKey == "") or (openssl == nil)) then
+		returnData = json.decode(dataFromFile)
+	else
 		local key = crypto.digest( crypto.sha256, encryptionKey )
 		local decryptedData = cipher:decrypt(mime.unb64(dataFromFile), key)
 		if (string.sub(decryptedData, 1, 1) ~= "{") then
 			return false
 		end
 		returnData = json.decode(decryptedData)
-	else
-		returnData = json.decode(dataFromFile)
 	end
 	return returnData
 end
