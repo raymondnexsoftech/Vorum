@@ -105,10 +105,12 @@ end
 function networkFunction.register(userData, listener)
 	local apiParams = createParamsForApiNumber(1)
 	userData.username = userData.email
-	userData.dob = {}
-	userData.dob["__type"] = "Date"
-	userData.dob.iso = userData.dobString
-	userData.dobString = nil
+	if (userData.dobString) then
+		userData.dob = {}
+		userData.dob["__type"] = "Date"
+		userData.dob.iso = userData.dobString
+		userData.dobString = nil
+	end
 	userData.gender = string.upper(userData.gender)
 	if ((userData.gender ~= "M") and (userData.gender ~= "F")) then
 		userData.gender = nil
