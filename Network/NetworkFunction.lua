@@ -111,9 +111,11 @@ function networkFunction.register(userData, listener)
 		userData.dob.iso = userData.dobString
 		userData.dobString = nil
 	end
-	userData.gender = string.upper(userData.gender)
-	if ((userData.gender ~= "M") and (userData.gender ~= "F")) then
-		userData.gender = nil
+	if (userData.gender ~= nil) then
+		userData.gender = string.upper(userData.gender)
+		if ((userData.gender ~= "M") and (userData.gender ~= "F")) then
+			userData.gender = nil
+		end
 	end
 	if (userData.facebook) then
 		userData.authData = {}
