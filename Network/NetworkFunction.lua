@@ -194,14 +194,47 @@ function networkFunction.fbLinkAccount(accObjId, sessionToken, fbId, fbAccessTok
 	return networkHandler.requestNetwork(apiParams, listener, "linkFB")
 end
 
-function networkFunction.getVorumPost(startDate, postNumber, sessionToken, listener)
+-- function networkFunction.getVorumPost([startDate, ]sessionToken[, postNumber][, tag][, listener])
+function networkFunction.getVorumPost(...)
+	local argIdx = 1
+	local startDate, sessionToken, postNumber, tag, listener
+	if (type(arg[argIdx]) == "number") then
+		startDate = arg[argIdx]
+		argIdx = argIdx + 1
+	end
+	sessionToken = arg[argIdx]
+	argIdx = argIdx + 1
+	if (type(arg[argIdx]) == "number") then
+		postNumber = arg[argIdx]
+		argIdx = argIdx + 1
+	end
+	if (type(arg[argIdx]) == "string") then
+		tag = arg[argIdx]
+		argIdx = argIdx + 1
+	end
+	if (type(arg[argIdx]) == "function") then
+		listener = arg[argIdx]
+		argIdx = argIdx + 1
+	end
 	local apiParams = createParamsForApiNumber(1)
+	local paramsBody = {}
+	if (startDate) then
+		paramsBody.timeStamp = startDate
+	end
+	if (postNumber) then
+		paramsBody.limit = postNumber
+	end	
 	apiParams[1].params = {
 								headers = createVorumNetworkHeader(sessionToken),
+								body = json.encode(paramsBody),
 							}
-	local urlParams = url.escape(string.format("?where={\"user\":{\"__type\":\"Pointer\",\"className\":\"_User\",\"objectId\":\"%s\"},\"createdAt\":{\"$gt\":{\"__type\":\"Date\",\"iso\":\"%s\"}}}&limit=%d", creator, startDate, postNumber))
-	apiParams[1].url = API_CLASS_BASE .. "Post" .. urlParams
+	-- local urlParams = url.escape(string.format("?where={\"user\":{\"__type\":\"Pointer\",\"className\":\"_User\",\"objectId\":\"%s\"},\"createdAt\":{\"$gt\":{\"__type\":\"Date\",\"iso\":\"%s\"}}}&limit=%d", creator, startDate, postNumber))
+	apiParams[1].method = "POST"
+	apiParams[1].url = API_FNC_BASE .. "getPostAndShare"
 	return networkHandler.requestNetwork(apiParams, listener, "getVorumPost")
+	-- local urlParams = url.escape(string.format("?where={\"user\":{\"__type\":\"Pointer\",\"className\":\"_User\",\"objectId\":\"%s\"},\"createdAt\":{\"$gt\":{\"__type\":\"Date\",\"iso\":\"%s\"}}}&limit=%d", creator, startDate, postNumber))
+	-- apiParams[1].url = API_CLASS_BASE .. "Post" .. urlParams
+	-- return networkHandler.requestNetwork(apiParams, listener, "getVorumPost")
 end
 
 function networkFunction.getPostByCreator(creator, startDate, postNumber, sessionToken, listener)
