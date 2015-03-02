@@ -145,4 +145,8 @@ function saveData.load(...)
 	return returnData
 end
 
+function saveData.delete(path, baseDir)
+	return os.remove(system.pathForFile(path, baseDir))
+end
+
 return saveData
