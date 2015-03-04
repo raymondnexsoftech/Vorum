@@ -32,6 +32,7 @@ local API_USER_BASE = "https://api.parse.com/1/users/"
 local API_LOGIN_BASE = "https://api.parse.com/1/login/"
 local API_CLASS_BASE = "https://api.parse.com/1/classes/"
 local API_FNC_BASE = "https://api.parse.com/1/functions/"
+local API_FILE_BASE = "https://api.parse.com/1/files/"
 
 ---------------------------------------------------------------
 -- Variables
@@ -193,6 +194,185 @@ function networkFunction.fbLinkAccount(accObjId, sessionToken, fbId, fbAccessTok
 	apiParams[1].method = "PUT"
 	return networkHandler.requestNetwork(apiParams, listener, "linkFB")
 end
+
+
+---------------------------------------------------------------------------------
+-- Create Post
+---------------------------------------------------------------------------------
+
+
+local POST_PIC_MAX_WIDTH = 640
+local POST_PIC_MAX_HEIGHT = 1136
+local POST_PIC_ASPECT_RATIO = POST_PIC_MAX_WIDTH / POST_PIC_MAX_HEIGHT
+local IMG_SCALE_FOR_SCREEN = display.contentWidth / display.pixelWidth
+local function resizePostPic(photoList)
+	local returnList = {}
+	for k, v in pairs(photoList) do
+		if (type(v) == "table") then
+			local img
+			if (baseDir) then
+				img = display.newImage(v.path, v.baseDir, true)
+			else
+				img = display.newImage(v.path, true)
+			end
+			if (img) then
+				local picScale = 1
+				local picAspectRatio = img.width / img.height
+				if (picAspectRatio >= POST_PIC_ASPECT_RATIO) then
+					picScale = POST_PIC_MAX_WIDTH / img.width
+				else
+					picScale = POST_PIC_MAX_HEIGHT / img.height
+				end
+				if (picScale > 1) then
+					picScale = 1
+				end
+				img.xScale = picScale * IMG_SCALE_FOR_SCREEN
+				img.yScale = picScale * IMG_SCALE_FOR_SCREEN
+				display.save(img, {filename = k .. ".png", baseDir = system.TemporaryDirectory, isFullResolution = true})
+				display.remove(img)
+				returnList[k] = {path = k .. ".png", baseDir = system.TemporaryDirectory}
+			else
+				returnList[k] = {}
+			end
+		end
+	end
+	for k, v in pairs(returnList) do
+		print(k, v)
+	end
+	return returnList
+end
+
+local function filterTable(table, filter)
+	local returnTable = {}
+	for i = 1, #filter do
+		local key = filter[i]
+		returnTable[key] = table[key]
+	end
+	return returnTable
+end
+
+local POST_PIC_TABLE = {"answerPicA", "answerPicB", "answerPicC", "answerPicD", "questionPic"}
+
+-- details of photoList:
+--   isPicResized
+--   questionPic {path[, baseDir]}
+--   answerPicA {path[, baseDir]}
+--   answerPicB {path[, baseDir]}
+--   answerPicC {path[, baseDir]}
+--   answerPicD {path[, baseDir]}
+function networkFunction.uploadPostPic(sessionToken, photoList, listener)
+	local finalPicLoc = {}
+	local uploadErrorList = {}
+	local imgUploadRequestTable = {}
+	local uploadedPicNameInServer = {}
+	local picUploadingCount = 0
+	local filteredPhotoList = filterTable(photoList, POST_PIC_TABLE)
+
+	local function uploadPicListener(event)
+		local keyForTable = event.key
+		local uploadedData
+		if (event[1].isError) then
+			if (event[1].isFileNotFound) then
+				uploadErrorList[#uploadErrorList + 1] = {key = keyForTable, reason = "notFound"}
+			elseif (event.retryTimes >= 3) then
+				uploadErrorList[#uploadErrorList + 1] = {key = keyForTable, reason = "networkError"}
+			else
+				return false
+			end
+		else
+			local response = json.decode(event[1].response)
+			uploadedPicNameInServer[keyForTable] = response.name
+			uploadedData = {key = keyForTable, name = response.name, url = response.url}
+		end
+		picUploadingCount = picUploadingCount - 1
+		if (type(listener) == "function") then
+			if (picUploadingCount == 0) then
+				local returnData = {}
+				returnData.uploadedData = uploadedData
+				if (#uploadErrorList > 0) then
+					returnData.uploadErrorList = uploadErrorList
+				end
+				returnData.isFinished = true
+				listener(returnData)
+			elseif (uploadedData) then
+				local returnData = {}
+				returnData.uploadedData = uploadedData
+				listener(returnData)
+			end
+		end
+	end
+
+	if (isPicResized ~= true) then
+		finalPicLoc = resizePostPic(photoList)
+	else
+		finalPicLoc = photoList
+	end
+	for i = 1, #POST_PIC_TABLE do
+		local key = POST_PIC_TABLE[i]
+		if (finalPicLoc[key]) then
+			if (finalPicLoc[key].path) then
+				local apiParams = createParamsForApiNumber(1)
+				apiParams[1].params = {
+											headers = createVorumNetworkHeader(sessionToken),
+											body = {
+														filename = finalPicLoc[key].path,
+														baseDirectory = finalPicLoc[key].baseDir,
+													},
+										}
+				apiParams[1].params.headers["Content-Type"] = "image/png"
+				apiParams[1].url = API_FILE_BASE .. key .. ".png"
+				apiParams[1].method = "POST"
+				picUploadingCount = picUploadingCount + 1
+				local request = networkHandler.requestNetwork(apiParams, uploadPicListener, key)
+				imgUploadRequestTable[picUploadingCount] = request
+			else
+				uploadErrorList[#uploadErrorList + 1] = {key = key, reason = "notFound"}
+			end
+		end
+	end
+	if (#imgUploadRequestTable > 0) then
+		return imgUploadRequestTable
+	end
+	return nil
+end
+
+local function createTableForParsePic(fileInfo)
+	if (fileInfo) then
+		return {name = fileInfo.name, url = fileInfo.url, ["__type"] = "File"}
+	end
+	return nil
+end
+-- details of photoList:
+--   questionPic (string of "name" return from server)
+--   answerPicA (string of "name" return from server)
+--   answerPicB (string of "name" return from server)
+--   answerPicC (string of "name" return from server)
+--   answerPicD (string of "name" return from server)
+function networkFunction.createPost(userId, sessionToken, postData, photoList, listener)
+	local apiParams = createParamsForApiNumber(1)
+	postData.post_pic = createTableForParsePic(photoList.questionPic)
+	postData.ACL = {
+							[userId] = {read = true, write = true},
+							["*"] = {read = true},
+						}
+	for i = 1, #postData.choices do
+		postData.choices[i].choice_pic = createTableForParsePic(photoList[POST_PIC_TABLE[i]])
+	end
+	apiParams[1].params = {
+								headers = createVorumNetworkHeader(sessionToken),
+								body = json.encode(postData)
+							}
+	print(apiParams[1].params.body)
+	apiParams[1].url = API_FNC_BASE .. "createPost"
+	apiParams[1].method = "POST"
+	return networkHandler.requestNetwork(apiParams, listener, "createPost")
+end
+
+
+---------------------------------------------------------------------------------
+-- 
+---------------------------------------------------------------------------------
+
 
 -- function networkFunction.getVorumPost([startDate, ]sessionToken[, postNumber][, tag][, listener])
 function networkFunction.getVorumPost(...)
