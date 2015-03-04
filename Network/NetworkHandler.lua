@@ -36,6 +36,33 @@ local displayDebugInfo = false	-- default is not display debug info
 ---------------------------------------------------------------
 local networkHandler = {}
 
+local function checkUploadFileExist(networkRequest)
+	if (type(networkRequest.params) == "table") then
+		if (type(networkRequest.params.body) == "table") then
+			local isError = true
+			local fileInfo = networkRequest.params.body
+			local path = system.pathForFile(fileInfo.filename, fileInfo.baseDirectory)
+			if (path) then
+				local file = io.open(path)
+				if (file) then
+					io.close(file)
+					isError = false
+				end
+			end
+			if (isError) then
+				local response = {
+										name = "networkRequest",
+										isError = true,
+										isFileNotFound = true,
+									}
+				timer.performWithDelay(1, networkRequest.listener(response))
+				return false
+			end
+		end
+	end
+	return true
+end
+
 local function suspendAllRequestBySystem()
 	for k, v in pairs(networkHandling) do
 		local networkHandingGroup = v
@@ -66,8 +93,10 @@ local function resumeAllRequestBySystem()
 		for i = 1, #v do
 			local singleNetworkRequest = v[i]
 			if (singleNetworkRequest.status == "suspendedBySystem") then
-				singleNetworkRequest.request = network.request(singleNetworkRequest.url, singleNetworkRequest.method, singleNetworkRequest.listener, singleNetworkRequest.params)
-				singleNetworkRequest.status = "connecting"
+				if (checkUploadFileExist(singleNetworkRequest)) then
+					singleNetworkRequest.request = network.request(singleNetworkRequest.url, singleNetworkRequest.method, singleNetworkRequest.listener, singleNetworkRequest.params)
+					singleNetworkRequest.status = "connecting"
+				end
 			end
 		end
 	end
@@ -99,8 +128,10 @@ function networkHandler.resumeRequest(key)
 		for i = 1, #networkHandlingGroup do
 			local singleNetworkRequest = networkHandlingGroup[i]
 			if (singleNetworkRequest.status == "suspended") then
-				singleNetworkRequest.request = network.request(singleNetworkRequest.url, singleNetworkRequest.method, singleNetworkRequest.listener, singleNetworkRequest.params)
-				singleNetworkRequest.status = "connecting"
+				if (checkUploadFileExist(singleNetworkRequest)) then
+					singleNetworkRequest.request = network.request(singleNetworkRequest.url, singleNetworkRequest.method, singleNetworkRequest.listener, singleNetworkRequest.params)
+					singleNetworkRequest.status = "connecting"
+				end
 			end
 		end
 	end
@@ -142,8 +173,10 @@ local function startNetworkRequest(key)
 		networkHandlingGroup.event = {}
 		for i = 1, #networkHandlingGroup do
 			local singleNetworkRequest = networkHandlingGroup[i]
-			singleNetworkRequest.request = network.request(singleNetworkRequest.url, singleNetworkRequest.method, singleNetworkRequest.listener, singleNetworkRequest.params)
-			singleNetworkRequest.status = "connecting"
+			if (checkUploadFileExist(singleNetworkRequest)) then
+				singleNetworkRequest.request = network.request(singleNetworkRequest.url, singleNetworkRequest.method, singleNetworkRequest.listener, singleNetworkRequest.params)
+				singleNetworkRequest.status = "connecting"
+			end
 		end
 	end
 end
