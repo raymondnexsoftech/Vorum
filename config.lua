@@ -10,6 +10,18 @@ application =
                 xalign = "center",
                 yalign = "center",
     },
+
+    notification = 
+    {
+        iphone =
+        {
+            types = { "badge", "sound", "alert" }
+        },
+        google =
+        {
+            projectNumber = "679562432507"
+        },
+    }
 }
 
 -- local targetDevice = ( system.getInfo( "model" ) ) 

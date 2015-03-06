@@ -33,6 +33,7 @@ local API_LOGIN_BASE = "https://api.parse.com/1/login/"
 local API_CLASS_BASE = "https://api.parse.com/1/classes/"
 local API_FNC_BASE = "https://api.parse.com/1/functions/"
 local API_FILE_BASE = "https://api.parse.com/1/files/"
+local API_PUSH_INSTALL_BASE = "https://api.parse.com/1/installations"
 
 ---------------------------------------------------------------
 -- Variables
@@ -84,6 +85,45 @@ local function createParamsForApiNumber(number)
 	end
 	return apiParams
 end
+
+
+
+
+
+---------------------------------------------------------------------------------
+-- Push Installation
+---------------------------------------------------------------------------------
+
+
+function networkFunction.pushInstallation(deviceToken, listeners)
+	local apiParams = createParamsForApiNumber(1)
+	local body = {}
+	body.deviceToken = deviceToken
+	local deviceOS = system.getInfo("platformName")
+	if (deviceOS == "Android") then
+		body.deviceType = "android"
+		body.pushType = "gcm"
+		body.GCMSenderId = "679562432507"
+	elseif (deviceOS == "iPhone OS") then
+		body.deviceType = "ios"
+	end
+
+	apiParams[1].params = {
+								headers = createVorumNetworkHeader(),
+								body = json.encode(body)
+							}
+	apiParams[1].url = API_PUSH_INSTALL_BASE
+	apiParams[1].method = "POST"
+	return networkHandler.requestNetwork(apiParams, listener, "pushInstallation")
+end
+
+
+
+
+---------------------------------------------------------------------------------
+-- Create Post
+---------------------------------------------------------------------------------
+
 
 -- userData sample:
 -- local userData = {}

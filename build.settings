@@ -135,6 +135,10 @@ settings = {
 	
 	android =
 	{
+        permission =
+        {
+            { name = ".permission.C2D_MESSAGE", protectionLevel = "signature" },
+        },
         usesPermissions =
         {
             -- Required by the MapView to fetch its contents from the Google Maps servers.
@@ -147,6 +151,12 @@ settings = {
             "android.permission.ACCESS_COARSE_LOCATION",
 
             "android.permission.CALL_PHONE",
+
+            "android.permission.WAKE_LOCK",
+            "android.permission.GET_ACCOUNTS",
+            "android.permission.RECEIVE_BOOT_COMPLETED",
+            "com.google.android.c2dm.permission.RECEIVE",
+            ".permission.C2D_MESSAGE",
         },
         usesFeatures =
         {
