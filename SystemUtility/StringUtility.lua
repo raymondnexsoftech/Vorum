@@ -85,6 +85,7 @@ function stringUtility.trimEmoji(str)
 		local returnStr = ""
 		local startCopyLoc
 		local strlen = string.len(str)
+		local isEmojiDetected = false
 		local i = 1
 		while (i <= strlen) do
 			local charByte, size = getUtf8CharByte(str, i)
@@ -93,6 +94,7 @@ function stringUtility.trimEmoji(str)
 				i = i + 1
 			else
 				if (isEmoji(charByte)) then
+					isEmojiDetected = true
 					if (startCopyLoc) then
 						returnStr = returnStr .. string.sub(str, startCopyLoc, i - 1)
 						startCopyLoc = nil
@@ -107,9 +109,9 @@ function stringUtility.trimEmoji(str)
 			returnStr = returnStr .. string.sub(str, startCopyLoc, i - 1)
 			startCopyLoc = nil
 		end
-		return returnStr
+		return returnStr, isEmojiDetected
 	end
-	return ""
+	return "", false
 end
 
 return stringUtility
