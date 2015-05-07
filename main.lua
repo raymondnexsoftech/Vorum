@@ -63,7 +63,7 @@ local function notificationListener( event )
 	if ( event.type == "remote" ) then
 		if (system.getInfo("platformName") == "Android") then
 			if ((event ~= nil) and (event.custom ~= nil) and (event.custom.badge ~= nil)) then
-				updateNoticeBadge(badgeNum)
+				updateNoticeBadge(tonumber(event.custom.badge))
 			end
 		else
 			if (event.badge) then
