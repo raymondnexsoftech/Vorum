@@ -198,12 +198,12 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headerObjects.title = display.newText(headerObjects.title)
 	
 
-	if(headerObjects.title.width > 460)then
+	if(headerObjects.title.width > 320)then
 		display.remove(headerObjects.title)
 		headerObjects.title = {
 			text = memberData.name, 
-			width = 460,
-			height = 0, 
+			width = 320,
+			height = 50, 
 			font = "Helvetica", 
 			fontSize=40
 		}
