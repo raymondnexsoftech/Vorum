@@ -16,6 +16,8 @@ local json = require( "json" )
 local loginFnc = require("Module.loginFnc")
 local localization = require("Localization.Localization")
 local notifications = require( "plugin.notifications" )
+local headTabFnc = require( "ProjectObject.HeadTabFnc" )
+local noticeBadge = require("ProjectObject.NoticeBadge")
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
 -- Constants
@@ -42,35 +44,50 @@ local function onSceneTransitionKeyEvent(event)
 end
 Runtime:addEventListener( "key", onSceneTransitionKeyEvent )
 
+-- Notification
+local function updateNoticeBadge(customBadgeNum)
+	local badgeNum
+	if (customBadgeNum) then
+		badgeNum = customBadgeNum
+	else
+		badgeNum = native.getProperty("applicationIconBadgeNumber")
+	end
+	if (badgeNum == nil) then
+		badgeNum = 0
+	end
+	tabbar = headTabFnc.getTabbar()
+	noticeBadge.setBadge(tabbar, badgeNum)
+end
 
 local function notificationListener( event )
 	if ( event.type == "remote" ) then
-		for k, v in pairs(event) do
-			if (k == "custom") then
-				print(k .. ":")
-				for k2, v2 in pairs(v) do
-					print(" ", k2, v2)
-				end
-			else
-				print(k, v)
+		if (system.getInfo("platformName") == "Android") then
+			if ((event ~= nil) and (event.custom ~= nil) and (event.custom.badge ~= nil)) then
+				updateNoticeBadge(badgeNum)
 			end
+		else
+			if (event.badge) then
+				native.setProperty("applicationIconBadgeNumber", event.badge)
+				native.setProperty("applicationIconBadgeNumber", event.badge)
+			end
+			updateNoticeBadge()
 		end
-		storyboard.gotoScene("Scene.NoticeTabScene")
+		-- for k, v in pairs(event) do
+		-- 	if (k == "custom") then
+		-- 		print(k .. ":")
+		-- 		for k2, v2 in pairs(v) do
+		-- 			print(" ", k2, v2)
+		-- 		end
+		-- 	else
+		-- 		print(k, v)
+		-- 	end
+		-- end
 		--handle the push notification
 	elseif ( event.type == "remoteRegistration" ) then
-		print("reg push:", tostring(event.token))
+		-- print("reg push:", tostring(event.token))
 		
-		local function pushInstallationListener(event)
-			if (event.isError) then
-				return false
-			else
-				print(event.response)
-			end
-		end
-
 		local deviceToken = event.token
 		networkFunction.setPushDeviceToken(deviceToken)
-		--networkFunction.pushInstallation(deviceToken, pushInstallationListener)
 
 	elseif ( event.type == "local" ) then
 	--handle the local notification
@@ -79,6 +96,19 @@ end
 
 --The notification Runtime listener should be handled from within "main.lua"
 Runtime:addEventListener( "notification", notificationListener )
+
+-- Check Badge Listener
+local function onSystemEventCheckBadge(event)
+--	print( "System event name and type: " .. event.name, event.type )
+	if (event.type == "applicationStart") then
+	elseif (event.type == "applicationExit") then
+	elseif (event.type == "applicationSuspend") then
+	elseif (event.type == "applicationResume") then
+		notifications.cancelNotification()
+		updateNoticeBadge()
+	end
+end
+Runtime:addEventListener( "system", onSystemEventCheckBadge )
 
 if ( launchArgs and launchArgs.notification ) then
 
@@ -101,7 +131,7 @@ if ( launchArgs and launchArgs.notification ) then
 	end
 
 	notificationListener( launchArgs.notification )
-
+	storyboard.gotoScene("Scene.NoticeTabScene")
 end
 
 
