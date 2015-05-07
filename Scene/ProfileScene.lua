@@ -191,7 +191,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headerObjects.title = {
 		text = memberData.name, 
 		width = 0,
-		height = 46, 
+		height = 0, 
 		font = "Helvetica", 
 		fontSize=40
 	}
@@ -203,7 +203,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 		headerObjects.title = {
 			text = memberData.name, 
 			width = 460,
-			height = 46, 
+			height = 0, 
 			font = "Helvetica", 
 			fontSize=40
 		}
