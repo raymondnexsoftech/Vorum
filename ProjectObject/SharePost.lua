@@ -55,7 +55,7 @@ function sharePost.byWhatsapp(title, description)
 	if (description) then
 		shareSentences = shareSentences .. "\n" .. description
 	end
-	shareSentences = shareSentences .. "\n" .. localization.getLocalization("sharePostSentence2")
+	shareSentences = shareSentences .. "\n\n" .. localization.getLocalization("sharePostSentence2")
 	system.openURL("whatsapp://send?text=" .. url.escape(shareSentences))
 end
 

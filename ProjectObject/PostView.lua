@@ -109,9 +109,9 @@ local CHOICE_PIC_SIZE_AND_POS = {
 										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT * 2, x = CHOICE_PIC_WIDTH * 1.5, y = CHOICE_PIC_HEIGHT},
 									},
 									{
-										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT, x = CHOICE_PIC_WIDTH * 0.5, y = CHOICE_PIC_HEIGHT * 0.5},
-										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT, x = CHOICE_PIC_WIDTH * 0.5, y = CHOICE_PIC_HEIGHT * 1.5},
-										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT * 2, x = CHOICE_PIC_WIDTH * 1.5, y = CHOICE_PIC_HEIGHT},
+										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT * 2, x = CHOICE_PIC_WIDTH * 0.5, y = CHOICE_PIC_HEIGHT},
+										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT, x = CHOICE_PIC_WIDTH * 1.5, y = CHOICE_PIC_HEIGHT * 0.5},
+										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT, x = CHOICE_PIC_WIDTH * 1.5, y = CHOICE_PIC_HEIGHT * 1.5},
 									},
 									{
 										{width = CHOICE_PIC_WIDTH, height = CHOICE_PIC_HEIGHT, x = CHOICE_PIC_WIDTH * 0.5, y = CHOICE_PIC_HEIGHT * 0.5},
