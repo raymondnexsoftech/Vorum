@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "SystemUtility.Debug" )
+require ( "DebugUtility.Debug" )
 
 ---------------------------------------------------------------
 -- Constants

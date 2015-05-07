@@ -114,4 +114,10 @@ function stringUtility.trimEmoji(str)
 	return "", false
 end
 
+function stringUtility.trimStringSpace(str)
+	local returnStr = string.gsub(str, "^%s+", "")
+	returnStr = string.gsub(returnStr, "%s+$", "")
+	return returnStr
+end
+
 return stringUtility

@@ -160,6 +160,10 @@ function geolocationUtility.getCountryByCurrentLocation(listener)
 			if (listener) then
 				listener({isGPSError = true})
 			end
+		elseif ((event.latitude == nil) or (event.longitude == nil)) then
+			if (listener) then
+				listener({isGPSError = true})
+			end
 		else
 			local url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" .. tostring(event.latitude) .. "," .. tostring(event.longitude)
 			local method = "GET"

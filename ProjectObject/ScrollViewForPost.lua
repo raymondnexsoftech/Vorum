@@ -25,13 +25,13 @@ local widget = require ( "widget" )
 local DEFAULT_POST_SPACE = 10
 local DEFAULT_CHANGE_HEIGHT_TIME = 100
 local LAST_N_POST_TO_REQUEST_DATA = 3
-local DEFAULT_REFRESH_HEIGHT = 50
-local DEFAULT_TEXT_SIZE = 20
+local DEFAULT_REFRESH_HEIGHT = 50 * (display.contentWidth / 320)
+local DEFAULT_TEXT_SIZE = 15 * (display.contentWidth / 320)
+local DEFAULT_VERTICAL_PADDING_FOR_REFRESH_ICON = 10 * (display.contentWidth / 320)
+local DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ = 30 * (display.contentWidth / 320)
 local DEFAULT_TEXT_TO_PULL = "Pull to refresh"
 local DEFAULT_TEXT_TO_RELEASE = "Release to reload"
 local DEFAULT_LOADING_TEXT = "Reloading..."
-local DEFAULT_VERTICAL_PADDING_FOR_REFRESH_ICON = 5
-local DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ = 30
 local DEFAULT_REFRESH_ICON_MAX_ROTATION = 360
 
 local DEFAULT_REFRESH_START_OFFSET = DEFAULT_VERTICAL_PADDING_FOR_REFRESH_ICON * 2
@@ -104,10 +104,10 @@ local function scrollViewListener(event)
 	if (event.limitReached) then
 		scrollView:getView()._velocity = 0
 		if (event.direction == "up") then
-			scrollView.isRequestDataListenerCalled = true
 			if ((type(scrollView.requestDataListener) == "function") and (scrollView.isRequestDataListenerCalled ~= true)) then
 				scrollView.requestDataListener(scrollView, true)
 			end
+			scrollView.isRequestDataListenerCalled = true
 		end
 	elseif ((scrollViewPullDownDistance > 0) and (scrollView.refreshHeader ~= nil)) then
 		local refreshHeader = scrollView.refreshHeader
@@ -174,7 +174,7 @@ local function scrollViewListener(event)
 		if (refreshHeader.refreshIcon) then
 			refreshHeader.refreshIcon.rotation = 0
 		end
-		refreshHeader.textToPull.alpha = 1
+		refreshHeader.textToPull.alpha = 0
 		refreshHeader.textToRelease.alpha = 0
 		refreshHeader.loadingText.alpha = 0
 	end
@@ -192,7 +192,7 @@ local function createRefreshHeaderString(parent, inputFromUser, defaultStr)
 
 	if (type(inputFromUser) == "table") then
 		if (inputFromUser.parent == nil) then
-			textObj = display.newText(parent, defaultStr, 0, 0, native.systemFont, DEFAULT_TEXT_SIZE)
+			textObj = display.newText(parent, defaultStr, 0, 0, "Helvetica", DEFAULT_TEXT_SIZE)
 			textObj:setFillColor(0)
 		else
 			textObj = inputFromUser
@@ -200,14 +200,14 @@ local function createRefreshHeaderString(parent, inputFromUser, defaultStr)
 		end
 	elseif (type(inputFromUser) == "string") then
 		if (inputFromUser ~= "") then
-			textObj = display.newText(parent, inputFromUser, 0, 0, native.systemFont, DEFAULT_TEXT_SIZE)
+			textObj = display.newText(parent, inputFromUser, 0, 0, "Helvetica", DEFAULT_TEXT_SIZE)
 			textObj:setFillColor(0)
 		else
-			textObj = display.newText(parent, defaultStr, 0, 0, native.systemFont, DEFAULT_TEXT_SIZE)
+			textObj = display.newText(parent, defaultStr, 0, 0, "Helvetica", DEFAULT_TEXT_SIZE)
 			textObj:setFillColor(0)
 		end
 	else
-		textObj = display.newText(parent, defaultStr, 0, 0, native.systemFont, DEFAULT_TEXT_SIZE)
+		textObj = display.newText(parent, defaultStr, 0, 0, "Helvetica", DEFAULT_TEXT_SIZE)
 		textObj:setFillColor(0)
 	end
 	textObj.alpha = 0
@@ -314,6 +314,9 @@ function scrollViewForPost.newScrollView(options)
 			end
 			refreshHeader.headerHeight = refreshHeaderHeight
 			refreshHeader.y = -refreshHeaderHeight
+			if (refreshHeaderOption.yOffset) then
+				refreshHeader.y = refreshHeader.y + refreshHeaderOption.yOffset
+			end
 			local textToPull = createRefreshHeaderString(refreshHeader, refreshHeaderOption.textToPull, DEFAULT_TEXT_TO_PULL)
 			local textToRelease = createRefreshHeaderString(refreshHeader, refreshHeaderOption.textToRelease, DEFAULT_TEXT_TO_RELEASE)
 			local loadingText = createRefreshHeaderString(refreshHeader, refreshHeaderOption.loadingText, DEFAULT_LOADING_TEXT)
@@ -338,22 +341,22 @@ function scrollViewForPost.newScrollView(options)
 				if ((type(refreshHeaderOption.iconMaxRotation) == "number") and (refreshHeaderOption.iconMaxRotation > 0)) then
 					refreshIcon.maxRotation = refreshHeaderOption.iconMaxRotation
 				end
-				local iconRatio = (refreshHeaderHeight - DEFAULT_VERTICAL_PADDING_FOR_REFRESH_ICON * 2) / refreshIcon.contentHeight
+				local iconRatio = (refreshHeaderHeight - DEFAULT_VERTICAL_PADDING_FOR_REFRESH_ICON * 2) / refreshIcon.height
 				refreshIcon.xScale = iconRatio
 				refreshIcon.yScale = iconRatio
 				refreshIcon.anchorX = 0.5
 				refreshIcon.anchorY = 0.5
 				refreshIcon.y = refreshHeaderHeight * 0.5
 				refreshHeader:insert(refreshIcon)
-				local maxRefreshHeaderWidth = DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ * 3 + refreshIcon.width + maxTextWidth
+				local maxRefreshHeaderWidth = DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ * 3 + refreshIcon.contentWidth + maxTextWidth
 				if (maxRefreshHeaderWidth > options.width) then
-					refreshIcon.x = DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ + refreshIcon.width * 0.5
-					textStartX = DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ * 2 + refreshIcon.width
+					refreshIcon.x = DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ + refreshIcon.contentWidth * 0.5
+					textStartX = DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ * 2 + refreshIcon.contentWidth
 					textMaxWidth = options.width - textStartX - DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ
 				else
 					refreshIcon.x = (options.width - (DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ + maxTextWidth)) * 0.5 
-					textStartX = refreshIcon.x + DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ + refreshIcon.width * 0.5
-					textMaxWidth = options.width - textStartX - refreshIcon.x + refreshIcon.width * 0.5
+					textStartX = refreshIcon.x + DEFAULT_SPACE_FOR_REFRESH_HEADER_OBJ + refreshIcon.contentWidth * 0.5
+					textMaxWidth = options.width - textStartX - refreshIcon.x + refreshIcon.contentWidth * 0.5
 				end
 			end
 			setRefreshHeaderTextPos(textToPull, textStartX, textMaxWidth, refreshHeaderHeight * 0.5)
@@ -392,7 +395,7 @@ function scrollViewForPost.newScrollView(options)
 		end
 		if ((headView ~= nil) and (height >= 0)) then
 			self.headView = headView
-			headView.y = 0
+			--headView.y = 0
 			self:insert(headView)
 		else
 			self.headView = nil
@@ -455,17 +458,20 @@ function scrollViewForPost.newScrollView(options)
 		if (event.phase == "began") then
 			if (self:getView()._velocity ~= 0) then
 				self:takeFocus(event)
+				return true
 			end
 		end
 		if (touchDisp ~= nil) then
 			if (touchDisp > 10) then
-				if (math.abs(event.yStart - event.y) < 5) then
+				if (math.abs(event.yStart - event.y) < 10) then
 					event.target.isNotVerticalScroll = true
 				else
 					self:takeFocus(event)
+					return true
 				end
 			end
 		end
+		return false
 	end
 
 	-- scrollView:changePostHeight(postIdx, newHeight, [transitionTime], [changeHeightCompleteListener])
@@ -542,7 +548,7 @@ function scrollViewForPost.newScrollView(options)
 		}
 	end
 
-	function scrollView:resetDataRequestStatus()
+	function scrollView:resetDataRequestStatus(isScrollToCorrectPos)
 		local refreshHeader = self.refreshHeader
 		if (refreshHeader) then
 			if (refreshHeader.refreshIcon) then
@@ -552,6 +558,12 @@ function scrollViewForPost.newScrollView(options)
 			refreshHeader.textToRelease.alpha = 0
 			refreshHeader.loadingText.alpha = 0
 			self:getView()._topPadding = self.origTopPadding
+			if ((isScrollToCorrectPos == true) and (self:getContentPosition() < self.origTopPadding)) then
+				self:scrollToPosition{
+					y = -self.origTopPadding,
+					time = 1,
+				}
+			end
 		end
 		self.isReloadDataListenerCalled = false
 		self.isRequestDataListenerCalled = false

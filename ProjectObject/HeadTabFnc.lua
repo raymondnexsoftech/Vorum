@@ -103,6 +103,10 @@ function headTabFnc.setTabbarCanHide(canHide)
 	end
 end
 
+function headTabFnc.updateTabbarText(index, newText)
+	tabbarFnc.updateTabbarText(index, newText)
+end
+
 function headTabFnc.setTransitionTime(time)
 	transitionTime = time
 end

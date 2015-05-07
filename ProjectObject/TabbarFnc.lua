@@ -92,4 +92,10 @@ function tabbarFnc.moveTabbar(offsetInPercentage, transitionTime)
 	end
 end
 
+function tabbarFnc.updateTabbarText(index, newText)
+	if (tabbarObject.parent) then
+		tabbarObject._view._tabs[index].label.text = newText
+	end
+end
+
 return tabbarFnc

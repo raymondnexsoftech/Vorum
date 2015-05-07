@@ -21,6 +21,8 @@ require ( "SystemUtility.Debug" )
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
+local PIE_CHART_SLICE_MAX_ANGLE = 120
+local MAX_ANGLE_TO_PERCENTAGE = math.floor(PIE_CHART_SLICE_MAX_ANGLE * 100 / 360)
 
 ---------------------------------------------------------------
 -- Variables
@@ -78,88 +80,167 @@ local pieChart = {}
 -- 	maskGroup:removeSelf();
 -- end
 
-pieChart.create = function(data)
-	-- local snapshot = display.newSnapshot(data.radius * 2 + 10, data.radius * 2 + 10);
-	-- local group = snapshot.group
-	local group = display.newGroup()
+-- pieChart.create = function(data)
+-- 	-- local snapshot = display.newSnapshot(data.radius * 2 + 10, data.radius * 2 + 10);
+-- 	-- local group = snapshot.group
+-- 	local group = display.newGroup()
 
-	local brush = { type="image", filename="Image/brush.png"};
+-- 	local brush = { type="image", filename="Image/PieChart/brush.png"};
 
-	local values = data.values;
-	local mSin, mCos = math.sin, math.cos;
-	local toRad = math.pi/180;
-	local currAngle = -90;
-	local strokesSlices = {};
+-- 	local values = data.values;
+-- 	local mSin, mCos = math.sin, math.cos;
+-- 	local toRad = math.pi/180;
+-- 	local currAngle = -90;
+-- 	local strokesSlices = {};
 
-	for i = #values, 1, -1 do
-	if values[i].percentage <= 0 then
-		table.remove(values, i);
-	elseif values[i].percentage == 100 then
-		values[i].percentage = 99.9;
-	end
-	end
+-- 	for i = #values, 1, -1 do
+-- 	if values[i].percentage <= 0 then
+-- 		table.remove(values, i);
+-- 	elseif values[i].percentage == 100 then
+-- 		values[i].percentage = 99.9;
+-- 	end
+-- 	end
 
-	for i = 1, #values do
-	local newAngle = values[i].percentage*360*0.01;
-	local midAngle1, midAngle2;
-	local shape;
+-- 	for i = 1, #values do
+-- 	local newAngle = values[i].percentage*360*0.01;
+-- 	local midAngle1, midAngle2;
+-- 	local shape;
 
-	if newAngle > 180 then
-		newAngle = currAngle+newAngle;
-		midAngle1 = currAngle+(newAngle-180-currAngle)*.5;
-		midAngle2 = midAngle1+(newAngle-90-midAngle1)*.5;
-		midAngle3 = midAngle2+(newAngle-90-midAngle2)*.5;
-		midAngle4 = midAngle3+(newAngle-midAngle3)*.5;
-		shape = {0, 0, mCos(currAngle*toRad)*data.radius*2, mSin(currAngle*toRad)*data.radius*2, mCos(midAngle1*toRad)*data.radius*2, mSin(midAngle1*toRad)*data.radius*2, mCos(midAngle2*toRad)*data.radius*2, mSin(midAngle2*toRad)*data.radius*2, 
-			mCos(midAngle3*toRad)*data.radius*2, mSin(midAngle3*toRad)*data.radius*2, mCos(midAngle4*toRad)*data.radius*2, mSin(midAngle4*toRad)*data.radius*2, mCos(newAngle*toRad)*data.radius*2, mSin(newAngle*toRad)*data.radius*2};
-	else
-		newAngle = currAngle+newAngle;
-		midAngle1 = currAngle+(newAngle-currAngle)*.5;
-		shape = {0, 0, mCos(currAngle*toRad)*data.radius*2, mSin(currAngle*toRad)*data.radius*2, mCos(midAngle1*toRad)*data.radius*2, mSin(midAngle1*toRad)*data.radius*2, mCos(newAngle*toRad)*data.radius*2, mSin(newAngle*toRad)*data.radius*2};
-	end
-	currAngle = newAngle;
+-- 	if newAngle > 180 then
+-- 		newAngle = currAngle+newAngle;
+-- 		midAngle1 = currAngle+(newAngle-180-currAngle)*.5;
+-- 		midAngle2 = midAngle1+(newAngle-90-midAngle1)*.5;
+-- 		midAngle3 = midAngle2+(newAngle-90-midAngle2)*.5;
+-- 		midAngle4 = midAngle3+(newAngle-midAngle3)*.5;
+-- 		shape = {0, 0, mCos(currAngle*toRad)*data.radius*2, mSin(currAngle*toRad)*data.radius*2, mCos(midAngle1*toRad)*data.radius*2, mSin(midAngle1*toRad)*data.radius*2, mCos(midAngle2*toRad)*data.radius*2, mSin(midAngle2*toRad)*data.radius*2, 
+-- 			mCos(midAngle3*toRad)*data.radius*2, mSin(midAngle3*toRad)*data.radius*2, mCos(midAngle4*toRad)*data.radius*2, mSin(midAngle4*toRad)*data.radius*2, mCos(newAngle*toRad)*data.radius*2, mSin(newAngle*toRad)*data.radius*2};
+-- 	else
+-- 		newAngle = currAngle+newAngle;
+-- 		midAngle1 = currAngle+(newAngle-currAngle)*.5;
+-- 		shape = {0, 0, mCos(currAngle*toRad)*data.radius*2, mSin(currAngle*toRad)*data.radius*2, mCos(midAngle1*toRad)*data.radius*2, mSin(midAngle1*toRad)*data.radius*2, mCos(newAngle*toRad)*data.radius*2, mSin(newAngle*toRad)*data.radius*2};
+-- 	end
+-- 	currAngle = newAngle;
 
-	local slice = display.newPolygon(0, 0, shape);
-	group:insert(slice)
+-- 	local slice = display.newPolygon(0, 0, shape);
+-- 	group:insert(slice)
 
-	slice:setFillColor(unpack(values[i].color));
-	slice.stroke = brush;
-	slice.strokeWidth = 2;
-	slice:setStrokeColor(unpack(values[i].color));
+-- 	slice:setFillColor(unpack(values[i].color));
+-- 	slice.stroke = brush;
+-- 	-- slice.strokeWidth = 2;
+-- 	-- slice:setStrokeColor(unpack(values[i].color));
+-- 	slice.strokeWidth = 3;
+-- 	slice:setStrokeColor(81/255,81/255,81/255);
 
-	local lowerPointX, higherPointX, lowerPointY, higherPointY = 10000, -10000, 10000, -10000;
-	for i = 1, #shape, 2 do
-		if shape[i] < lowerPointX then
-			lowerPointX = shape[i];
-		end
-		if shape[i] > higherPointX then
-			higherPointX = shape[i];
-		end
-		if shape[i+1] < lowerPointY then
-			lowerPointY = shape[i+1];
-		end
-		if shape[i+1] > higherPointY then
-			higherPointY = shape[i+1];
-		end
-	end
+-- 	local lowerPointX, higherPointX, lowerPointY, higherPointY = 10000, -10000, 10000, -10000;
+-- 	for i = 1, #shape, 2 do
+-- 		if shape[i] < lowerPointX then
+-- 			lowerPointX = shape[i];
+-- 		end
+-- 		if shape[i] > higherPointX then
+-- 			higherPointX = shape[i];
+-- 		end
+-- 		if shape[i+1] < lowerPointY then
+-- 			lowerPointY = shape[i+1];
+-- 		end
+-- 		if shape[i+1] > higherPointY then
+-- 			higherPointY = shape[i+1];
+-- 		end
+-- 	end
 
-	slice.x = lowerPointX+(higherPointX-lowerPointX)*.5;
-	slice.y = lowerPointY+(higherPointY-lowerPointY)*.5;
-	end
+-- 	slice.x = lowerPointX+(higherPointX-lowerPointX)*.5;
+-- 	slice.y = lowerPointY+(higherPointY-lowerPointY)*.5;
+-- 	end
 
+-- 	if (data.mask) then
+-- 		local mask = graphics.newMask(data.mask.path, data.mask.baseDir)
+-- 		group:setMask(mask)
+-- 	else
+-- 		local circle = display.newCircle(0, 0, data.radius)
+-- 		circle.stroke = brush;
+-- 		circle.strokeWidth = 2;
+-- 		applyMaskFromPolygon(group, circle);
+-- 	end
+
+-- 	return group
+-- 	-- snapshot:invalidate()
+-- 	-- return snapshot;
+-- end
+
+function pieChart.create(data)
+	local radius = data.radius
+	local pieChartData = data.values
+	local transitionTime = data.time
+	local easing = data.transition
+
+	-- local pieChartSliceVertexX = radius * PIE_CHART_SLICE_VERTEX_X_CONST
+	local pieChartGroup = display.newGroup()
 	if (data.mask) then
 		local mask = graphics.newMask(data.mask.path, data.mask.baseDir)
-		group:setMask(mask)
-	else
-		local circle = display.newCircle(0, 0, data.radius)
-		circle.stroke = brush;
-		circle.strokeWidth = 2;
-		applyMaskFromPolygon(group, circle);
+		pieChartGroup:setMask(mask)
 	end
 
-	return group
-	-- snapshot:invalidate()
-	-- return snapshot;
+	local cumulativeAngle = 0
+
+	local count = 0
+	local lastPieChartSlice
+	local lastPieChartSliceAngle = 0
+	local pieChartSliceStrokeList = {}
+	for i = 1, #pieChartData do
+		local curDataRemainPercent = pieChartData[i].percentage
+		while(curDataRemainPercent > 0) do
+			local pieChartSliceStroke
+			local pieChartSliceX3Pos, pieChartSliceY3Pos
+			local angleToProcess
+			local pieChartSliceVertexX
+			if (curDataRemainPercent > MAX_ANGLE_TO_PERCENTAGE) then
+				curDataRemainPercent = curDataRemainPercent - 25
+				angleToProcess = 90
+				pieChartSliceX3Pos = 0
+				pieChartSliceY3Pos = 0
+				pieChartSliceVertexX = radius
+			else
+				local pieChartSliceRadian = curDataRemainPercent * math.pi / 50
+				angleToProcess = curDataRemainPercent * 3.6
+				pieChartSliceVertexX = radius * math.abs(math.tan(angleToProcess * math.pi / 360))
+				pieChartSliceX3Pos = radius * math.sin(pieChartSliceRadian) - pieChartSliceVertexX
+				pieChartSliceY3Pos = radius * (-math.cos(pieChartSliceRadian))
+				curDataRemainPercent = 0
+				pieChartSliceStroke = display.newLine(pieChartGroup, 0, 0, 0, -radius)
+				pieChartSliceStroke.strokeWidth = 3
+				pieChartSliceStroke:setStrokeColor(81/255,81/255,81/255)
+				pieChartSliceStrokeList[#pieChartSliceStrokeList + 1] = pieChartSliceStroke
+			end
+			local pieChartSlice = display.newRect(pieChartGroup, 0, 0, pieChartSliceVertexX, radius)
+			pieChartSlice.anchorX = 0
+			pieChartSlice.anchorY = 1
+			pieChartSlice:setFillColor(unpack(pieChartData[i].color))
+			if ((transitionTime ~= nil) and (transitionTime > 0)) then
+				if (pieChartSliceStroke) then
+					transition.to(pieChartSliceStroke, {rotation = cumulativeAngle + angleToProcess, time = transitionTime, transition = easing})
+				end
+				pieChartSlice.path.x3 = -pieChartSliceVertexX
+				pieChartSlice.path.y3 = -radius
+				transition.to(pieChartSlice, {rotation = cumulativeAngle, time = transitionTime, transition = easing})
+				transition.to(pieChartSlice.path, {x3 = pieChartSliceX3Pos, y3 = pieChartSliceY3Pos, time = transitionTime * 0.8, transition = easing})
+			else
+				if (pieChartSliceStroke) then
+					pieChartSliceStroke.rotation = cumulativeAngle + angleToProcess
+				end
+				pieChartSlice.rotation = cumulativeAngle
+				pieChartSlice.path.x3 = pieChartSliceX3Pos
+				pieChartSlice.path.y3 = pieChartSliceY3Pos
+			end
+			cumulativeAngle = cumulativeAngle + angleToProcess
+			lastPieChartSlice = pieChartSlice
+			lastPieChartSliceAngle = angleToProcess
+		end
+	end
+	for i = 1, #pieChartSliceStrokeList do
+		pieChartSliceStrokeList[i]:toFront()
+	end
+	pieChartSliceStrokeList = nil
+
+	return pieChartGroup
 end
 
 return pieChart

@@ -16,7 +16,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
-require ( "SystemUtility.Debug" )
+require ( "DebugUtility.Debug" )
 
 ---------------------------------------------------------------
 -- Constants
@@ -37,12 +37,14 @@ local headerTitle
 local headerMask
 local newHeaderMask
 local transitionLockCount = 0
+local subHeader
 
 
 
 local headerDisplayObject
 local headerObject
 local isHeaderBtnEnable = true
+local onHeaderPressedListener
 local onStatusBarPressedListener
 
 ---------------------------------------------------------------
@@ -54,33 +56,52 @@ local onStatusBarPressedListener
 ---------------------------------------------------------------
 local headerFnc = {}
 
-local function headerTouchListener(event)
-	if (event.phase == "began") then
-		if (event.y < headerBase.statusBarHeight) then
-			event.target.isStatusBarPressed = true
-			display.getCurrentStage():setFocus(event.target)
-		end
-		return true
-	elseif (event.target.isStatusBarPressed) then
-		if (event.phase == "ended") then
-			if (event.y < headerBase.statusBarHeight) then
-				if (type(onStatusBarPressedListener) == "function") then
-					onStatusBarPressedListener()
-				end
-			end
-			display.getCurrentStage():setFocus(nil)
-			event.target.isStatusBarPressed = false
-		elseif (event.phase == "cancelled") then
-			display.getCurrentStage():setFocus(nil)
-			event.target.isStatusBarPressed = false
-		end
-		return true
-	end
+local function headerMaskingTouchListener(event)
+	-- if (event.phase == "began") then
+	-- 	if (event.y < headerBase.statusBarHeight) then
+	-- 		event.target.isStatusBarPressed = true
+	-- 		display.getCurrentStage():setFocus(event.target)
+	-- 	end
+	-- 	-- return true
+	-- elseif (event.target.isStatusBarPressed) then
+	-- 	if (event.phase == "ended") then
+	-- 		if (event.y < headerBase.statusBarHeight) then
+	-- 			if (type(onStatusBarPressedListener) == "function") then
+	-- 				onStatusBarPressedListener()
+	-- 			end
+	-- 		end
+	-- 		display.getCurrentStage():setFocus(nil)
+	-- 		event.target.isStatusBarPressed = false
+	-- 	elseif (event.phase == "cancelled") then
+	-- 		display.getCurrentStage():setFocus(nil)
+	-- 		event.target.isStatusBarPressed = false
+	-- 	end
+	-- 	return true
+	-- end
 	if ((isHeaderBtnEnable ~= true) or (transitionLockCount > 0)) then
 		return true
 	elseif (headerBase.y < 0) then
 		return true
 	end
+end
+
+local function headerBgTouchListener(event)
+	if (event.phase == "began") then
+		display.getCurrentStage():setFocus(event.target)
+		event.target.isHeaderBgPressed = true
+	elseif (event.target.isHeaderBgPressed) then
+		if (event.phase == "ended") then
+			if (type(onHeaderPressedListener) == "function") then
+				onHeaderPressedListener()
+			end
+			display.getCurrentStage():setFocus(nil)
+			event.target.isHeaderBgPressed = false
+		elseif (event.phase == "cancelled") then
+			display.getCurrentStage():setFocus(nil)
+			event.target.isHeaderBgPressed = false
+		end
+	end
+	return true
 end
 
 function headerFnc.createNewHeader(bg)
@@ -100,6 +121,7 @@ function headerFnc.createNewHeader(bg)
 	end
 	headerBase = display.newGroup()
 	headerBase:insert(bg)
+	bg:addEventListener("touch", headerBgTouchListener)
 	headerBase.headerHeight = bg.contentHeight
 	headerBase.statusBarHeight = display.topStatusBarContentHeight
 	headerView = display.newGroup()
@@ -109,7 +131,7 @@ function headerFnc.createNewHeader(bg)
 	headerMask.anchorY = 0
 	headerMask.alpha = 0
 	headerMask.isHitTestable = true
-	headerMask:addEventListener("touch", headerTouchListener)
+	headerMask:addEventListener("touch", headerMaskingTouchListener)
 	return true
 end
 
@@ -259,6 +281,11 @@ function headerFnc.changeHeaderView(...)
 		argIdx = argIdx + 1
 	end
 	onStatusBarPressedListenerCallBack = arg[argIdx]
+onHeaderPressedListener = onStatusBarPressedListenerCallBack
+	if (subHeader) then
+		display.remove(subHeader)
+		subHeader = nil
+	end
 	if (headerObjects.leftButton) then
 		headerObjects.leftButton.anchorX = 0
 		headerObjects.leftButton.anchorY = 1
@@ -287,6 +314,11 @@ function headerFnc.changeHeaderView(...)
 		headerObjects.bg.y = 0
 		headerView:insert(headerObjects.bg)
 		headerObjects.bg:toBack()
+	end
+	if (headerObjects.subHeader) then
+		subHeader = headerObjects.subHeader
+		headerBase:insert(headerObjects.subHeader)
+		headerObjects.subHeader.y = headerObjects.subHeader.y + headerBase.height
 	end
 	local objectOffset = 0
 	if (type(transitionParams) == "table") then

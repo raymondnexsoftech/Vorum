@@ -16,9 +16,13 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
+local storyboard = require ( "storyboard" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
-require ( "SystemUtility.Debug" )
-
+require ( "DebugUtility.Debug" )
+local localization = require("Localization.Localization")
+local catScreen = require("ProjectObject.CatScreen")
+local searchScreen = require("ProjectObject.SearchScreen")
+local global = require( "GlobalVar.global" )
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
@@ -37,6 +41,46 @@ require ( "SystemUtility.Debug" )
 
 local headerView = {}
 
+-- category
+	
+function headerView.categoryButtonCreation()
+	local function catScreenDisplay(event)
+		if(event.phase=="ended" or event.phase=="cancelled")then
+			catScreen.catScreenDisplay()
+		end
+		return true
+	end
+	local categoryButton = display.newImage(LOCAL_SETTINGS.RES_DIR .. "category.png", true)
+	categoryButton:addEventListener("touch",catScreenDisplay)
+	return categoryButton
+end
+
+function headerView.searchButtonCreation(sceneOptions,sceneData,headerCreateFnc)
+	-- search 
+	local function searchScreenDisplay(event)
+		if(event.phase=="ended" or event.phase=="cancelled")then
+			searchScreen.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
+		end
+		return true
+	end
+	local searchButton = display.newImage(LOCAL_SETTINGS.RES_DIR .. "search.png", true)
+	searchButton:addEventListener("touch",searchScreenDisplay)
+	return searchButton
+end
+--
+
+
+local function gotoSettingScene(event)
+	if(event.phase=="ended" or event.phase=="cancelled")then
+		storyboard.gotoScene("Scene.SettingTabScene", global.backSceneOption)
+	end
+	return true
+end
+function headerView.backToSettingButtonCreation()
+	local backButton = display.newImage(LOCAL_SETTINGS.RES_DIR .. "back.png", true)
+	backButton:addEventListener("touch",gotoSettingScene)
+	return backButton
+end
 local function checkHeaderBaseExist()
 	local header = headTabFnc.getHeader()
 	if (header == nil) then
@@ -46,14 +90,99 @@ local function checkHeaderBaseExist()
 	end
 end
 
-function headerView.createVorumHeaderObjects(isCreateTitle)
+function headerView.createVorumHeaderObjects(titleObject)
+	
 	checkHeaderBaseExist()
 	local headerObjects = {}
-	if (isCreateTitle) then
-		headerObjects.title = display.newImage(LOCAL_SETTINGS.RES_DIR .. "vorum.png", true)
+	if (titleObject=="main") then
+		
+	elseif(titleObject=="notice") then
+		headerObjects.title =
+		{
+			text = localization.getLocalization("notice_headerTitle"), 
+			font = "Helvetica",
+			fontSize=40
+		}
+		headerObjects.title = display.newText(headerObjects.title)
+		headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
+		headerObjects.leftButton = nil
+		headerObjects.rightButton = nil
+	elseif(titleObject=="setting") then
+		headerObjects.title =
+		{
+			text = localization.getLocalization("setting_headerTitle"), 
+			font = "Helvetica",
+			fontSize=40
+		}
+		headerObjects.title = display.newText(headerObjects.title)
+		headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
+		headerObjects.leftButton = nil
+		headerObjects.rightButton = nil
+	elseif(titleObject=="contact")then
+		headerObjects.title =
+		{
+			text = localization.getLocalization("contact_headerTitle"), 
+			font = "Helvetica",
+			fontSize=40
+		}
+		headerObjects.title = display.newText(headerObjects.title)
+		headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
+		headerObjects.leftButton = headerView.backToSettingButtonCreation()
+		headerObjects.rightButton = nil
+	elseif(titleObject=="redemption")then
+		headerObjects.title =
+		{
+			text = localization.getLocalization("redemption_headerTitle"), 
+			font = "Helvetica",
+			fontSize=40
+		}
+		headerObjects.title = display.newText(headerObjects.title)
+		headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
+		headerObjects.leftButton = headerView.backToSettingButtonCreation()
+		headerObjects.rightButton = nil
+	elseif(titleObject=="coupon")then
+		headerObjects.title =
+		{
+			text = localization.getLocalization("coupon_headerTitle"), 
+			font = "Helvetica",
+			fontSize=40
+		}
+		headerObjects.title = display.newText(headerObjects.title)
+		headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
+		headerObjects.leftButton = display.newImage(LOCAL_SETTINGS.RES_DIR .. "back.png", true)
+		headerObjects.leftButton:addEventListener("touch",function(event)
+																if(event.phase=="ended" or event.phase=="cancelled")then
+																	local sceneOption = {
+																							effect = "slideRight",
+																							time = 400,
+																						}
+																	storyboard.gotoScene("Scene.RedemptionScene", sceneOption)
+																end
+																return true
+															end)
+		headerObjects.rightButton = nil
+	elseif(titleObject=="aboutVorum")then
+		headerObjects.title =
+		{
+			text = localization.getLocalization("aboutVorum_headerTitle"), 
+			font = "Helvetica",
+			fontSize=40
+		}
+		headerObjects.title = display.newText(headerObjects.title)
+		headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
+		headerObjects.leftButton = headerView.backToSettingButtonCreation()
+		headerObjects.rightButton = nil
 	end
-	headerObjects.leftButton = display.newImage(LOCAL_SETTINGS.RES_DIR .. "category.png", true)
-	headerObjects.rightButton = display.newImage(LOCAL_SETTINGS.RES_DIR .. "search.png", true)
+	
+	if(headerObjects.title)then
+		headerObjects.title.isHitTestable = true
+	end
+	if(headerObjects.leftButton)then
+		headerObjects.leftButton.isHitTestable = true
+	end
+	if(headerObjects.rightButton)then
+		headerObjects.rightButton.isHitTestable = true
+	end
 	return headerObjects
 end
 

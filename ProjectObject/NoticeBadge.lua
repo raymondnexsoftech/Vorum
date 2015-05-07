@@ -37,25 +37,27 @@ local badgeGroup
 local noticeBadge = {}
 
 function noticeBadge.setBadge(parent, number)
-	if (badgeGroup) then
-		display.remove(badgeGroup)
-		badgeGroup = nil
-	end
-	if (number > 0) then
-		badgeGroup = display.newGroup()
-		badgeGroup.x = 490
-		badgeGroup.y = 50
-		local badgeBg = display.newImage(badgeGroup, LOCAL_SETTINGS.RES_DIR .. "noticeBadge.png", true)
-		local badgeNumber
-		if (number > 9) then
-			badgeNumber = "9+"
-		else
-			badgeNumber = tostring(number)
+	if ((parent ~= nil) and (parent.parent ~= nil)) then
+		if (badgeGroup) then
+			display.remove(badgeGroup)
+			badgeGroup = nil
 		end
-		local badgeNumberText = display.newText(badgeGroup, badgeNumber, 0, 0, native.systemFont, 18)
-		badgeNumberText.y = 5
-		badgeNumberText.y = -2
-		parent:insert(badgeGroup)
+		if (number > 0) then
+			badgeGroup = display.newGroup()
+			badgeGroup.x = 490
+			badgeGroup.y = 50
+			local badgeBg = display.newImage(badgeGroup, LOCAL_SETTINGS.RES_DIR .. "noticeBadge.png", true)
+			local badgeNumber
+			if (number > 9) then
+				badgeNumber = "9+"
+			else
+				badgeNumber = tostring(number)
+			end
+			local badgeNumberText = display.newText(badgeGroup, badgeNumber, 0, 0, native.systemFont, 18)
+			badgeNumberText.y = 5
+			badgeNumberText.y = -2
+			parent:insert(badgeGroup)
+		end
 	end
 end
 

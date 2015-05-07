@@ -35,6 +35,7 @@ apiParamsArray: 						network request parameters
 		params:							same params in Network.Request()
 		isResumeAfterSystemSuspend:		will resume connection if system suspended, default = true
 		listenerEvent:					event table for simulated network handler return				*** this is for simulated only ***
+	triggerEventOnCancel:				will call listener on cancel request, default = false
 listener:								listener funtion if all API complete, see below for more detail
 keyForRequest:							Just a string for custom use
 

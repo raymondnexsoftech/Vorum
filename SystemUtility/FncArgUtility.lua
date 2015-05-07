@@ -43,22 +43,24 @@ local fncArgUtility = {}
 --                      fncName = "someFunction"
 --                  }
 function fncArgUtility.parseArg(argTable, arg)
-	local isError = false
+	local errorIdx
 	local argIdx = 1
 	local returnTable = {}
 	for i = 1, #argTable do
 		local argTableElement = argTable[i]
-		if (type(arg[argIdx]) == argTableElement.type) then
+		if ((type(arg[argIdx]) == argTableElement.type) or ((argTableElement.canSkip == true) and (arg[argIdx] == nil))) then
 			returnTable[argTableElement.name] = arg[argIdx]
 			argIdx = argIdx + 1
 		elseif (argTableElement.default) then
 			returnTable[argTableElement.name] = argTableElement.default
 		elseif (not (argTableElement.canSkip)) then
-			isError = true
+			if (errorIdx == nil) then
+				errorIdx = argIdx
+			end
 		end
 	end
-	if (isError) then
-		debugLog("parsing input parameter error in function " .. argTable.fncName)
+	if (errorIdx) then
+		debugLog("parsing input parameter error in function " .. argTable.fncName .. " at argument " .. tostring(errorIdx))
 	end
 	return returnTable
 end

@@ -4,28 +4,44 @@
 -- program start here
 ---------------------------------------------------------------
 local launchArgs = ...
-
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
-require ( "SystemUtility.Debug" )
-local networkFunction = require("Network.NetworkFunction")
-
+require ( "DebugUtility.Debug" )
+local global = require( "GlobalVar.global" )
+local saveData = require( "SaveData.SaveData" )
+local networkFunction = require("Network.newNetworkFunction")
+local json = require( "json" )
+local loginFnc = require("Module.loginFnc")
+local localization = require("Localization.Localization")
+local notifications = require( "plugin.notifications" )
+notifications.registerForPushNotifications()
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
-
+local environment = system.getInfo( "environment" )
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
-
+local username 
+local password
 ---------------------------------------------------------------
 -- program start
 ---------------------------------------------------------------
 
+
+
 -- display.setStatusBar( display.HiddenStatusBar )
 display.setStatusBar( display.TranslucentStatusBar )
+
+local function onSceneTransitionKeyEvent(event)
+	if event.phase == "up" and event.keyName == "back" then
+	end
+	return true
+end
+Runtime:addEventListener( "key", onSceneTransitionKeyEvent )
+
 
 local function notificationListener( event )
 	if ( event.type == "remote" ) then
@@ -43,6 +59,7 @@ local function notificationListener( event )
 		--handle the push notification
 	elseif ( event.type == "remoteRegistration" ) then
 		print("reg push:", tostring(event.token))
+		
 		local function pushInstallationListener(event)
 			if (event.isError) then
 				return false
@@ -52,10 +69,11 @@ local function notificationListener( event )
 		end
 
 		local deviceToken = event.token
-		networkFunction.pushInstallation(deviceToken, pushInstallationListener)
+		networkFunction.setPushDeviceToken(deviceToken)
+		--networkFunction.pushInstallation(deviceToken, pushInstallationListener)
 
 	elseif ( event.type == "local" ) then
-		--handle the local notification
+	--handle the local notification
 	end
 end
 
@@ -63,23 +81,63 @@ end
 Runtime:addEventListener( "notification", notificationListener )
 
 if ( launchArgs and launchArgs.notification ) then
+
+	local savedUserData = saveData.load(global.userDataPath)
+	if(savedUserData)then
+		if(savedUserData.password)then
+			username = savedUserData.username--textField_username.text
+			password = savedUserData.password--textField_password.text
+			loginFnc.login(username,password,true)
+			return true
+
+		elseif(environment ~= "simulator" and savedUserData.authData)then
+			if(savedUserData.authData.facebook)then
+				if(savedUserData.authData.facebook.id and savedUserData.authData.facebook.access_token)then
+					loginFnc.FBlogin(true)
+					return true
+				end
+			end
+		end
+	end
+
 	notificationListener( launchArgs.notification )
-else
-	storyboard.gotoScene("Scene.VorumTabScene")
+
 end
 
 
+--setting language
+local langSetting = saveData.load(global.languageDataPath)
 
--- Uncomment to monitor app's lua memory/texture memory usage in terminal...
+if(langSetting)then
+	if(langSetting.locale)then
+		localization.setLocale(langSetting.locale)
+	end
+end
+--check whether finish tutorial
+local isFinishTutorial = saveData.load(global.tutorialSavePath)
+if(isFinishTutorial)then --check user whether already finish tutorial
+	----------automatically login
+	local savedUserData = saveData.load(global.userDataPath)
 
--- local function garbagePrinting()
--- 	collectgarbage("collect")
--- 	local memUsage_str = string.format( "memUsage = %.3f KB", collectgarbage( "count" ) )
--- 	print( memUsage_str )
--- 	local texMemUsage_str = system.getInfo( "textureMemoryUsed" )
--- 	texMemUsage_str = texMemUsage_str/1000
--- 	texMemUsage_str = string.format( "texMemUsage = %.3f MB", texMemUsage_str )
--- 	print( texMemUsage_str )
--- end
+	if(savedUserData)then
+		
+		if(savedUserData.password)then
+			username = savedUserData.username--textField_username.text
+			password = savedUserData.password--textField_password.text
+			loginFnc.login(username,password,false)
+			return true
 
--- timer.performWithDelay( 1000, garbagePrinting(), 0 )
+		elseif(environment ~= "simulator" and savedUserData.authData)then
+			if(savedUserData.authData.facebook)then
+				if(savedUserData.authData.facebook.id and savedUserData.authData.facebook.access_token)then
+					loginFnc.FBlogin(false)
+					return true
+				end
+			end
+		end
+	end
+	storyboard.gotoScene("Scene.LoginPageScene")
+else
+	storyboard.gotoScene("Scene.TutorialScene")
+end
+

@@ -17,9 +17,10 @@ local LOCAL_SETTINGS = {
 -- Require Parts
 ---------------------------------------------------------------
 require ( "SystemUtility.Debug" )
-local networkFunction = require("Network.NetworkFunction")
+local facebookModule = require("Module.FacebookModule")
 local json = require("json")
 local localization = require("Localization.Localization")
+local networkFunction = require("Network.newNetworkFunction")
 
 ---------------------------------------------------------------
 -- Constants
@@ -36,139 +37,146 @@ local localization = require("Localization.Localization")
 ---------------------------------------------------------------
 -- Functions
 ---------------------------------------------------------------
+
 local facebookLogin = {}
 
-function facebookLogin.fbLoginProcedure(fbId, fbToken, email, password, listener)
-	local sessionToken = ""
+function facebookLogin.login(listener)
+	local facebookId, facebookToken = facebookModule.getUserInfo()
+	local userId, sessionToken
+	local emailLoginListener
+
 	local function linkFacebookListener(event)
-		if (isError) then
-			listener(event)
-			return
+		native.setActivityIndicator(false)
+		if (event.isError ~= true) then
+			local response = json.decode(event[1].response)
+			if (response.code == 12) then
+				native.showAlert(localization.getLocalization("fb_accountLinked"),
+									localization.getLocalization("fb_accountLinkedSuccessfully"),
+									{localization.getLocalization("ok")})
+				event.isLoginSuccess = true
+				event.userId = userId
+				event.sessionToken = sessionToken
+			else
+				event.linkError = true
+			end
 		end
-		local response = json.decode(event[1].response)
-		if (response.code) then
-		else
-			native.showAlert(localization.getLocalization("fb_accountLinked"),
-								localization.getLocalization("fb_accountLinkedSuccessfully"),
-								{localization.getLocalization("ok")},
-								function(event)
-									if (event.index == 1) then
-										event.isLoginSuccess = true
-										event.sessionToken = sessionToken
-										listener(event)
-										return
-									end
-								end
-								)
-		end
+		listener(event)
+		return
 	end
 
-	local function normalLoginListener(event)
-		if (isError) then
+	local function linkAccountListener(email, password)
+		native.setActivityIndicator(true)
+		networkFunction.login({email = email, password = password}, emailLoginListener)
+	end
+
+	emailLoginListener = function(event)
+		if (event.isError) then
+			native.setActivityIndicator(false)
 			listener(event)
 			return
 		end
+		local isLoginError = false
+		local loginErrorSentence = nil
 		local response = json.decode(event[1].response)
 		if (response.code) then
-			if (response.code == 101) then
-				native.showAlert(localization.getLocalization("fb_cantLoginAccToLink"),
-									localization.getLocalization("fb_cantLoginAccToLink_Create"),
-									{localization.getLocalization("ok"), localization.getLocalization("cancel")},
-									function(event)
-										if (event.index == 1) then
-											event.isCreateNewAcc = true
-											listener(event)
-											return
-										else
-											listener(event)
-											return
-										end
-									end
-									)
+			if (response.code == 3) then
+				isLoginError = true
+				loginErrorSentence = localization.getLocalization("fb_cantLoginAccToLink_Retry")
+			elseif (response.code == 14) then
+				isLoginError = true
+				loginErrorSentence = localization.getLocalization("fb_notVerifiedAccToLink_Retry")
 			else
 				-- other error
+				native.setActivityIndicator(false)
 				listener(event)
 				return
 			end
-		else
-			local accObjId = response.objectId
-			sessionToken = response.sessionToken
-			native.showAlert(localization.getLocalization("fb_linkToAcc"),
-								localization.getLocalization("fb_linkFbToAcc"),
-								{localization.getLocalization("ok"), localization.getLocalization("cancel")},
-								function(event)
-									if (event.index == 1) then
-										networkFunction.fbLinkAccount(accObjId, sessionToken, fbId, fbToken, linkFacebookListener)
+		elseif (response.fb_token) then
+			isLoginError = true
+			loginErrorSentence = localization.getLocalization("fb_accAlreadyLinked_Retry")
+		end
+		if (isLoginError) then
+			native.setActivityIndicator(false)
+			native.showAlert(localization.getLocalization("fb_cantLoginAccToLink"),
+								loginErrorSentence,
+								{localization.getLocalization("retry"), localization.getLocalization("cancel")},
+								function(e)
+									if (e.index == 1) then
+										event.linkAccountListener = linkAccountListener
+										event.isLinkAccount = true
+										listener(event)
+										return
 									else
-										native.showAlert(localization.getLocalization("fb_createAcc"),
-															localization.getLocalization("fb_createNewAcc"),
-															{localization.getLocalization("ok"), localization.getLocalization("cancel")},
-															function(event)
-																if (event.index == 1) then
-																	event.isCreateNewAcc = true
-																	listener(event)
-																	return
-																else
-																	listener(event)
-																	return
-																end
-															end)
+										event.isLoginError = true
+										listener(event)
+										return
 									end
-								end
-								)
+								end)
+		else
+			sessionToken = response.sessionToken
+			networkFunction.fbLinkAccount(facebookToken, linkFacebookListener)
 		end
 	end
 
 	local function fbLoginlistener(event)
-		if (isError) then
+		native.setActivityIndicator(false)
+		if (event.isError) then
 			listener(event)
 			return
 		end
 		local response = json.decode(event[1].response)
 		if (response.code) then
-			if (response.code == 200) then
+			if (response.code == 7) then
 				-- no Faceboook account in server
-				if ((email ~= "") and (password ~= "")) then
-					networkFunction.login(email, password, normalLoginListener)
-				else
-					native.showAlert(localization.getLocalization("fb_noFbAcc"),
-										localization.getLocalization("fb_noFbAcc_Create"),
-										{localization.getLocalization("create"), localization.getLocalization("link")},
-										function(event)
-											if (event.index == 1) then
-												event.isCreateNewAcc = true
-												listener(event)
-												return
-											else
-												native.showAlert(localization.getLocalization("fb_inputLoginData"),
-																	localization.getLocalization("fb_inputLoginDataToLink"),
-																	{localization.getLocalization("ok")},
-																	function(event)
-																		listener(event)
-																		return
-																	end
-																	)
-												return
-											end
+				native.showAlert(localization.getLocalization("fb_noFbAcc"),
+									localization.getLocalization("fb_noFbAcc_Create"),
+									{localization.getLocalization("create"), localization.getLocalization("link"), localization.getLocalization("cancel")},
+									function(e)
+										if (e.index == 1) then
+											event.isCreateNewAcc = true
+											event.facebookId = facebookId
+											event.facebookToken = facebookToken
+											listener(event)
+											return
+										elseif (e.index == 2) then
+											event.linkAccountListener = linkAccountListener
+											event.isLinkAccount = true
+											listener(event)
+										else
+											return
 										end
-										)
-				end
-				return
+									end)
 			else
 				-- other error
 				listener(event)
 				return
  			end
 		else
-			-- Login Success
 			event.isLoginSuccess = true
+			event.userId = response.objectId
 			event.sessionToken = response.sessionToken
 			listener(event)
 			return
 		end
 	end
 
-	networkFunction.fbLogin(fbId, fbToken, fbLoginlistener)
+	local function loginListener(event)
+		facebookId, facebookToken = facebookModule.getUserInfo()
+		if (facebookToken) then
+			networkFunction.fbLogin(facebookToken, fbLoginlistener)
+		else
+			native.setActivityIndicator(false)
+			native.showAlert(localization.getLocalization("fb_cannotRetrieveFacebookData"),
+								localization.getLocalization("fb_cannotRetrieveFacebookData"),
+								{localization.getLocalization("ok")})
+			event.isLoginError = true
+			listener(event)
+		end
+		return true
+	end
+
+	native.setActivityIndicator(true)
+	facebookModule.login(true, loginListener)
 end
 
 return facebookLogin
