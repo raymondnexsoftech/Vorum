@@ -62,15 +62,20 @@ end
 local function notificationListener( event )
 	if ( event.type == "remote" ) then
 		if (system.getInfo("platformName") == "Android") then
+			local badgeNum
 			if ((event ~= nil) and (event.custom ~= nil) and (event.custom.badge ~= nil)) then
-				updateNoticeBadge(tonumber(event.custom.badge))
+				badgeNum = tonumber(event.custom.badge)
 			end
+			updateNoticeBadge(badgeNum)
 		else
 			if (event.badge) then
 				native.setProperty("applicationIconBadgeNumber", event.badge)
 				native.setProperty("applicationIconBadgeNumber", event.badge)
 			end
 			updateNoticeBadge()
+		end
+		if (event.applicationState == "inactive") then
+			storyboard.gotoScene("Scene.NoticeTabScene")
 		end
 		-- for k, v in pairs(event) do
 		-- 	if (k == "custom") then
