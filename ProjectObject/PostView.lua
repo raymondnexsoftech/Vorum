@@ -662,6 +662,36 @@ local function horScrollViewXToRegionIndex(scrollView, scrollViewScrollWidth, of
 	return math.floor(-(scrollViewX - offsetX) /  (CHOICE_PIC_OBJECT_WIDTH + CHOICE_PIC_OBJECT_SPACE)) + 1
 end
 
+local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
+	local imgX, imgY = CHOICE_PIC_WIDTH - choicePosAndSize.x, CHOICE_PIC_HEIGHT - choicePosAndSize.y
+	if ((origBg ~= nil) and (origBg.parent ~= nil)) then
+		origBg.alpha = 0
+	end
+	if (img) then
+		local choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
+		choiceBgCover.alpha = 0.7
+		choiceBgCover:toBack()
+	else
+		img = display.newImage(LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
+	end
+	local imgOriginalScale = img.xScale
+	img = scaleImageFillArea(img, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2, 1)
+	if (choicePosAndSize.height > CHOICE_PIC_HEIGHT + 1) then
+		img:setMask(twoChoiceMask)
+	else
+		img:setMask(fourChoiceMask)
+	end
+	img.maskScaleX = imgOriginalScale / img.xScale
+	img.maskScaleY = imgOriginalScale / img.yScale
+	img.x = imgX
+	img.y = imgY
+	img.maskX = -imgX / img.xScale
+	img.maskY = -imgY / img.yScale
+	choiceGroup:insert(img)
+	img:toBack()
+	return img
+end
+
 local function createPostChoiceScrollView(parentScrollView, postData, userId, isHideResult, votingListener)
 	local postId = postData.id
 	local choiceTable = postData.choices
@@ -829,54 +859,53 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 	local choicePicPath = {}
 	local choiceLargePicList = {}
 	local choiceGroupList = {}
-	local choiceSelectGroupBgGroup = display.newGroup()
-	choiceSelectGroup:insert(choiceSelectGroupBgGroup)
-	choiceSelectGroupBgGroup.x = CHOICE_PIC_WIDTH
-	choiceSelectGroupBgGroup.y = CHOICE_PIC_HEIGHT
-	-- Choice background
-	if ((postData.post_pic ~= nil) and (postData.post_pic ~= "")) then
-		local choiceBgPlaceHolderBg, choiceBgPlaceHolderFg
-		local choiceBgCover = display.newRect(choiceSelectGroupBgGroup, 0, 0, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
-		choiceBgCover.alpha = 0.7
-		local postPicPath = "post/" .. tostring(postData.id) .. "/img"
-		local function insertChoiceBg(fileInfo)
-			if (choiceSelectGroupBgGroup.parent) then
-				choiceBg = display.newImage(choiceSelectGroupBgGroup, fileInfo.path, fileInfo.baseDir, true)
-				if (choiceBg) then
-					choiceBg:toBack()
-					display.remove(choiceBgPlaceHolderBg)
-					choiceBgPlaceHolderBg = nil
-					display.remove(choiceBgPlaceHolderFg)
-					choiceBgPlaceHolderFg = nil
-					local imgOriginalScale = choiceBg.xScale
-					choiceBg = scaleImageFillArea(choiceBg, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
-					choiceBg:setMask(choiceBgMask)
-					choiceBg.maskScaleX = imgOriginalScale / choiceBg.xScale
-					choiceBg.maskScaleY = imgOriginalScale / choiceBg.yScale
-				end
-			end
-		end
-		local function postPicListener(event)
-			if (event.isError) then
-			elseif (event.phase == "ended") then
-				insertChoiceBg({path = event.path, baseDir = event.baseDir})
-			end
-		end
-		-- local postDetailPicInfo = networkFile.getDownloadFile(postData.post_pic, postPicPath, postPicListener)
-		local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, postPicListener)
-		if (postDetailPicInfo ~= nil) then
-			if (postDetailPicInfo.request) then
-				choiceBgPlaceHolderBg = display.newRect(choiceSelectGroupBgGroup, 0, 0, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
-				choiceBgPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
-				choiceBgPlaceHolderFg = display.newImageRect(choiceSelectGroupBgGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 150, 150)
-			else
-				insertChoiceBg(postDetailPicInfo)
-			end
-		end
-
-	else
-		display.newImage(choiceSelectGroupBgGroup, LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
-	end
+	-- local choiceSelectGroupBgGroup = display.newGroup()
+	-- choiceSelectGroup:insert(choiceSelectGroupBgGroup)
+	-- choiceSelectGroupBgGroup.x = CHOICE_PIC_WIDTH
+	-- choiceSelectGroupBgGroup.y = CHOICE_PIC_HEIGHT
+	-- -- Choice background
+	-- if ((postData.post_pic ~= nil) and (postData.post_pic ~= "")) then
+	-- 	local choiceBgPlaceHolderBg, choiceBgPlaceHolderFg
+	-- 	local choiceBgCover = display.newRect(choiceSelectGroupBgGroup, 0, 0, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
+	-- 	choiceBgCover.alpha = 0.7
+	-- 	local postPicPath = "post/" .. tostring(postData.id) .. "/img"
+	-- 	local function insertChoiceBg(fileInfo)
+	-- 		if (choiceSelectGroupBgGroup.parent) then
+	-- 			choiceBg = display.newImage(choiceSelectGroupBgGroup, fileInfo.path, fileInfo.baseDir, true)
+	-- 			if (choiceBg) then
+	-- 				choiceBg:toBack()
+	-- 				display.remove(choiceBgPlaceHolderBg)
+	-- 				choiceBgPlaceHolderBg = nil
+	-- 				display.remove(choiceBgPlaceHolderFg)
+	-- 				choiceBgPlaceHolderFg = nil
+	-- 				local imgOriginalScale = choiceBg.xScale
+	-- 				choiceBg = scaleImageFillArea(choiceBg, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
+	-- 				choiceBg:setMask(choiceBgMask)
+	-- 				choiceBg.maskScaleX = imgOriginalScale / choiceBg.xScale
+	-- 				choiceBg.maskScaleY = imgOriginalScale / choiceBg.yScale
+	-- 			end
+	-- 		end
+	-- 	end
+	-- 	local function postPicListener(event)
+	-- 		if (event.isError) then
+	-- 		elseif (event.phase == "ended") then
+	-- 			insertChoiceBg({path = event.path, baseDir = event.baseDir})
+	-- 		end
+	-- 	end
+	-- 	-- local postDetailPicInfo = networkFile.getDownloadFile(postData.post_pic, postPicPath, postPicListener)
+	-- 	local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, postPicListener)
+	-- 	if (postDetailPicInfo ~= nil) then
+	-- 		if (postDetailPicInfo.request) then
+	-- 			choiceBgPlaceHolderBg = display.newRect(choiceSelectGroupBgGroup, 0, 0, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
+	-- 			choiceBgPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
+	-- 			choiceBgPlaceHolderFg = display.newImageRect(choiceSelectGroupBgGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 150, 150)
+	-- 		else
+	-- 			insertChoiceBg(postDetailPicInfo)
+	-- 		end
+	-- 	end
+	-- else
+	-- 	display.newImage(choiceSelectGroupBgGroup, LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
+	-- end
 
 	function horizontalScrollView.cancelPostCountDown()
 		if (countDownTransition) then
@@ -910,7 +939,7 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 		return nil
 	end
 
-	for i = 1, 4 do
+	for i = 1, #CHOICE_LETTER_TABLE do
 		local curChoice = choiceTable[CHOICE_LETTER_TABLE[i]]
 		local choiceTouchListener
 		if (curChoice == nil) then
@@ -929,20 +958,31 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 		local picPlaceHolderBg
 		local choicePic
 		if ((curChoice.choice_pic == nil) or (curChoice.choice_pic == "")) then
+			picPlaceHolderBg = display.newRect(curChoiceGroup, 0, 0, CHOICE_PIC_WIDTH, CHOICE_PIC_HEIGHT)
+			picPlaceHolderBg.isHitTestable = true
+			picPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
+			picPlaceHolderBg.height = choiceDisplayHeight
+			if ((postData.post_pic ~= nil) and (postData.post_pic ~= "")) then
+				local postPicPath = "post/" .. tostring(postData.id) .. "/img"
+				local function choiceBgListener(event)
+					if (event.isError) then
+						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)
+					elseif (event.phase == "ended") then
+						choiceBg = display.newImage(event.path, event.baseDir, true)
+						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg, choiceBg)
+					end
+				end
+				local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, choiceBgListener)
+				if (postDetailPicInfo ~= nil) then
+					if (postDetailPicInfo.request == nil) then
+						choiceBg = display.newImage(postDetailPicInfo.path, postDetailPicInfo.baseDir, true)
+						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg, choiceBg)
+					end
+				end
+			else
+				insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)
+			end
 			if (curChoice.text) then
-				picPlaceHolderBg = display.newRect(curChoiceGroup, 0, 0, CHOICE_PIC_WIDTH, CHOICE_PIC_HEIGHT)
-				picPlaceHolderBg.isHitTestable = true
-				curChoiceGroup.nonPicBg = picPlaceHolderBg
-				picPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
-				-- if ((curChoiceGroup.nonPicBg) and (curChoiceGroup.nonPicBg.parent)) then
-					curChoiceGroup.nonPicBg.alpha = 0
-				-- end
-
-				-- if (choiceDisplayLayoutSize <= 2) then
-				-- 	picPlaceHolderBg.height = CHOICE_PIC_HEIGHT * 2
-				-- end
-				picPlaceHolderBg.height = choiceDisplayHeight
-
 				local textOption = {
 										parent = curChoiceGroup,
 										text = curChoice.text,
@@ -956,16 +996,16 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 				choiceText:setFillColor(0)
 			end
 		else
-			picPlaceHolderBg = display.newRect(curChoiceGroup, 0, 0, CHOICE_PIC_WIDTH, choiceDisplayHeight)
+			picPlaceHolderBg = insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)
+			-- picPlaceHolderBg = display.newRect(curChoiceGroup, 0, 0, CHOICE_PIC_WIDTH, choiceDisplayHeight)
+			-- picPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
 			local picPlaceHolderFg = display.newImageRect(curChoiceGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 100, 100)
 			local function insertChoicePic(fileInfo)
 				if (curChoiceGroup.parent) then
-					choicePic = display.newImage(curChoiceGroup, fileInfo.path, fileInfo.baseDir, true)
+					choicePic = display.newImage(fileInfo.path, fileInfo.baseDir, true)
 					if (choicePic) then
 						display.remove(picPlaceHolderFg)
 						local imgOriginalScale = choicePic.xScale
-						choicePic:toBack()
-						picPlaceHolderBg:toBack()
 						choicePic = scaleImageFillArea(choicePic, CHOICE_PIC_WIDTH, choiceDisplayHeight)
 						-- if (choiceDisplayLayoutSize <= 2) then
 						-- 	choicePic:setMask(twoChoiceMask)
@@ -979,6 +1019,9 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 						end
 						choicePic.maskScaleX = imgOriginalScale / choicePic.xScale
 						choicePic.maskScaleY = imgOriginalScale / choicePic.yScale
+						curChoiceGroup:insert(choicePic)
+						choicePic:toBack()
+						picPlaceHolderBg:toBack()
 					end
 				end
 			end
@@ -1036,7 +1079,7 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 			-- end
 		else
 			curChoiceGroup:toBack()
-			choiceSelectGroupBgGroup:toBack()
+			-- choiceSelectGroupBgGroup:toBack()
 		end
 
 		if (userVoted == nil) then
