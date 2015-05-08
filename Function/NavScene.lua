@@ -41,12 +41,24 @@ function moduleGroup.back()
 end
 
 function moduleGroup.go(sceneOptions,curData,passData,creatorId)
+
+
+	if(type(curData)=="table")then
+		local curUserId = curData.id or curData.user_id
+		curUserId = tonumber(curUserId)
+		creatorId = tonumber(creatorId)
+
+		if(curUserId==creatorId)then
+			return
+		end
+	end
+
 	local newSceneOptions = sceneOptions
 
 	sceneOptions.params = curData
 	tableSave.push(global.sceneTransDataPath,global.TEMPBASEDIR,sceneOptions)
 	
-	newSceneOptions.effect = "fromRight"
+	newSceneOptions.effect = "slideLeft"
     newSceneOptions.time = 400
 	newSceneOptions.params = passData
 	
@@ -62,14 +74,24 @@ end
 
 
 function moduleGroup.goPost(sceneOptions,curData,passData,creatorId)
+	
+	if(type(curData)=="table")then
+		local curUserId = curData.id
+		curUserId = tonumber(curUserId)
+		creatorId = tonumber(creatorId)
+
+		if(curUserId==creatorId)then
+			return
+		end
+	end
+
 	local newSceneOptions = sceneOptions
 	sceneOptions.params = curData
 	tableSave.push(global.sceneTransDataPath,global.TEMPBASEDIR,sceneOptions)
 	
-	newSceneOptions.effect = "fromRight"
+	newSceneOptions.effect = "slideLeft"
     newSceneOptions.time = 400
     newSceneOptions.params = passData
-	print("postDatata",json.encode( newSceneOptions.params))
 
 	if(sceneOptions.sceneName == "OnePostScene2" )then
 		storyboard.gotoScene("Scene.OnePostScene",newSceneOptions)
