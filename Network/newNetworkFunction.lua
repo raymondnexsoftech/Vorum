@@ -191,6 +191,7 @@ local function loginErrorForAwaitingRequest(event)
 			end
 		end
 	end
+	awaitingRequest = nil
 end
 
 local function runAwaitingRequest()
@@ -212,7 +213,7 @@ local function loginListenerForTokenExpired(event)
 	else
 		local response = json.decode(event[1].response)
 		if (response.code) then
-			-- loginErrorForAwaitingRequest(event)
+			loginErrorForAwaitingRequest(event)
 			networkFunction.logout()
 			native.showAlert(localization.getLocalization("login_loginExpiredlogin_loginExpired"), localization.getLocalization("login_loginExpiredPleaseLoginAgain"), {localization.getLocalization("ok")})
 		else
@@ -235,6 +236,7 @@ local function performNetworkFunction(networkFnc, params, listener)
 				awaitingRequest[#awaitingRequest + 1] = {fnc = networkFnc, params = params, listener = listener}
 			else
 				if (login(loginListenerForTokenExpired) == nil) then
+					awaitingRequest = nil
 					if (listener) then
 						local event = {
 											code = API_ERROR_CODE_SESSION_INVALID,
