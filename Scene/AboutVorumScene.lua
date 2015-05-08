@@ -30,6 +30,7 @@ local global = require( "GlobalVar.global" )
 ---------------------------------------------------------------
 local LEFTPADDING = 20
 local CONTENTWIDTH = display.contentWidth-LEFTPADDING*2
+local LINESPACE = 20
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
@@ -42,32 +43,32 @@ local tabbar
 local scrollView
 
 
-local contentText = "Vorum is a voting forum. Opinions are gathered to generate meaning insight."
-local contentText2 = "Vorum is the 1st ever profit sharing mobile App. Any users can get a chance to share the profit from the sale of meaning insight."
-local contentText3 = "Find out more on:"
-local contentText4 = "Facebook: "
-local contentText5 = "Email: "
 local facebookText = "www.facebook.com/VorumApp"
 local facebookLink = "https://m.facebook.com/VorumApp"
 local emailText = "Founder@VorumApp.com"
-local emailLink = ""
+local emailLink = "Founder@VorumApp.com"
+local websiteText = "http://www.vorumapp.com/"
+local websiteLink = "http://www.vorumapp.com/"
+
 
 local emailOptions =
 {
-	to = emailText,
+	to = emailLink,
 	-- subject = "My High Score",
 	-- body = "I scored over 9000!!! Can you do better?",
 	-- attachment = { baseDir=system.DocumentsDirectory,
 	-- filename="Screenshot.png", type="image" },
 }
 --obj
-local content
-local content2
-local content3
-local content4 
+local text_appIntro
+local text_appDesc
+local text_contactWay
+local text_facebookIntro 
 local text_facebook
-local content5
+local text_emailIntro
 local text_email
+local text_webisteIntro
+local text_website
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -105,6 +106,20 @@ local function openEmail(event)
 	end
     return true
 end
+
+local function openWebsite(event)
+	local phase = event.phase
+    if( phase == "began" ) then
+	elseif ( phase == "moved" ) then
+        local dy = math.abs( ( event.y - event.yStart ) )
+        if ( dy > 10 ) then
+            scrollView:takeFocus( event )
+        end
+    elseif ( phase == "ended" or phase == "cancelled" ) then
+		system.openURL( websiteLink )
+	end
+    return true
+end
 -- Create the scene
 function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
@@ -132,9 +147,11 @@ function scene:createScene( event )
 		verticalScrollDisabled = false,
 		hideScrollBar = true,
 	}
-	content =
+	sceneGroup:insert(scrollView)
+
+	text_appIntro =
 	{
-		text = contentText,
+		text = localization.getLocalization("aboutVorum_appIntro"),
 		x = LEFTPADDING,
 		y = 180,
 		width = CONTENTWIDTH,
@@ -142,70 +159,67 @@ function scene:createScene( event )
 		font = "Helvetica",
 		fontSize=30
 	}
-	content = display.newText(content);
-	content:setFillColor(81/255, 81/255, 81/255 )
-	content.anchorX=0
-	content.anchorY=0
-	scrollView:insert(content)
-	sceneGroup:insert(scrollView)
+	text_appIntro = display.newText(text_appIntro);
+	text_appIntro:setFillColor(81/255, 81/255, 81/255 )
+	text_appIntro.anchorX=0
+	text_appIntro.anchorY=0
+	scrollView:insert(text_appIntro)
 	
-	content2 =
+	text_appDesc =
 	{
-		text = contentText2,
+		text = localization.getLocalization("aboutVorum_appDesc"),
 		x = LEFTPADDING,
-		y = content.y+content.height,
+		y = text_appIntro.y+text_appIntro.height+LINESPACE,
 		width = CONTENTWIDTH,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30
 	}
-	content2 = display.newText(content2);
-	content2:setFillColor(81/255, 81/255, 81/255 )
-	content2.anchorX=0
-	content2.anchorY=0
-	scrollView:insert(content2)
-	sceneGroup:insert(scrollView)
+	text_appDesc = display.newText(text_appDesc);
+	text_appDesc:setFillColor(81/255, 81/255, 81/255 )
+	text_appDesc.anchorX=0
+	text_appDesc.anchorY=0
+	scrollView:insert(text_appDesc)
 	
-	content3 =
+	
+	text_contactWay =
 	{
-		text = contentText3,
+		text = localization.getLocalization("aboutVorum_contactWay"),
 		x = LEFTPADDING,
-		y = content2.y+content2.height,
+		y = text_appDesc.y+text_appDesc.height+LINESPACE,
 		width = CONTENTWIDTH,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30
 	}
-	content3 = display.newText(content3);
-	content3:setFillColor(81/255, 81/255, 81/255 )
-	content3.anchorX=0
-	content3.anchorY=0
-	scrollView:insert(content3)
-	sceneGroup:insert(scrollView)
+	text_contactWay = display.newText(text_contactWay);
+	text_contactWay:setFillColor(81/255, 81/255, 81/255 )
+	text_contactWay.anchorX=0
+	text_contactWay.anchorY=0
+	scrollView:insert(text_contactWay)
 	
-	content4 =
+	text_facebookIntro =
 	{
-		text = contentText4,
+		text = localization.getLocalization("aboutVorum_facebookContact"),
 		x = LEFTPADDING,
-		y = content3.y+content3.height,
+		y = text_contactWay.y+text_contactWay.height+LINESPACE,
 		width = 0,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30
 	}
-	content4 = display.newText(content4);
-	content4:setFillColor(81/255, 81/255, 81/255 )
-	content4.anchorX=0
-	content4.anchorY=0
-	scrollView:insert(content4)
-	sceneGroup:insert(scrollView)
+	text_facebookIntro = display.newText(text_facebookIntro);
+	text_facebookIntro:setFillColor(81/255, 81/255, 81/255 )
+	text_facebookIntro.anchorX=0
+	text_facebookIntro.anchorY=0
+	scrollView:insert(text_facebookIntro)
 	
 	text_facebook = 
 	{
 		text = facebookText,
-		x = content4.x+content4.width,
-		y = content4.y,
-		width = CONTENTWIDTH-content4.width,
+		x = text_facebookIntro.x+text_facebookIntro.width,
+		y = text_facebookIntro.y,
+		width = CONTENTWIDTH-text_facebookIntro.width,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30
@@ -216,32 +230,29 @@ function scene:createScene( event )
 	text_facebook.anchorY=0
 	text_facebook:addEventListener("touch",openFacebook)
 	scrollView:insert(text_facebook)
-	sceneGroup:insert(scrollView)
 	
-	
-	content5 =
+	text_emailIntro =
 	{
-		text = contentText5,
+		text = localization.getLocalization("aboutVorum_emailContact"),
 		x = LEFTPADDING,
-		y = content4.y+content4.height,
+		y = text_facebookIntro.y+text_facebookIntro.height+LINESPACE,
 		width = 0,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30
 	}
-	content5 = display.newText(content5);
-	content5:setFillColor(81/255, 81/255, 81/255 )
-	content5.anchorX=0
-	content5.anchorY=0
-	scrollView:insert(content5)
-	sceneGroup:insert(scrollView)
+	text_emailIntro = display.newText(text_emailIntro);
+	text_emailIntro:setFillColor(81/255, 81/255, 81/255 )
+	text_emailIntro.anchorX=0
+	text_emailIntro.anchorY=0
+	scrollView:insert(text_emailIntro)
 	
 	text_email = 
 	{
 		text = emailText,
-		x = content5.x+content5.width,
-		y = content5.y,
-		width = CONTENTWIDTH-content5.width,
+		x = text_emailIntro.x+text_emailIntro.width,
+		y = text_emailIntro.y,
+		width = CONTENTWIDTH-text_emailIntro.width,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30
@@ -252,7 +263,41 @@ function scene:createScene( event )
 	text_email.anchorY=0
 	text_email:addEventListener("touch",openEmail)
 	scrollView:insert(text_email)
-	sceneGroup:insert(scrollView)
+
+
+	text_webisteIntro =
+	{
+		text = localization.getLocalization("aboutVorum_websiteContact"),
+		x = LEFTPADDING,
+		y = text_emailIntro.y+text_emailIntro.height+LINESPACE,
+		width = 0,
+		height = 0, 
+		font = "Helvetica",
+		fontSize=30
+	}
+	text_webisteIntro = display.newText(text_webisteIntro);
+	text_webisteIntro:setFillColor(81/255, 81/255, 81/255 )
+	text_webisteIntro.anchorX=0
+	text_webisteIntro.anchorY=0
+	scrollView:insert(text_webisteIntro)
+
+	text_website = 
+	{
+		text = websiteText,
+		x = text_webisteIntro.x+text_webisteIntro.width,
+		y = text_webisteIntro.y,
+		width = CONTENTWIDTH-text_webisteIntro.width,
+		height = 0, 
+		font = "Helvetica",
+		fontSize=30
+	}
+	text_website = display.newText(text_website);
+	text_website:setFillColor(15/255, 114/255, 218/255)
+	text_website.anchorX=0
+	text_website.anchorY=0
+	text_website:addEventListener("touch",openWebsite)
+	scrollView:insert(text_website)
+
 end
 
 local function onKeyEvent( event )
