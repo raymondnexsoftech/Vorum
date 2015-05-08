@@ -2,15 +2,7 @@ local global = {}
 --data saving part
 global.languageDataPath = "language.sav"
 global.userDataPath = "user/userData.sav"
-global.userPassword = "user/userPassword.sav"
-global.friendListDataPath = "friendsListData.sav"
 
-
-global.post1DataPath = "newPost/post1.sav"
-global.post2DataPath = "newPost/post2.sav"
-global.post3DataPath = "newPost/post3.sav"
-global.post3IsHideResultDataPath = "newPost/hideResult.sav"
-global.post3ShareTypeDataPath = "newPost/share.sav"
 global.post3TagsDataPath = "newPost/tags.sav"
 
 global.searchDataPath = "search.sav"
@@ -20,8 +12,7 @@ global.sceneTransDataPath = "sceneTransData.sav"
 
 global.vorumTabFilterDataPath = "vorumTabFilter.sav"
 global.meTabFilterDataPath = "meTabFilter.sav"
---setting page
-global.settingPersonDataPath = "settingScene/personData.sav"
+
 --post image
 global.registerImagePath = "registerIcon.jpg"
 global.updateIconImage = "updateIcon.jpg"
@@ -32,11 +23,9 @@ global.post2ChoiceCImage = "postChoiceC.jpg"
 global.post2ChoiceDImage = "postChoiceD.jpg"
 global.post3CouponImage = "newCoupon.jpg"
 
-global.saveType = ".sav"
 global.tutorialSavePath = "user/tutorial.sav"
 
 global.TEMPBASEDIR = system.TemporaryDirectory
-
 
 global.currentSceneNumber = 3
 
