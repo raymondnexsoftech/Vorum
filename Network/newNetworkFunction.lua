@@ -616,11 +616,15 @@ function networkFunction.logout()
 	native.setActivityIndicator(false)
 	saveData.delete(global.userDataPath)--delete user data
 	local header = headTabFnc.getHeader()
-	header:toBack()
-	header.alpha = 0
+	if (header) then
+		header:toBack()
+		header.alpha = 0
+	end
 	local tabbar = headTabFnc.getTabbar()
-	tabbar:toBack()	
-	tabbar.alpha = 0
+	if (tabbar) then
+		tabbar:toBack()	
+		tabbar.alpha = 0
+	end
 	storyboard.gotoScene("Scene.LoginPageScene",goToLoginSceneOption)
 	networkFunction.unregisterPushDevice()
 
