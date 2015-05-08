@@ -1214,7 +1214,7 @@ local function searchUser(params, listener)
 								headers = createVorumNetworkHeader(sessionToken),
 								body = json.encode(params)
 							}
-	params.searchStr = string.lower(params.searchStr)
+	params.searchStr = url.escape(string.lower(params.searchStr))
 	local paramsStr = convertToUrlParam(params)
 	apiParams[1].url = API_USER_BASE .. "/search?" .. paramsStr
 	apiParams[1].method = "GET"
@@ -1236,7 +1236,7 @@ local function searchPost(params, listener)
 								headers = createVorumNetworkHeader(sessionToken),
 								body = json.encode(params)
 							}
-	params.searchStr = string.lower(params.searchStr)
+	params.searchStr = url.escape(string.lower(params.searchStr))
 	local paramsStr = convertToUrlParam(params)
 	apiParams[1].url = API_POST_BASE .. "/search?" .. paramsStr
 	apiParams[1].method = "GET"
