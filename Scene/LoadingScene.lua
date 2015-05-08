@@ -60,7 +60,7 @@ local function animationFinishFnc()
 		
 	--check whether finish tutorial
 	local isFinishTutorial = saveData.load(global.tutorialSavePath)
-	
+
 	if(isFinishTutorial)then --check user whether already finish tutorial
 		----------automatically login
 		local savedUserData = saveData.load(global.userDataPath)
@@ -149,7 +149,7 @@ function scene:createScene( event )
 	transition.to(image_v,{transition=easing.inOutSine,time=500,x=image_v.x-image_v.width/2+20,alpha=1})
 	transition.to(group_earth,{transition=easing.inOutSine,time=500,x=group_earth.x+group_earth.width/2-20,onComplete = function(event) 
 		image_rum = display.newImage("Image/Loading/rum.png")
-		image_rum.x = image_o.x+image_o.width
+		image_rum.x = image_o.x+image_o.width-15
 		image_rum.y = image_o.y
 		image_rum.anchorX = 0
 		image_rum.anchorY = 0.5
