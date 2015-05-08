@@ -222,11 +222,13 @@ local function facebookLoginListener(event)
 
 			local facebookLoginData = {}
 
-			facebookLoginData.fbToken = tostring(event.userId)
+			facebookLoginData.fbToken = tostring(event.fbToken)
 
 			facebookLoginData.sessionToken = tostring(event.sessionToken)
 
 			newNetworkFunction.updateFbLoginData(facebookLoginData)
+
+			responseInfo.user_id = tostring(event.userId)
 
 			responseInfo.fbToken = facebookLoginData.fbToken
 

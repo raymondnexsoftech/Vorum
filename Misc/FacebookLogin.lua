@@ -114,7 +114,8 @@ function facebookLogin.login(listener)
 									end
 								end)
 		else
-			sessionToken = response.sessionToken
+			userId = response.user_id
+			sessionToken = response.session
 			networkFunction.fbLinkAccount(facebookToken, linkFacebookListener)
 		end
 	end
@@ -154,8 +155,8 @@ function facebookLogin.login(listener)
  			end
 		else
 			event.isLoginSuccess = true
-			event.userId = response.objectId
-			event.sessionToken = response.sessionToken
+			event.userId = response.user_id
+			event.sessionToken = response.session
 			event.fbToken = facebookToken
 			listener(event)
 			return
