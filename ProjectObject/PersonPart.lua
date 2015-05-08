@@ -373,7 +373,14 @@ function returnGroup.updateUserData(userProfileData)
 		
 	end
 end
-
+local function waitingStatusAdjustFnc()
+	text_totalVoted.y = 135
+	text_totalPosts.y = 135
+end
+local function normalStatusAdjustFnc()
+	text_totalVoted.y = 150
+	text_totalPosts.y = 150
+end
 
 relationshipButtonGeneration = function ()
 	if(relationshipButton)then
@@ -390,6 +397,9 @@ relationshipButtonGeneration = function ()
 		display.remove(relationshipButton2)
 		relationshipButton2 = nil
 	end
+
+	normalStatusAdjustFnc()
+
 	if (relationship == "friend") then
 		print("Friend")
 		relationship = "friend"
@@ -443,6 +453,8 @@ relationshipButtonGeneration = function ()
 
 	elseif (relationship == "waiting") then
 
+		waitingStatusAdjustFnc()
+
 		print("Waiting your approval")
 		relationship = "waiting"
 		relationshipButton = widget.newButton
@@ -484,7 +496,7 @@ relationshipButtonGeneration = function ()
 			strokeWidth =0
 		}
 		relationshipButton2.x = 458
-		relationshipButton2.y = relationshipButton.y+relationshipButton.height+5
+		relationshipButton2.y = relationshipButton.y+relationshipButton.height+10
 		relationshipButton2.anchorX=0
 		relationshipButton2.anchorY=0
 		group_personPart:insert(relationshipButton2)
@@ -566,6 +578,9 @@ end
 function returnGroup.updateMemberProfileListener(event)
 	getMemberProfileListener(event)
 end
+
+
+
 function returnGroup.create(input_personData,input_scrollView)
 	
 	personData = input_personData
@@ -752,7 +767,7 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_totalPosts.anchorX=1
 	text_totalPosts.anchorY=0
 	group_personPart:insert(text_totalPosts)
-	
+
 	--updated userProfile
 	returnGroup.updateUserData(oldProfileData)
 	
