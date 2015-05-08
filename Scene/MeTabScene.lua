@@ -88,6 +88,13 @@ local filterOption
 ---------------------------------------------------------------
 -- Function for back button
 
+local function scrollViewToTop()
+	if ((scrollView ~= nil) and (scrollView.parent ~= nil)) then
+		local header = headTabFnc.getHeader()
+		scrollView:scrollToPosition({y = header.height, time = 200})
+	end
+end
+
 local function setActivityIndicatorFnc(boolean_loadingSwitch)
 	if(not loadingIcon and boolean_loadingSwitch)then
 		loadingIcon = sizableActivityIndicatorFnc.newActivityIndicator(display.contentWidth,display.contentHeight)
@@ -313,7 +320,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headerObjects.title = display.newText(headerObjects.title)
 	headerObjects.leftButton = nil
 	headerObjects.rightButton = headerView.searchButtonCreation(sceneOptions,nil,headerCreateFnc) 
-	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption)
+	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption,scrollViewToTop)
 	tabbar = headTabFnc.getTabbar()
 	if (tabbar == nil) then
 		tabbar = headTabFnc.createNewTabbar(projectObjectSetting.tabbar)

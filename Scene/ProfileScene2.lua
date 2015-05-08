@@ -80,6 +80,13 @@ local reCreationFnc
 ---------------------------------------------------------------
 -- Function for back button
 
+local function scrollViewToTop()
+	if ((scrollView ~= nil) and (scrollView.parent ~= nil)) then
+		local header = headTabFnc.getHeader()
+		scrollView:scrollToPosition({y = header.height-group_personPart.height/2, time = 200})
+	end
+end
+
 local function setActivityIndicatorFnc(boolean_loadingSwitch)
 	if(not loadingIcon and boolean_loadingSwitch)then
 		loadingIcon = sizableActivityIndicatorFnc.newActivityIndicator(display.contentWidth,display.contentHeight)
@@ -215,7 +222,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headerObjects.leftButton:addEventListener("touch",backLastSceneFnc)
 	headerObjects.rightButton = headerView.searchButtonCreation(sceneOptions,memberData,headerCreateFnc)
 	
-	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption)
+	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption,scrollViewToTop)
 	tabbar = headTabFnc.getTabbar()
 	if (tabbar == nil) then
 		tabbar = headTabFnc.createNewTabbar(projectObjectSetting.tabbar)
