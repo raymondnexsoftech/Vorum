@@ -45,7 +45,7 @@ local defaultVaule =
 
 	bgColor = {0.5,0.5,0.5},
 	bgAlpha = 0.7,
-	touchBgNotCancel = false,
+	touchBgNotCancel = true,
 	
 	popupBgImagePath = nil,----------
 	popupBgColor = {78/255,184/255,229/255},
