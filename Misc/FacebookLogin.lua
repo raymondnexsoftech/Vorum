@@ -56,7 +56,7 @@ function facebookLogin.login(listener)
 				event.isLoginSuccess = true
 				event.userId = userId
 				event.sessionToken = sessionToken
-				event.facebookToken = facebookToken
+				event.fbToken = facebookToken
 			else
 				event.linkError = true
 			end
@@ -156,7 +156,7 @@ function facebookLogin.login(listener)
 			event.isLoginSuccess = true
 			event.userId = response.objectId
 			event.sessionToken = response.sessionToken
-			event.facebookToken = facebookToken
+			event.fbToken = facebookToken
 			listener(event)
 			return
 		end
