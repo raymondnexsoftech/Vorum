@@ -24,7 +24,10 @@ local coronaTextField = require("Module.CoronaTextField")
 local localization = require("Localization.Localization")
 local headerView = require( "ProjectObject.HeaderView" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
-
+local loginFnc = require("Module.loginFnc")
+local localization = require("Localization.Localization")
+local global = require( "GlobalVar.global" )
+local saveData = require( "SaveData.SaveData" )
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
@@ -32,10 +35,15 @@ local headTabFnc = require( "ProjectObject.HeadTabFnc" )
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
-local slogan = "Gather thoughts for a batter world"
+local slogan = "Gather thoughts for a better world"
 --Create a storyboard scene for this module
 local scene = storyboard.newScene()
 
+local enteringAppDelayTime = 300
+local enteringAppOption = {
+	effect="fade",
+	time=300,
+}
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -47,6 +55,38 @@ local scene = storyboard.newScene()
 local function onBackButtonPressed()
 end
 
+local function animationFinishFnc() 
+	--login
+		
+	--check whether finish tutorial
+	local isFinishTutorial = saveData.load(global.tutorialSavePath)
+	
+	if(isFinishTutorial)then --check user whether already finish tutorial
+		----------automatically login
+		local savedUserData = saveData.load(global.userDataPath)
+
+		if(savedUserData)then
+
+			if(savedUserData.password)then
+
+				loginFnc.login(savedUserData,false)
+
+				return true
+
+			elseif(environment ~= "simulator" and savedUserData.authData)then
+				if(savedUserData.authData.facebook)then
+					if(savedUserData.authData.facebook.id and savedUserData.authData.facebook.access_token)then
+						loginFnc.FBlogin(false)
+						return true
+					end
+				end
+			end
+		end
+		storyboard.gotoScene("Scene.LoginPageScene",enteringAppOption)
+	else
+		storyboard.gotoScene("Scene.TutorialScene",enteringAppOption)
+	end
+end
 
 -- Create the scene
 function scene:createScene( event )
@@ -141,9 +181,9 @@ function scene:createScene( event )
 			
 			SceneGroup:insert(text_world) --add to this scene
 			transition.to(text_world,{transition=easing.outSine,time=500,alpha=1,onComplete=function()--loading finished
-				timer.performWithDelay(300,function(event)
-						--login
-						storyboard.gotoScene("Scene.VorumTabScene",{time=300,effect="fade"})
+				timer.performWithDelay(enteringAppDelayTime,function(event)
+					--animation finish
+					animationFinishFnc()	
 				end)
 			end})
 		end})

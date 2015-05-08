@@ -46,8 +46,7 @@ local scene = storyboard.newScene()
 local scrollView
 local textField_username
 local textField_password
-local username
-local password
+local loginData
 
 --facebook login
 local facebookLoginId
@@ -229,17 +228,17 @@ local function signIn(event)
 			native.showAlert(localization.getLocalization("loginError_errorTitle"),localization.getLocalization("loginError_emailNoAt"),{localization.getLocalization("ok")})
 			return false
 		end
+
+		loginData = {}
+		loginData.username = string.lower(textField_username.text)
+		loginData.password = textField_password.text
 		
-		--test
-		-- local username = "a@a.com"
-		-- local password = "a"
-		username = string.lower(textField_username.text)
-		password = textField_password.text
-		loginFnc.login(username,password)
+		loginFnc.login(loginData)
 	    
 	end
     return true
 end
+
 local function createAccount(event)
 	local phase = event.phase
 
