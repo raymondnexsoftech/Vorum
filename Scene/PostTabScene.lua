@@ -1420,11 +1420,15 @@ function scene:createScene( event )
 	
 	addPhotoFnc.deleteTempImage(global.post3CouponImage)-- coupon image
 	
+	local scene1 = createScene1()
+	local scene2 = createScene2()
+	local scene3 = createScene3()
+
 	local sceneData = {
 		scene = {
-			createScene1(),
-			createScene2(),
-			createScene3(),
+			scene1,
+			scene2,
+			scene3,
 		},
 		sceneStartListener = {
 			scene1_addKeyEvent,
@@ -1449,6 +1453,8 @@ function scene:createScene( event )
 	}
 	scrollView = scrollViewForMultiScene.new(scrollViewData,sceneData)
 	sceneGroup:insert(scrollView)
+
+	scrollView:setScrollHeight( 1050 )
 end
 
 local function onSceneTransitionKeyEvent( event )
