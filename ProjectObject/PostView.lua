@@ -1366,11 +1366,13 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	if (creatorData ~= nil) then
 		if (creatorData.gender == "M") then
 			creatorPicBg:setFillColor(unpack(global.maleColor))
-		elseif (creatorData.gender == "M") then
+		elseif (creatorData.gender == "F") then
 			creatorPicBg:setFillColor(unpack(global.femaleColor))
 		else
 			creatorPicBg:setFillColor(unpack(global.noGenderColor))
 		end
+	else
+		creatorPicBg:setFillColor(unpack(global.noGenderColor))
 	end
 
 	if (isAnonymous) then
