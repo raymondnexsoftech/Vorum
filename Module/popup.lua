@@ -71,6 +71,7 @@ local defaultVaule =
 	
 	noDoneButton = false,
 	doneButtonText = "Done",
+	doneButtonCheckingFnc = nil,
 	doneButtonCallBackFnc = nil,
 	doneButtonListener = nil,
 	doneButtonImagePath = nil,----------
@@ -86,9 +87,10 @@ local defaultVaule =
 	doneButtonTouchAlpha = 0.5,
 	doneButtonTextTouchColor = {1,1,1},
 	doneButtonTextTouchAlpha = 1,
-	
+
 	noCancelButton = false,
 	cancelButtonText = "Cancel",
+	cancelButtonCheckingFnc = nil,
 	cancelButtonCallBackFnc = nil,
 	cancelButtonListener = nil,
 	cancelButtonImagePath = nil,----------
@@ -104,7 +106,7 @@ local defaultVaule =
 	cancelButtonTouchAlpha = 0.5,
 	cancelButtonTextTouchColor = {1,1,1},
 	cancelButtonTextTouchAlpha = 1,
-	
+
 	buttonIsoLineWidth = 3,
 	buttonIsoLineColor = {1,1,1},
 	
@@ -255,14 +257,27 @@ local function doneFnc(event)
 		temp_targetEndY = temp_targetBeginY + event.target.height
 		
 		if(event.x>=temp_targetBeginX and event.x<=temp_targetEndX and event.y>=temp_targetBeginY and event.y<=temp_targetEndY)then
+			if(type(moduleData.doneButtonCheckingFnc)=="function")then
+				local returnData = moduleData.doneButtonCheckingFnc(event)
+				if(type(returnData)~="nil")then
+					return returnData
+				end
+			end
+
 			moduleGroup.hide()
-			if(moduleData.doneButtonCallBackFnc)then
-				moduleData.doneButtonCallBackFnc(event)
+			if(type(moduleData.doneButtonCallBackFnc)=="function")then
+				local returnData = moduleData.doneButtonCallBackFnc(event)
+				if(type(returnData)~="nil")then
+					return returnData
+				end
 			end
 		end
 	end
-	if(moduleData.doneButtonListener)then
-		moduleData.doneButtonListener(event)
+	if(type(moduleData.doneButtonListener)=="function")then
+		local returnData = moduleData.doneButtonListener(event)
+		if(type(returnData)~="nil")then
+			return returnData
+		end
 	end
 	return true
 end
@@ -301,15 +316,31 @@ local function cancelFnc(event)
 		temp_targetEndY = temp_targetBeginY + event.target.height
 		
 		if(event.x>=temp_targetBeginX and event.x<=temp_targetEndX and event.y>=temp_targetBeginY and event.y<=temp_targetEndY)then
+
+			if(type(moduleData.cancelButtonCheckingFnc)=="function")then
+				local returnData = moduleData.cancelButtonCheckingFnc(event)
+				if(type(returnData)~="nil")then
+					return returnData
+				end
+			end
+
 			moduleGroup.hide()
-			if(moduleData.cancelButtonCallBackFnc)then
-				moduleData.cancelButtonCallBackFnc(event)
+
+			if(type(moduleData.cancelButtonCallBackFnc)=="function")then
+				local returnData = moduleData.cancelButtonCallBackFnc(event)
+				if(type(returnData)~="nil")then
+					return returnData
+				end
 			end
 		end
 	end
-	if(moduleData.cancelButtonListener)then
-		moduleData.cancelButtonListener(event)
+	if(type(moduleData.cancelButtonListener)=="function")then
+		local returnData = moduleData.cancelButtonListener(event)
+		if(type(returnData)~="nil")then
+			return returnData
+		end
 	end
+
 	return true
 end
 local function noFnc(event)
@@ -321,10 +352,14 @@ function moduleGroup.popup(newModuleData)
 	moduleData.popupObj = moduleData.popupObj or defaultVaule.popupObj
 	moduleData.popupObjFncType = moduleData.popupObjFncType or defaultVaule.popupObjFncType
 	moduleData.popupObjFnc = moduleData.popupObjFnc or defaultVaule.popupObjFnc
+
 	--background
 	moduleData.bgColor = moduleData.bgColor or defaultVaule.bgColor
 	moduleData.bgAlpha = moduleData.bgAlpha or defaultVaule.bgAlpha
-	moduleData.touchBgNotCancel = moduleData.touchBgNotCancel or defaultVaule.touchBgNotCancel
+	
+	if(moduleData.touchBgNotCancel~="boolean")then
+		moduleData.touchBgNotCancel = defaultVaule.touchBgNotCancel
+	end
 	--pop up background
 	moduleData.popupBgColor = moduleData.popupBgColor or defaultVaule.popupBgColor
 	moduleData.popupBgAlpha = moduleData.popupBgAlpha or defaultVaule.popupBgAlpha
@@ -332,13 +367,16 @@ function moduleGroup.popup(newModuleData)
 	moduleData.popupBgHeight = moduleData.popupBgHeight or defaultVaule.popupBgHeight
 	moduleData.popupBgStrokeWidth = moduleData.popupBgStrokeWidth or defaultVaule.popupBgStrokeWidth
 	moduleData.popupBgStrokeColor = moduleData.popupBgStrokeColor or defaultVaule.popupBgStrokeColor
+
 	--button height
 	moduleData.buttonHeight = moduleData.buttonHeight or defaultVaule.buttonHeight
+
 	--done button
-	moduleData.noDoneButton = moduleData.noDoneButton or defaultVaule.noDoneButton
+	if(type(moduleData.noDoneButton)~="boolean")then
+		moduleData.noDoneButton = defaultVaule.noDoneButton
+	end
 	moduleData.doneButtonText = moduleData.doneButtonText or defaultVaule.doneButtonText
-	moduleData.doneButtonCallBackFnc = moduleData.doneButtonCallBackFnc or defaultVaule.doneButtonCallBackFnc
-	moduleData.doneButtonListener = moduleData.doneButtonListener or defaultVaule.doneButtonListener
+
 	--if done button setting nil get button setting
 	moduleData.doneButtonFont = moduleData.doneButtonFont or moduleData.buttonFont
 	moduleData.doneButtonTextAlign = moduleData.doneButtonTextAlign or moduleData.buttonTextAlign
@@ -351,6 +389,7 @@ function moduleGroup.popup(newModuleData)
 	moduleData.doneButtonTouchAlpha = moduleData.doneButtonTouchAlpha or moduleData.buttonTouchAlpha
 	moduleData.doneButtonTextTouchColor = moduleData.doneButtonTextTouchColor or moduleData.buttonTextTouchColor
 	moduleData.doneButtonTextTouchAlpha = moduleData.doneButtonTextTouchAlpha or moduleData.buttonTextTouchAlpha
+	
 	--if button setting nil get done button default value
 	moduleData.doneButtonFont = moduleData.doneButtonFont or defaultVaule.doneButtonFont
 	moduleData.doneButtonTextAlign = moduleData.doneButtonTextAlign or defaultVaule.doneButtonTextAlign
@@ -363,51 +402,44 @@ function moduleGroup.popup(newModuleData)
 	moduleData.doneButtonTouchAlpha = moduleData.doneButtonTouchAlpha or defaultVaule.doneButtonTouchAlpha
 	moduleData.doneButtonTextTouchColor = moduleData.doneButtonTextTouchColor or defaultVaule.doneButtonTextTouchColor
 	moduleData.doneButtonTextTouchAlpha = moduleData.doneButtonTextTouchAlpha or defaultVaule.doneButtonTextTouchAlpha
+
+
 	--cancel button
-	moduleData.noCancelButton = moduleData.noCancelButton or defaultVaule.noCancelButton
+	if(type(moduleData.noCancelButton)~="boolean")then
+		moduleData.noCancelButton = defaultVaule.noCancelButton
+	end
 	moduleData.cancelButtonText = moduleData.cancelButtonText or defaultVaule.cancelButtonText
-	moduleData.cancelButtonCallBackFnc = moduleData.cancelButtonCallBackFnc or defaultVaule.cancelButtonCallBackFnc
-	moduleData.cancelButtonListener = moduleData.cancelButtonListener or defaultVaule.cancelButtonListener
+
 	--if cancel button setting nil get button setting
-	moduleData.cancelButtonFont = moduleData.cancelButtonFont or moduleData.buttonFont
-	moduleData.cancelButtonTextAlign = moduleData.cancelButtonTextAlign or moduleData.buttonTextAlign
-	moduleData.cancelButtonSize = moduleData.cancelButtonSize or moduleData.buttonSize
-	moduleData.cancelButtonColor = moduleData.cancelButtonColor or moduleData.buttonColor
-	moduleData.cancelButtonAlpha = moduleData.cancelButtonAlpha or moduleData.buttonAlpha
-	moduleData.cancelButtonTextColor = moduleData.cancelButtonTextColor or moduleData.buttonTextColor
-	moduleData.cancelButtonTextAlpha = moduleData.cancelButtonTextAlpha or moduleData.buttonTextAlpha
-	moduleData.cancelButtonTouchColor = moduleData.cancelButtonTouchColor or moduleData.buttonTouchColor
-	moduleData.cancelButtonTouchAlpha = moduleData.cancelButtonTouchAlpha or moduleData.buttonTouchAlpha
-	moduleData.cancelButtonTextTouchColor = moduleData.cancelButtonTextTouchColor or moduleData.buttonTextTouchColor
-	moduleData.cancelButtonTextTouchAlpha = moduleData.cancelButtonTextTouchAlpha or moduleData.buttonTextTouchAlpha
 	--if button setting nil get cancel button default value 
-	moduleData.cancelButtonFont = moduleData.cancelButtonFont or defaultVaule.cancelButtonFont
-	moduleData.cancelButtonTextAlign = moduleData.cancelButtonTextAlign or defaultVaule.cancelButtonTextAlign
-	moduleData.cancelButtonSize = moduleData.cancelButtonSize or defaultVaule.cancelButtonSize
-	moduleData.cancelButtonColor = moduleData.cancelButtonColor or defaultVaule.cancelButtonColor
-	moduleData.cancelButtonAlpha = moduleData.cancelButtonAlpha or defaultVaule.cancelButtonAlpha
-	moduleData.cancelButtonTextColor = moduleData.cancelButtonTextColor or defaultVaule.cancelButtonTextColor
-	moduleData.cancelButtonTextAlpha = moduleData.cancelButtonTextAlpha or defaultVaule.cancelButtonTextAlpha
-	moduleData.cancelButtonTouchColor = moduleData.cancelButtonTouchColor or defaultVaule.cancelButtonTouchColor
-	moduleData.cancelButtonTouchAlpha = moduleData.cancelButtonTouchAlpha or defaultVaule.cancelButtonTouchAlpha
-	moduleData.cancelButtonTextTouchColor = moduleData.cancelButtonTextTouchColor or defaultVaule.cancelButtonTextTouchColor
-	moduleData.cancelButtonTextTouchAlpha = moduleData.cancelButtonTextTouchAlpha or defaultVaule.cancelButtonTextTouchAlpha
+	moduleData.cancelButtonFont = moduleData.cancelButtonFont or moduleData.buttonFont or defaultVaule.cancelButtonFont or default.buttonFont
+	moduleData.cancelButtonTextAlign = moduleData.cancelButtonTextAlign or moduleData.buttonTextAlign or defaultVaule.cancelButtonTextAlign or default.buttonTextAlign
+	moduleData.cancelButtonSize = moduleData.cancelButtonSize or moduleData.buttonSize or defaultVaule.cancelButtonSize or default.buttonSize
+	moduleData.cancelButtonColor = moduleData.cancelButtonColor or moduleData.buttonColor or defaultVaule.cancelButtonColor or default.buttonColor
+	moduleData.cancelButtonAlpha = moduleData.cancelButtonAlpha or moduleData.buttonAlpha or defaultVaule.cancelButtonAlpha or default.buttonAlpha
+	moduleData.cancelButtonTextColor = moduleData.cancelButtonTextColor or moduleData.buttonTextColor or defaultVaule.cancelButtonTextColor or default.buttonTextColor
+	moduleData.cancelButtonTextAlpha = moduleData.cancelButtonTextAlpha or moduleData.buttonTextAlpha or defaultVaule.cancelButtonTextAlpha or default.buttonTextAlpha
+	moduleData.cancelButtonTouchColor = moduleData.cancelButtonTouchColor or moduleData.buttonTouchColor or defaultVaule.cancelButtonTouchColor or default.buttonTouchColor
+	moduleData.cancelButtonTouchAlpha = moduleData.cancelButtonTouchAlpha or moduleData.buttonTouchAlpha or defaultVaule.cancelButtonTouchAlpha or default.buttonTouchAlpha
+	moduleData.cancelButtonTextTouchColor = moduleData.cancelButtonTextTouchColor or moduleData.buttonTextTouchColor or defaultVaule.cancelButtonTextTouchColor or default.buttonTextTouchColor
+	moduleData.cancelButtonTextTouchAlpha = moduleData.cancelButtonTextTouchAlpha or moduleData.buttonTextTouchAlpha or defaultVaule.cancelButtonTextTouchAlpha or default.buttonTextTouchAlpha
+
+
 	--iso line
 	moduleData.buttonIsoLineWidth = moduleData.buttonIsoLineWidth or defaultVaule.buttonIsoLineWidth
 	moduleData.buttonIsoLineColor = moduleData.buttonIsoLineColor or defaultVaule.buttonIsoLineColor
+	
 	--animation
 	moduleData.displayAnimation = moduleData.displayAnimation or defaultVaule.displayAnimation
 	moduleData.displayAnimationTime = moduleData.displayAnimationTime or defaultVaule.displayAnimationTime
-	moduleData.displayListener = moduleData.displayListener or defaultVaule.displayListener
 
 	moduleData.hideAnimation = moduleData.hideAnimation or defaultVaule.hideAnimation
 	moduleData.hideAnimationTime = moduleData.hideAnimationTime or defaultVaule.hideAnimationTime
 	
 	
-	moduleData.popupBgImagePath = moduleData.popupBgImagePath or defaultVaule.popupBgImagePath
-	moduleData.doneButtonImagePath = moduleData.doneButtonImagePath or defaultVaule.doneButtonImagePath
-	moduleData.cancelButtonImagePath = moduleData.cancelButtonImagePath or defaultVaule.cancelButtonImagePath
 	
+
+
 	displayGroup = display.newGroup()
 	if(not popupGroup)then
 		popupGroup = display.newGroup()

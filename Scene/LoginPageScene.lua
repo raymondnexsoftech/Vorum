@@ -122,6 +122,13 @@ local function forgetPasswordPopupDoneFnc()
 	newNetworkFunction.forgetPassword(forgetPassword_popup_textField_username.text, forgetPasswordListener)
 end
 
+local function forgetPasswordPopupCheckingFnc()
+	local atPos = string.find(forgetPassword_popup_textField_username.text,"@",1,true)
+	if(not atPos)then
+		native.showAlert(localization.getLocalization("inputCheck_emailNoAtTitle"),localization.getLocalization("inputCheck_emailNoAt"),{localization.getLocalization("ok")})
+		return false
+	end
+end
 
 local function popupKeyEvent(event)
 	if event.phase == "up" and event.keyName == "back" then
@@ -138,6 +145,7 @@ end
 local function popup_hideListener()
 	hardwareButtonHandler.removeCallback(popupKeyEvent)
 end
+
 forgetPasswordPopupFnc = function ()
 	
 	forgetPassword_popupGroup = popup.getPopupGroup()
@@ -164,6 +172,7 @@ forgetPasswordPopupFnc = function ()
 		cancelButtonText = localization.getLocalization("cancel"),
 		doneButtonImagePath = "Image/Popup/linkAccountPromptRightBtn.png",
 		cancelButtonImagePath = "Image/Popup/linkAccountPromptLeftBtn.png",
+		doneButtonCheckingFnc = forgetPasswordPopupCheckingFnc,
 		doneButtonCallBackFnc = forgetPasswordPopupDoneFnc,
 		touchBgNotCancel = true,
 		displayListener = popup_displayListener,
