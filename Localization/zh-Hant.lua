@@ -44,7 +44,7 @@ return {
 					login_forgetPassword = "忘記密碼",
 					login_signIn = "登入",
 					login_createAccount = "創建帳戶",
-					login_loginWithFacebook = "臉書登入",
+					login_loginWithFacebook = "Facebook登入",
 					login_username_textField_placeholder = "電郵地址",
 					login_password_textField_placeholder = "密碼",
 					login_loginExpired = "登入逾時",
@@ -146,7 +146,7 @@ return {
 					aboutVorum_appIntro = "Vorum是一個投票的論壇。 收集大家對各種事物的意見和看法。",
 					aboutVorum_appDesc = "Vorum是第一個分享益處的手機應用程式。 所有的使用者都有機會透過分享他們的意見和見法來獲得益處。",
 					aboutVorum_contactWay = "尋找更多資料:",
-					aboutVorum_facebookContact = "臉書: ",
+					aboutVorum_facebookContact = "Facebook: ",
 					aboutVorum_emailContact = "電郵: ",
 					aboutVorum_websiteContact  = "網站: ",
 					------ profile scene
@@ -361,9 +361,9 @@ return {
 
 					--facebook share
 					facebookShareSuccessTitle = "分享成功",
-					facebookShareSuccessDesc = "成功分享到臉書。",
+					facebookShareSuccessDesc = "成功分享到Facebook。",
 					facebookShareErrorTitle = "分享失敗",
-					facebookShareErrorDesc = "分享到臉書失敗。",
+					facebookShareErrorDesc = "分享到Facebook失敗。",
 
 					--
 					noPost = "沒有帖子",
