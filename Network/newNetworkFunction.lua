@@ -499,6 +499,10 @@ function networkFunction.signup(userData, listener)
 	return networkHandler.requestNetwork(apiParams, signupListener, "register")
 end
 
+function networkFunction.getSessionToken()
+	return sessionToken
+end
+
 -- format of params:
 --   email
 --   password
