@@ -32,15 +32,19 @@ end
 local EMOJI_UNICODE_RANGE = {
 								{169, 169},				-- circled "C"
 								{174, 174},				-- circled "R"
-								{8482, 12953},			-- Uncategorized 1
+								{8482, 11904},			-- Uncategorized 1
 								-- {9986, 10160},			-- Dingbats, enclosed in Uncategorized
-								{126980, 128591},			-- Emoticons + Uncategorized 2 + Additional emoticons
+								-- {3030, 3030},		-- \
+								-- {303D, 303D},		--  \
+								-- {3297, 3297},		--   These are emojis, but not filtered right now
+								-- {3299, 3299},		--  /
+								{126980, 128591},		-- Emoticons + Uncategorized 2 + Additional emoticons
 								-- {126980, 128511},		-- Uncategorized 2
 								-- -- {127344, 127569},		-- Enclosed characters, enclosed in Uncategorized 2
 								-- -- {127757, 128359},			-- Other additional symbols, enclosed in Uncategorized 2
 								-- {128513, 128591},		-- Emoticons
 								-- -- {128512, 128566},		-- Additional emoticons, enclosed in Emoticons
-								{128640, 128709},			-- Transport and map + Additional transport and map
+								{128640, 128709},		-- Transport and map + Additional transport and map
 								-- {128640, 128704},		-- Transport and map
 								-- {128641, 128709},		-- Additional transport and map
 								{65024, 65039},			-- Variation Selector
