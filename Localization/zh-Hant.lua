@@ -164,8 +164,8 @@ return {
 					cat_all = "全部",
 					cat_30mins = "30分鐘",
 					cat_anonymous = "匿名",
-					cat_appraisal = "鑑定",
-					cat_general = "一般",
+					cat_appraisal = "評核",
+					cat_general = "總匯",
 					-- cat_shopping = "Shopping",
 					-- cat_news = "News",
 					-- cat_sport = "Sport",
@@ -369,9 +369,9 @@ return {
 					noPost = "沒有帖子",
 					
 					-- Tag
-					Appraisal = "評價",
+					Appraisal = "評核",
 					Anonymous = "匿名",
-					General = "一般",
+					General = "總匯",
 					["30mins"] = "30 分鐘",
 					All = "所有",
 					
