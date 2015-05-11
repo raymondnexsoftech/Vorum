@@ -367,7 +367,7 @@ local function unregisterPushDevice(params, listener)
 								body = json.encode(params)
 							}
 	apiParams[1].url = API_DEVICE_BASE
-	apiParams[1].method = "DELETE"
+	apiParams[1].method = "POST"
 	pushDeviceRequest = networkHandler.requestNetwork(apiParams, listener, "unregisterPushDevice")
 end
 local function unregisterDevice()
@@ -1103,6 +1103,13 @@ end
 function networkFunction.getFriendPost(params, listener)
 	local dataToSend = {
 							apiEndPoint = "friend",
+							params = deepCopyTable(params)
+						}
+	return performNetworkFunction(meTabGetPost, dataToSend, createGetPostListener(listener))
+end
+function networkFunction.getMemberPost(memberId, params, listener)
+	local dataToSend = {
+							apiEndPoint = "user/" .. tostring(memberId),
 							params = deepCopyTable(params)
 						}
 	return performNetworkFunction(meTabGetPost, dataToSend, createGetPostListener(listener))
