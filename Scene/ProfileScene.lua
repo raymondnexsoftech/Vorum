@@ -150,7 +150,7 @@ local function createPostFnc(postData)
 	postView.newPost(scrollView, userId, postData, listenerTable)
 end
 
-local function getMemberPostListener(event)
+local function getMemberProfileListener(event)
 	setActivityIndicatorFnc(false)
 
 	if (event.isError) then
@@ -158,27 +158,34 @@ local function getMemberPostListener(event)
 	else
 		scrollView:resetDataRequestStatus()
 		personPart.updateMemberProfileListener(event)
-		if (event.postData) then
+	end
+end
 
-			for i = 1,#event.postData do
-				createPostFnc(event.postData[i])
-			end
-		else
-			-- print(event[1].response)
+local function getMemberPostListener(event)
+	if (event.postData) then
+
+		for i = 1,#event.postData do
+			createPostFnc(event.postData[i])
 		end
+	else
+		-- print(event[1].response)
 	end
 end
 
 local function requestOldPost()
 	print("Old")
-	newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberPostListener)
+	-- newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberProfileListener)
+	local params = {}
+	newNetworkFunction.getMemberPost(memberId, params, getMemberPostListener)
 end
 
 local function reloadNewPost()
 	print("New")
 	setActivityIndicatorFnc(true)
 	scrollView:deleteAllPost()
-	newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberPostListener)
+	newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberProfileListener)
+	local params = {}
+	newNetworkFunction.getMemberPost(memberId, params, getMemberPostListener)
 end
 
 local function svListener(event)
