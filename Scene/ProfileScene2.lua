@@ -39,8 +39,7 @@ local postButton = require("Function.postButton")
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
-local getPostNum = 6
-local getNewPostNum = 6
+local getNewPostNum = 6 -- it also the first get post number
 local getOldPostNum = 6
 
 ---------------------------------------------------------------

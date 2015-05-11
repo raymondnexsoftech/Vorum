@@ -190,12 +190,16 @@ local function getFilterData(getType)
 			filterData.tag = temp_catData.tags
 		end
 	end
-	if(temp_vorumFilter)then
-		if(temp_vorumFilter.searchType=="myCountry")then
-			filterData.isMyCountry = true
-		end
+
+	filterData.isMyCountry = filterOption:getChosenId()	
+
+	if(filterData.isMyCountry == "myCountry" or filterData.isMyCountry == 2)then
+		filterData.isMyCountry = true
+	else
+		filterData.isMyCountry = false
 	end
-	print(filterData.sort,filterData.tag,filterData.isMyCountry)
+
+
 end
 
 
@@ -232,12 +236,12 @@ local function getVorumPostListener(event)
 				end
 				return
 			end
-			print("before",filterData.pushed_time)
+
 			for i = 1, #event.postData do
 				createPostFnc(event.postData[i])
 			end
 			filterData.pushed_time = event.postData[#event.postData].pushed_time-1
-			print("after",filterData.pushed_time)
+
 		else
 			print(event[1].response)
 		end
@@ -250,10 +254,21 @@ local function requestOldPost()
 end
 local function reloadNewPost()
 	cancelAllLoad()
+
+
 	setActivityIndicatorFnc(true)
 	isNotShownNoPost = false
 	getFilterData("new")
 	scrollView:deleteAllPost()
+
+	if(filterData.isMyCountry)then
+		if(userData.country=="" or userData.country==nil)then
+			setActivityIndicatorFnc(false)
+			noPostShowFnc()
+			return
+		end
+	end
+
 	newNetworkFunction.getVorumPost(filterData,getVorumPostListener)
 end
 function scene.refresh()
@@ -375,12 +390,12 @@ function scene:createScene( event )
 		fontSize = 28.06,
 		textColor = { 1, 1, 1},
 		choiceOffset = 2,
-		default = filterChoice,
-		defaultListener = setDefaultFilterFnc,
+		-- default = filterChoice,
+		-- defaultListener = setDefaultFilterFnc,
 	}
 	filterOption = optionModule.new(filterOption)
 	scrollView:setScrollViewHead(filterOption, 100)
-	
+	filterOption:setDefault(filterChoice,setDefaultFilterFnc)
 
 	sceneGroup:insert(scrollView)
 	--set header and tabber toFront
