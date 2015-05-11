@@ -239,7 +239,7 @@ local deletePhoto = function(event)
 		setActivityIndicatorFnc(true)--set activity true to show loading
 		
 		removeDisplayPhoto()
-		
+		removeDataPhoto("delete")
 		
 		setActivityIndicatorFnc(false)
 		
