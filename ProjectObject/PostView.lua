@@ -664,9 +664,9 @@ end
 
 local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
 	local imgX, imgY = CHOICE_PIC_WIDTH - choicePosAndSize.x, CHOICE_PIC_HEIGHT - choicePosAndSize.y
-	if ((origBg ~= nil) and (origBg.parent ~= nil)) then
-		origBg.alpha = 0
-	end
+	-- if ((origBg ~= nil) and (origBg.parent ~= nil)) then
+	-- 	origBg.alpha = 0
+	-- end
 	if (img) then
 		local choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
 		choiceBgCover.alpha = 0.7
@@ -689,6 +689,10 @@ local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
 	img.maskY = -imgY / img.yScale
 	choiceGroup:insert(img)
 	img:toBack()
+	if ((origBg ~= nil) and (origBg.parent ~= nil)) then
+		origBg.alpha = 0.01
+		origBg:toBack()
+	end
 	return img
 end
 
