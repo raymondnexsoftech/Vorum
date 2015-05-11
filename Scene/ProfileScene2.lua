@@ -71,6 +71,13 @@ local listenerTable
 local backSceneHeaderOption
 
 local loadingIcon
+
+local isNotShownNoPost = false
+
+local getPostParams = {}
+getPostParams.pushed_time = nil
+getPostParams.limit = 0
+
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -85,6 +92,27 @@ local function scrollViewToTop()
 		local header = headTabFnc.getHeader()
 		scrollView:scrollToPosition({y = header.height-group_personPart.height/2, time = 200})
 	end
+end
+
+
+local function noPostShowFnc()
+	local noPostGroup = display.newGroup()
+	local noPostText = {
+		parent = noPostGroup,
+		text = localization.getLocalization("noPost"),     
+		x = display.contentCenterX,
+		y = display.contentCenterY-group_personPart.height,
+		width = 0, 
+		height = 0,
+		font = "Helvetica",   
+		fontSize = 108,
+	}
+
+	noPostText = display.newText( noPostText )
+	noPostText.anchorX = 0.5
+	noPostText.anchorY = 0.5
+	noPostText:setFillColor( 0, 0, 0 )
+	scrollView:addNewPost(noPostGroup, noPostText.y+noPostText.height)
 end
 
 local function setActivityIndicatorFnc(boolean_loadingSwitch)
@@ -150,7 +178,7 @@ local function createPostFnc(postData)
 	postView.newPost(scrollView, userId, postData, listenerTable)
 end
 
-local function getMemberPostListener(event)
+local function getMemberProfileListener(event)
 	setActivityIndicatorFnc(false)
 
 	if (event.isError) then
@@ -158,27 +186,50 @@ local function getMemberPostListener(event)
 	else
 		scrollView:resetDataRequestStatus()
 		personPart.updateMemberProfileListener(event)
-		if (event.postData) then
+	end
+end
 
-			for i = 1,#event.postData do
-				createPostFnc(event.postData[i])
+local function getMemberPostListener(event)
+	if (type(event.postData)=="table") then
+		print("dd",json.encode(event.postData))
+		if(#event.postData==0)then
+			if(not isNotShownNoPost)then
+				noPostShowFnc()
 			end
-		else
-			-- print(event[1].response)
+			return
 		end
+
+		for i = 1,#event.postData do
+			createPostFnc(event.postData[i])
+		end
+
+		getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
+	else
+		-- print(event[1].response)
 	end
 end
 
 local function requestOldPost()
 	print("Old")
-	newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberPostListener)
+	isNotShownNoPost = true
+	getPostParams.limit = getOldPostNum
+	newNetworkFunction.getMemberPost(memberId, getPostParams, getMemberPostListener)
 end
 
 local function reloadNewPost()
 	print("New")
+	cancelAllLoad()
+
 	setActivityIndicatorFnc(true)
+
+	isNotShownNoPost = false
+
 	scrollView:deleteAllPost()
-	newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberPostListener)
+	newNetworkFunction.getMemberDataWithFriendStatus(memberId,getMemberProfileListener)
+	
+	getPostParams.pushed_time = nil
+	getPostParams.limit = getNewPostNum
+	newNetworkFunction.getMemberPost(memberId, getPostParams, getMemberPostListener)
 end
 
 local function svListener(event)

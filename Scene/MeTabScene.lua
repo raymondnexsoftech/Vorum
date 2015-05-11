@@ -174,7 +174,7 @@ local function noPostShowFnc()
 	noPostText.anchorX = 0.5
 	noPostText.anchorY = 0.5
 	noPostText:setFillColor( 0, 0, 0 )
-	scrollView:addNewPost(noPostGroup, display.contentHeight)
+	scrollView:addNewPost(noPostGroup, noPostText.y+noPostText.height)
 end
 --------------------- listener 
 -- my post
@@ -194,7 +194,7 @@ local function getMyPostListener(event)
 			for i = 1,#event.postData do
 				createPostFnc(event.postData[i])
 			end
-			getPostParams.pushed_time = event.postData[#event.postData].pushed_time-1
+			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
 			
 		else
 			print(event[1].response)
@@ -209,7 +209,6 @@ local function getVotedPostListener(event)
 	else
 		scrollView:resetDataRequestStatus()
 		if (type(event.postData)=="table") then
-			print("#event.postData",#event.postData)
 			if(#event.postData==0)then
 				
 				if(not isNotShownNoPost)then
@@ -217,12 +216,12 @@ local function getVotedPostListener(event)
 				end
 				return false
 			end
-			print("before",getPostParams.pushed_time,json.encode(event.postData))
+
 			for i = 1,#event.postData do
 				createPostFnc(event.postData[i],#event.postData)
 			end			
-			getPostParams.pushed_time = event.postData[#event.postData].pushed_time-1
-			print("after",getPostParams.pushed_time)
+			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
+			
 		end
 	end
 end
@@ -241,7 +240,7 @@ local function getFriendPostListener(event)
 			for i = 1,#event.postData do
 				createPostFnc(event.postData[i])
 			end
-			getPostParams.pushed_time = event.postData[#event.postData].pushed_time-1
+			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
 		else
 			print("no post data")
 		end

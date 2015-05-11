@@ -216,7 +216,7 @@ local function noPostShowFnc()
 	noPostText.anchorX = 0.5
 	noPostText.anchorY = 0.5
 	noPostText:setFillColor( 0, 0, 0 )
-	scrollView:addNewPost(noPostGroup, display.contentHeight)
+	scrollView:addNewPost(noPostGroup, noPostText.y+noPostText.height)
 end
 
 local function getVorumPostListener(event)
