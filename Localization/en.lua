@@ -117,7 +117,7 @@ return {
 					
 					setting_tutorial = "Tutorial",
 					setting_redemption = "Redemption",
-					setting_aboutVorum = "About VORUM",
+					setting_aboutVorum = "About Vorum",
 					setting_contact = "Contact",
 					setting_signOut = "Sign Out",
 					--
