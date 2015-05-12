@@ -40,10 +40,10 @@ function moduleGroup.back()
 	
 end
 
-function moduleGroup.go(sceneOptions,curData,passData,creatorId)
+function moduleGroup.go(sceneOptions,curData,passData,creatorId,goSceneEffectOption)
 
 
-	if(type(curData)=="table")then
+	if(type(curData)=="table" and creatorId)then
 		local curUserId = curData.id or curData.user_id
 		curUserId = tonumber(curUserId)
 		creatorId = tonumber(creatorId)
@@ -58,10 +58,21 @@ function moduleGroup.go(sceneOptions,curData,passData,creatorId)
 	sceneOptions.params = curData
 	tableSave.push(global.sceneTransDataPath,global.TEMPBASEDIR,sceneOptions)
 	
+	newSceneOptions.params = passData
 	newSceneOptions.effect = "slideLeft"
     newSceneOptions.time = 400
-	newSceneOptions.params = passData
 	
+	
+
+    if(type(goSceneEffectOption)=="table")then
+    	if(type(goSceneEffectOption.effect)=="string")then
+    		newSceneOptions.effect = goSceneEffectOption.effect
+    	end
+    	if(type(goSceneEffectOption.time)=="number")then
+    		newSceneOptions.time = goSceneEffectOption.time
+    	end
+    end
+
 	if(sceneOptions.sceneName == "ProfileScene2")then
 		storyboard.gotoScene("Scene.ProfileScene",newSceneOptions)
 	elseif(sceneOptions.sceneName == "ProfileScene")then
@@ -73,9 +84,9 @@ function moduleGroup.go(sceneOptions,curData,passData,creatorId)
 end
 
 
-function moduleGroup.goPost(sceneOptions,curData,passData,creatorId)
+function moduleGroup.goPost(sceneOptions,curData,passData,creatorId,goSceneEffectOption)
 	
-	if(type(curData)=="table")then
+	if(type(curData)=="table" and creatorId)then
 		local curUserId = curData.id
 		curUserId = tonumber(curUserId)
 		creatorId = tonumber(creatorId)
@@ -89,9 +100,20 @@ function moduleGroup.goPost(sceneOptions,curData,passData,creatorId)
 	sceneOptions.params = curData
 	tableSave.push(global.sceneTransDataPath,global.TEMPBASEDIR,sceneOptions)
 	
+	newSceneOptions.params = passData
 	newSceneOptions.effect = "slideLeft"
     newSceneOptions.time = 400
-    newSceneOptions.params = passData
+    
+
+    if(type(goSceneEffectOption)=="table")then
+    	if(type(goSceneEffectOption.effect)=="string")then
+    		newSceneOptions.effect = goSceneEffectOption.effect
+    	end
+    	if(type(goSceneEffectOption.time)=="number")then
+    		newSceneOptions.time = goSceneEffectOption.time
+    	end
+    end
+
 
 	if(sceneOptions.sceneName == "OnePostScene2" )then
 		storyboard.gotoScene("Scene.OnePostScene",newSceneOptions)

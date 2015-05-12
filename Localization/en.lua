@@ -108,9 +108,14 @@ return {
 				
 					------- notice scene
 					notice_headerTitle = "Notification",
+
+					notice_action_postVoted = " voted your post.",
+					notice_action_postShare = " shared your post.",
+					notice_action_postExpired = "Your post expired.",
 					notice_action_addFriend = " added you as a friend.",
-					notice_action_voting = " voted your post.",
+					notice_action_acceptFriend = " accepted you as friend.",
 					notice_action_newCoupon = "You own a new coupon from ",
+					notice_action_newCoupon2 = ".",
 					------- setting scene
 					setting_headerTitle = "Setting",
 					setting_edit_button = "Edit",

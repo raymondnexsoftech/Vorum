@@ -111,9 +111,14 @@ return {
 				
 					------- notice scene
 					notice_headerTitle = "通知",
-					notice_action_addFriend = " added you as a friend.",
-					notice_action_voting = " voted your post.",
-					notice_action_newCoupon = "You own a new coupon from ",
+					
+					notice_action_postVoted = " 已經對你的帖子投票。",
+					notice_action_postShare = " 分享你的帖子。",
+					notice_action_postExpired = "你的帖子已經停止投票。",
+					notice_action_addFriend = " 遨請你作為朋友。",
+					notice_action_acceptFriend = " 接受你作為朋友。",
+					notice_action_newCoupon = "你取得一個來自",
+					notice_action_newCoupon2 = "的優惠卷。",
 					------- setting scene
 					setting_headerTitle = "設定",
 					setting_edit_button = "修改",

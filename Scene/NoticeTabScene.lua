@@ -9,7 +9,7 @@
 
 -- Local Constant Setting
 local LOCAL_SETTINGS = {
-						NAME = "NoticicationScene",			-- Scene name to show in console
+						NAME = "NoticTabScene",			-- Scene name to show in console
 						RES_DIR = "",					-- Common resource directory for scene
 						DOC_DIR = "",					-- Common document directory for scene
 						}
@@ -34,6 +34,7 @@ local newNetworkFunction = require("Network.newNetworkFunction")
 local fncForLocalization = require("Misc.FncForLocalization")
 local sizableActivityIndicatorFnc = require("Module.SizableActivityIndicator")
 local noticeBadge = require("ProjectObject.NoticeBadge")
+local navScene = require("Function.NavScene")
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
@@ -58,9 +59,15 @@ local userId
 
 
 local loadingIcon
--- action 1 is adding friend
--- action 2 is voting
--- action 3 is getting a new coupon
+
+
+local newSceneOption = {
+	effect = "fade",
+	time = 400,
+}
+
+local sceneOptions = {}
+sceneOptions.sceneName = "NoticTabScene"
 
 ---------------------------------------------------------------
 -- Functions Prototype
@@ -101,33 +108,84 @@ local function cancelAllLoad()
 	networkFunction.cancelAllConnection()
 end
 
+
 local function noticCreation(noticData)
+
+
+	local function goCouponScene(event)
+		if (event.phase == "moved") then
+			local dy = math.abs( ( event.y - event.yStart ) )
+	        if ( dy > 10 ) then
+	            scrollView:takeFocus( event )
+	        end
+		elseif (event.phase == "ended") then
+			
+		end
+		return true
+	end
+
+
+	local function goProfileScene(event)
+		if (event.phase == "moved") then
+			local dy = math.abs( ( event.y - event.yStart ) )
+	        if ( dy > 10 ) then
+	            scrollView:takeFocus( event )
+	        end
+		elseif (event.phase == "ended") then
+			navScene.go(sceneOptions,nil,noticData.member,nil,newSceneOption)
+		end
+		return true
+	end
+
+	local function goOnePostScene(event)
+		if (event.phase == "moved") then
+			local dy = math.abs( ( event.y - event.yStart ) )
+	        if ( dy > 10 ) then
+	            scrollView:takeFocus( event )
+	        end
+		elseif (event.phase == "ended") then
+			navScene.goPost(sceneOptions,nil,noticData,nil,newSceneOption)
+		end
+		return true
+	end
+
 
 	local user_icon_background 
 	local user_icon
 	local user_icon_savePath = "user/" .. tostring(noticData.user_id) .. "/img"
+	local userGender
+
+
 
 	local thisPostGroup = display.newGroup()
 ------------ black underline
+
+	local thisGroupBg = display.newRect( thisPostGroup, 0, 0, display.contentWidth, ROW_HEIGHT )
+	thisGroupBg.anchorX = 0
+	thisGroupBg.anchorY = 0
+	thisGroupBg:setFillColor( 1,1,1 )
+
+
 	local topLine = display.newLine(0,0,display.contentWidth,0)
 	topLine:setStrokeColor( 0,0,0 )
 	topLine.strokeWidth = 2
-	topLine.anchorX=0
-	topLine.anchorY=0
+	topLine.anchorX = 0
+	topLine.anchorY = 0
 	thisPostGroup:insert( topLine )
 	
 	local downLine = display.newLine(0,ROW_HEIGHT,display.contentWidth,ROW_HEIGHT)
 	downLine:setStrokeColor( 0,0,0 )
 	downLine.strokeWidth = 2
-	downLine.anchorX=0
-	downLine.anchorY=0
+	downLine.anchorX = 0
+	downLine.anchorY = 0
 	thisPostGroup:insert( downLine )
 -------------- icon blue background
 	
 	user_icon_background = display.newCircle(thisPostGroup, 73, ROW_HEIGHT/2, 58)
 	user_icon_background.anchorX = 0.5
 	user_icon_background.anchorY = 0.5
-	user_icon_background:setFillColor(88/255, 175/255, 231/255)
+
+	
 
 
 	local userIconFnc = function(fileInfo)
@@ -172,72 +230,67 @@ local function noticCreation(noticData)
 		userIconFnc(userIconInfo)
 	end
 
-	
-	----------------- when action is adding friend
-	if (noticData.action == 1) then
-		local text_action_addFriend =
-		{
-			text = noticData.username..localization.getLocalization("notice_action_addFriend"), 
-			x = 161,
-			y = 25,
-			width = 300,
-			height = 85, 
-			font = "Helvetica",
-			fontSize=30
-		}
 
-		text_action_addFriend = display.newText(text_action_addFriend);
-		text_action_addFriend:setFillColor( 104/255, 104/255, 104/255 )
-		text_action_addFriend.anchorX=0
-		text_action_addFriend.anchorY=0
-		thisPostGroup:insert( text_action_addFriend )
-	
-	--------------- when action is voting
-	elseif (noticData.action == 2) then
-		local text_action_voting =
-		{
-			text = noticData.username..localization.getLocalization("notice_action_voting"), 
-			x = 161,
-			y = 25,
-			width = 300,
-			height = 85, 
-			font = "Helvetica",
-			fontSize=30
-		}
+	local text_actionMessage = {
+		text = "", 
+		x = 161,
+		y = 25,
+		width = 300,
+		height = 85, 
+		font = "Helvetica",
+		fontSize=30
+	}
 
-		text_action_voting = display.newText(text_action_voting);
-		text_action_voting:setFillColor( 104/255, 104/255, 104/255 )
-		text_action_voting.anchorX=0
-		text_action_voting.anchorY=0
-		thisPostGroup:insert( text_action_voting )
+	text_actionMessage = display.newText(text_actionMessage);
+	text_actionMessage:setFillColor( 104/255, 104/255, 104/255 )
+	text_actionMessage.anchorX = 0
+	text_actionMessage.anchorY = 0
+	thisPostGroup:insert( text_actionMessage )
 	
-
-	
-	--------------- when action is having new coupon
-	elseif (noticData.action == 3) then
-		local text_action_newCoupon =
-		{
-			text = localization.getLocalization("notice_action_newCoupon")..noticData.username,
-			x = 161,
-			y = 25,
-			width = 300,
-			height = 85, 
-			font = "Helvetica",
-			fontSize=28
-		}
-
-		text_action_newCoupon = display.newText(text_action_newCoupon);
-		text_action_newCoupon:setFillColor( 104/255, 104/255, 104/255 )
-		text_action_newCoupon.anchorX=0
-		text_action_newCoupon.anchorY=0
-		thisPostGroup:insert( text_action_newCoupon )
-	
+	if(type(noticData.member)=="table")then
+		userGender = noticData.member.gender
 	end
+	if (noticData.type == "post_voted") then
+		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_postVoted")
+		thisGroupBg:addEventListener( "touch", goOnePostScene )
+	
+	elseif (noticData.type == "post_share") then
+		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_postShare")
+		thisGroupBg:addEventListener( "touch", goOnePostScene )
+	
+	elseif (noticData.type == "post_expired")then
+		text_actionMessage.text = localization.getLocalization("notice_action_postExpired")
+		thisGroupBg:addEventListener( "touch", goOnePostScene )
+
+	elseif (noticData.type == "friend_request") then
+		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_addFriend")
+		thisGroupBg:addEventListener( "touch", goProfileScene )
+
+	elseif (noticData.type == "friend_accept")then
+		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_acceptFriend")
+		thisGroupBg:addEventListener( "touch", goProfileScene )
+
+	elseif (noticData.type == "new_coupon") then
+		text_actionMessage.text = localization.getLocalization("notice_action_newCoupon")..noticData.member.name..localization.getLocalization("notice_action_newCoupon2")
+		thisGroupBg:addEventListener( "touch", goCouponScene )
+	end
+
+
+	if(string.upper(tostring(userGender))=="M")then
+		user_icon_background:setFillColor(unpack(global.maleColor))
+	elseif(string.upper(tostring(userGender))=="F")then
+		user_icon_background:setFillColor(unpack(global.femaleColor))
+	else
+		user_icon_background:setFillColor(unpack(global.noGenderColor))
+	end
+
 	--------------- post time
-	local tempTimeString = fncForLocalization.getPostCreatedAt(create_time,0)
+	local tempTimeString = fncForLocalization.getPostCreatedAt(noticData.createdAt,0)
+
 	if(not tempTimeString)then
 		tempTimeString = ""
 	end
+
 	local text_timeAgo =
 	{
 		text = tostring(tempTimeString), 
@@ -264,7 +317,7 @@ end
 local function getNotificationListListener(event)
 	print(event[1].response)
 	setActivityIndicatorFnc(false)
-	print("set false")
+
 	if (event.isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
@@ -281,7 +334,7 @@ end
 local function reloadNewPost()
 	cancelAllLoad()
 	setActivityIndicatorFnc(true)
-	print("set true")
+
 	scrollView:deleteAllPost()
 	newNetworkFunction.getNotificationList(getNotificationListListener)
 end
