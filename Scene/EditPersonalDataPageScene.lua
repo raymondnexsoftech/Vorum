@@ -807,15 +807,20 @@ function scene:createScene( event )
 	-- the following 2 variables are for calculating the properties of the edit area
 	local editAreaCenter = (text_profile.y + text_profile.contentHeight * (1 - text_profile.anchorY)) - 50
 
-	local back_button = widget.newButton
-	{
-		defaultFile = "Image/RegisterPage/backButton.png",
-		overFile = "Image/RegisterPage/backButton.png",
-		onEvent = goBackSettingScene,
-	}
-	back_button.x = 35
-	back_button.y = editAreaCenter - display.contentHeight * 0.5 + 90
+	-- local back_button = widget.newButton
+	-- {
+	-- 	defaultFile = "Image/RegisterPage/backButton.png",
+	-- 	overFile = "Image/RegisterPage/backButton.png",
+	-- 	onEvent = goBackSettingScene,
+	-- }
+	-- back_button.x = 35
+	-- back_button.y = editAreaCenter - display.contentHeight * 0.5 + 90
+	-- back_button.anchorX=0
+	-- displayGroup:insert(back_button)
+	local back_button = display.newText(localization.getLocalization("post_back"), 35, editAreaCenter - display.contentHeight * 0.5 + 90, "Helvetica", 32)
 	back_button.anchorX=0
+	back_button:setFillColor(0.4)
+	back_button:addEventListener("touch", goBackSettingScene)
 	displayGroup:insert(back_button)
 
 	local text_title_updateInfo_property =
