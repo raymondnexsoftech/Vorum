@@ -38,6 +38,7 @@ local sizableActivityIndicatorFnc = require("Module.SizableActivityIndicator")
 local optionModule = require("Module.Option")
 local newNetworkFunction = require("Network.newNetworkFunction")
 local hardwareButtonHandler = require("ProjectObject.HardwareButtonHandler")
+local geolocationUtility = require("SystemUtility.GeolocationUtility")
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
@@ -81,6 +82,11 @@ local temp_userIconUrl
 
 local profile_button_addPhoto
 local havePhoto = false
+
+
+
+local setupCountry_checkbox_trueBox
+local needSetupCountry = false
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -201,7 +207,11 @@ local function updateUserListener(event)
 			end
 			userData.dateOfBirth = newUserData.dateOfBirth
 		end
-		
+
+		if(newUserData.country)then
+			userData.country = newUserData.country
+		end	
+
 		if(profilePicPath=="")then
 			userData.profile_pic = nil
 		end
@@ -219,6 +229,8 @@ end
 local function updateUserData()
 	newNetworkFunction.updateUserData(newUserData,updateUserListener)
 end
+
+
 local function uploadPicListener(event)
 
 	if (event.fileNotFound) then
@@ -230,10 +242,76 @@ local function uploadPicListener(event)
 		uploadedPic = event.filename
 		newUserData.profile_pic = event.filename
 		updateUserData()
+		
 		return
 	end
 	native.setActivityIndicator( false )
 end
+
+
+local function uploadedPictureFnc()
+	--get icon path
+	profilePicPath = addPhotoFnc.getImageRealPath(global.updateIconImage)
+
+	if(not profilePicPath)then
+		if(havePhoto and not profile_button_addPhoto.photo)then
+			newUserData.profile_pic = ""
+		end
+	end
+
+	uploadedPic = saveData.load("profileData.txt", system.TemporaryDirectory)
+
+	if ((uploadedPic == nil) or (profilePicPath == nil)) then
+		updateUserData()
+	else
+		local picTable = {
+							path = profilePicPath,
+							baseDir = system.TemporaryDirectory
+						}
+		newNetworkFunction.uploadProfilePic(picTable,uploadPicListener)
+	end
+
+end
+
+
+--if not open GPS, choose a option
+--index 1 = cancel
+--index 2 = continue
+local function GPSOptionsListener(event)
+	if event.action == "clicked" then
+        local i = event.index
+        if i == 1 then
+         
+        elseif i == 2 then
+			uploadedPictureFnc()
+        end
+    end
+end
+
+local function countryChecking(event)
+	native.setActivityIndicator( false )
+		print("bb")
+	if(event.isNetworkError)then
+		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
+		return false
+	elseif(event.isGPSError)then
+		print("event.isGPSError",event.isGPSError)
+		native.showAlert(localization.getLocalization("GPS_openGpsTitle"),localization.getLocalization("GPS_openGps"),{localization.getLocalization("GPS_openGpsOption_open"),localization.getLocalization("GPS_openGpsOption_continue")},GPSOptionsListener)
+		return false
+	elseif(event.isAPIError)then
+		print("event.isAPIError",event.isAPIError)
+		return false
+	elseif(event.country)then
+		print("event.country",event.country)
+		--get my country
+		newUserData.country = event.country
+		uploadedPictureFnc()
+	else
+		print("ERROR No data")
+		return false
+	end
+end
+
 
 
 local function updateFnc(event)
@@ -286,27 +364,13 @@ local function updateFnc(event)
 		newUserData.dateOfBirth = year.."-"..month_num.."-"..day_num
 	end
 	
-	--get icon path
-	profilePicPath = addPhotoFnc.getImageRealPath(global.updateIconImage)
-
-	if(not profilePicPath)then
-		if(havePhoto and not profile_button_addPhoto.photo)then
-			newUserData.profile_pic = ""
-		end
-	end
-	
-
-	uploadedPic = saveData.load("profileData.txt", system.TemporaryDirectory)
-
-	if ((uploadedPic == nil) or (profilePicPath == nil)) then
-		updateUserData()
+	if(needSetupCountry)then
+		geolocationUtility.getCountryByCurrentLocation(countryChecking) 
 	else
-		local picTable = {
-							path = profilePicPath,
-							baseDir = system.TemporaryDirectory
-						}
-		newNetworkFunction.uploadProfilePic(picTable,uploadPicListener)
+		uploadedPictureFnc()
 	end
+
+	
 	
 end
 
@@ -352,6 +416,26 @@ local function userIconListener(event)
 	else
 		userIconFnc({path = event.path, baseDir = event.baseDir})
 	end
+end
+
+local function changeSetupCountryStatusFnc(event)
+	 if ( event.phase == "moved" ) then
+        local dy = math.abs( ( event.y - event.yStart ) )
+        -- If the touch on the button has moved more than 10 pixels,
+        -- pass focus back to the scroll view so it can continue scrolling
+        if ( dy > 10 ) then
+            scrollView:takeFocus( event )
+        end
+	elseif(event.phase == "ended" or event.phase == "cancelled") then
+		if ( needSetupCountry == false ) then
+			setupCountry_checkbox_trueBox.alpha = 1
+			needSetupCountry = true
+		elseif ( needSetupCountry == true) then
+			setupCountry_checkbox_trueBox.alpha = 0
+			needSetupCountry = false
+		end
+	end	
+	return true
 end
 
 -- Create the scene
@@ -638,8 +722,51 @@ function scene:createScene( event )
 	genderOption = optionModule.new(genderOption)
 	displayGroup:insert(genderOption)
 	--------------- gender (male and female) end
-	
-	
+	local setupCountry_checkbox
+	if( (type(userData)=="table") and (not userData.country or userData.country=="") )then
+
+		setupCountry_checkbox = display.newRect( 160, genderOption.y+genderOption.height+20, 50, 50 )
+		setupCountry_checkbox:setFillColor( 1,1,1 )
+		setupCountry_checkbox.strokeWidth = 2
+		setupCountry_checkbox:setStrokeColor( 0, 0, 0 )
+		setupCountry_checkbox.anchorX = 0
+		setupCountry_checkbox.anchorY = 0
+		setupCountry_checkbox:addEventListener("touch",changeSetupCountryStatusFnc)
+		displayGroup:insert(setupCountry_checkbox)
+		
+		local setupCountry_checkbox_x = setupCountry_checkbox.x+11
+		local setupCountry_checkbox_y = setupCountry_checkbox.y+11
+		local setupCountry_checkbox_width_height = 26
+		--local already create
+		setupCountry_checkbox_trueBox = display.newRoundedRect(setupCountry_checkbox_x ,setupCountry_checkbox_y , setupCountry_checkbox_width_height, setupCountry_checkbox_width_height,5 )
+		setupCountry_checkbox_trueBox:setFillColor( 78/255,184/255,229/255 )
+		setupCountry_checkbox_trueBox.strokeWidth = 0
+		setupCountry_checkbox_trueBox:setStrokeColor( 0, 0, 0 )
+		setupCountry_checkbox_trueBox.anchorX = 0
+		setupCountry_checkbox_trueBox.anchorY = 0
+		setupCountry_checkbox_trueBox.alpha = 0
+		displayGroup:insert(setupCountry_checkbox_trueBox)
+
+		local text_i_agree =
+		{
+			text = localization.getLocalization("edit_setupMyCountry"), 
+			x = setupCountry_checkbox.x+setupCountry_checkbox.width+20,
+			y = setupCountry_checkbox_trueBox.y-6,
+			width = 0,
+			height = 0, 
+			font = "Helvetica",
+			fontSize=30
+		}
+
+		text_i_agree = display.newText(text_i_agree);
+		text_i_agree:setFillColor( 81/255 , 81/255 , 81/255  )
+		text_i_agree.anchorX = 0
+		text_i_agree.anchorY = 0
+		displayGroup:insert(text_i_agree)
+	end
+
+
+
 	--------------- update button begin
 	local update_button = widget.newButton
 	{
@@ -658,7 +785,13 @@ function scene:createScene( event )
 		strokeWidth =0
 	}
 	update_button.x = display.contentCenterX
-	update_button.y = genderOption.y+genderOption.height+20
+
+	if(setupCountry_checkbox)then
+		update_button.y = setupCountry_checkbox.y+setupCountry_checkbox.height+20
+	else
+		update_button.y = genderOption.y+genderOption.height+20
+	end
+
 	update_button.anchorX=0.5
 	update_button.anchorY=0
 	displayGroup:insert(update_button)
@@ -666,6 +799,10 @@ function scene:createScene( event )
 	textField_password:nextTextFieldFocus(textField_confirmPassword, nil)
 	textField_confirmPassword:nextTextFieldFocus(profile_textField_name, nil)
 	
+
+
+
+
 	--------------- update button end
 	-- the following 2 variables are for calculating the properties of the edit area
 	local editAreaCenter = (text_profile.y + text_profile.contentHeight * (1 - text_profile.anchorY)) - 50

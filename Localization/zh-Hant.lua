@@ -37,9 +37,11 @@ return {
 					post = "帖子",
 					me = "自己",
 					setting = "設定",
+
 					------- main vorum scene
 					vorum_global = "全球",
 					vorum_myCountry = "我的國家",
+
 					------- login page scene
 					login_forgetPassword = "忘記密碼",
 					login_signIn = "登入",
@@ -49,6 +51,7 @@ return {
 					login_password_textField_placeholder = "密碼",
 					login_loginExpired = "登入逾時",
 					login_loginExpiredPleaseLoginAgain = "登入逾時。請重新登入。",
+
 					------- register scene
 					register_username_textField_placeholder = "帳戶名稱",
 					register_password_textField_placeholder = "密碼",
@@ -63,10 +66,12 @@ return {
 					register_iagree = "我同意",
 					register_terms_and_conditions = "服務條款和私隱政策",
 					register_confirm = "確定",
+
 					------- edit personal data scene
 					edit_update = "更新資料",
 					edit_updateInfo = "更新資料",
-					
+					edit_setupMyCountry = "設置我的國家。",
+
 					------- me tab
 					meTab_title = "自己",
 					meTab_myPost = "我的帖子",

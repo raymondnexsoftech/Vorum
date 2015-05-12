@@ -67,7 +67,7 @@ return {
 					------- edit personal data scene
 					edit_update = "Update",
 					edit_updateInfo = "Update Info",
-					
+					edit_setupMyCountry = "Set up my country.",
 					
 					------- me tab
 					meTab_title = "Me",
