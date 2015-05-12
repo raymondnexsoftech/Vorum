@@ -248,7 +248,7 @@ local function sceneCreation()
 													listener = svListener,
 													requestDataListener = requestOldPost,
 													reloadDataListener = reloadNewPost,
-													-- postSpace = -50
+													postSpace = 35
 												}
 	print(json.encode(postData))
 	-- group_personPart = personPart.create(postData,scrollView)

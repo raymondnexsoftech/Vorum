@@ -306,7 +306,7 @@ local function sceneCreation()
 													listener = svListener,
 													requestDataListener = requestOldPost,
 													reloadDataListener = reloadNewPost,
-													-- postSpace = -50
+													postSpace = 35
 												}
 	group_personPart = personPart.create(memberData,scrollView)
 	scrollView:setScrollViewHead(group_personPart, group_personPart.height)

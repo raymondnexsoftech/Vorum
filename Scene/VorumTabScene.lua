@@ -365,7 +365,7 @@ function scene:createScene( event )
 													listener = svListener,
 													requestDataListener = requestOldPost,
 													reloadDataListener = reloadNewPost,
-													-- postSpace = -50
+													postSpace = 35
 												}
 
 	--------------- type (global and my country) begin
