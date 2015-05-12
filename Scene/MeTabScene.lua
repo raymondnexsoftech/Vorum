@@ -326,6 +326,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 		fontSize = 40,
 	}
 	headerObjects.title = display.newText(headerObjects.title)
+	headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
 	headerObjects.leftButton = nil
 	headerObjects.rightButton = headerView.searchButtonCreation(sceneOptions,nil,headerCreateFnc) 
 	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption,scrollViewToTop)
