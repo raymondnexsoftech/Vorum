@@ -1097,6 +1097,9 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 						lastChoiceIndex = countDownPic.choice
 					end
 					horizontalScrollView.cancelPostCountDown()
+					if ((postData.expire_time ~= nil) and (tonumber(postData.expire_time) < os.time())) then
+						return true
+					end
 					if (curChoiceId) then
 						if (lastChoiceIndex == i) then
 							votingListener()
