@@ -156,6 +156,15 @@ local function createPostFnc(postData)
 	postView.newPost(scrollView, userId, postData, listenerTable)
 end
 
+local function createPostWithResultFnc(postData) -- used for my post
+	listenerTable = {
+		votingListener = votingListener,	
+		pressedCreatorListener = pressedCreatorListener,
+		actionButtonListener = actionButtonListener,
+	}
+	postView.newPost(scrollView, userId, postData,true, listenerTable)
+end
+
 
 local function noPostShowFnc()
 	local noPostGroup = display.newGroup()
@@ -192,7 +201,7 @@ local function getMyPostListener(event)
 				return
 			end
 			for i = 1,#event.postData do
-				createPostFnc(event.postData[i])
+				createPostWithResultFnc(event.postData[i])
 			end
 			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
 			
