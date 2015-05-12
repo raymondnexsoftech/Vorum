@@ -502,7 +502,7 @@ function scene:createScene( event )
 	
 	local email_textField =
 	{
-		text = userData.email, 
+		text = "", 
 		x = textField_x,
 		y = account_background_textField_y+textField_height/2,
 		width = textField_width,
@@ -842,6 +842,9 @@ function scene:createScene( event )
 
 	--load data
 	if(userData)then
+		if(userData.email)then
+			email_textField.text = userData.email
+		end
 		if(userData.name)then
 			profile_textField_name.text = userData.name
 		end
