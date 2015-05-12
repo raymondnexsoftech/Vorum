@@ -41,6 +41,8 @@ local popup_linkAccountName
 local popup_linkAccountPassword
 local popup_tempLastTryAccountName = nil
 
+local facebookLogin_responseInfo
+local facebookLoginData
 
 local goToRegSceneOption =
 {
@@ -197,6 +199,43 @@ local function popupLinkTextField()
 
 end
 
+
+local function facebookLogin_getUserDataListener(event)
+
+	if (event.isError) then
+		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
+		storyboard.gotoScene( "Scene.LoginPageScene")
+	else
+		local responseInfo = json.decode(event[1].response)
+
+		if (responseInfo.code) then-- Login fail
+			responseCodeAlertBox(tonumber(responseInfo.code))
+			storyboard.gotoScene( "Scene.LoginPageScene")
+		else
+
+			newNetworkFunction.updateFbLoginData(facebookLoginData)
+
+			newNetworkFunction.registerPushDevice()
+
+			for k,v in pairs(facebookLogin_responseInfo) do
+				responseInfo[k] = v
+			end
+
+			saveData.save(global.userDataPath,responseInfo)
+			
+			if(boolean_isNotice)then --stop to go vorum scene if this is notification
+
+			else
+				local passData={params=responseInfo}
+				storyboard.gotoScene( "Scene.VorumTabScene",passData )
+				tabbar = headTabFnc.getTabbar()
+				tabbar:setSelected(3)
+			end
+		end
+	end
+
+end
+
 local function facebookLoginListener(event)
 	
 	if (event.isError) then
@@ -218,34 +257,25 @@ local function facebookLoginListener(event)
 			print("-----------")
 			print("data",json.encode(event))
 
-			local responseInfo = json.decode(event[1].response)
+			facebookLogin_responseInfo = json.decode(event[1].response)
 
-			local facebookLoginData = {}
+
+
+			facebookLoginData = {}
 
 			facebookLoginData.fbToken = tostring(event.fbToken)
 
 			facebookLoginData.sessionToken = tostring(event.sessionToken)
 
-			newNetworkFunction.updateFbLoginData(facebookLoginData)
+			-------------------------------------------------------------
 
-			responseInfo.user_id = tostring(event.userId)
+			facebookLogin_responseInfo.user_id = tostring(event.userId)
 
-			responseInfo.fbToken = facebookLoginData.fbToken
+			facebookLogin_responseInfo.fbToken = facebookLoginData.fbToken
 
-			responseInfo.sessionToken = facebookLoginData.sessionToken
+			facebookLogin_responseInfo.sessionToken = facebookLoginData.sessionToken
 
-			saveData.save(global.userDataPath,responseInfo)
-
-			newNetworkFunction.registerPushDevice()
-
-			if(boolean_isNotice)then --stop to go vorum scene if this is notification
-
-			else
-				local passData={params=responseInfo}
-				storyboard.gotoScene( "Scene.VorumTabScene",passData )
-				tabbar = headTabFnc.getTabbar()
-				tabbar:setSelected(3)
-			end
+			newNetworkFunction.getUserData(facebookLogin_getUserDataListener)
 
 		elseif (event.isCreateNewAcc) then
 			print("-----------")

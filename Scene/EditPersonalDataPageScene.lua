@@ -294,7 +294,6 @@ local function updateFnc(event)
 			newUserData.profile_pic = ""
 		end
 	end
-	print("profilePicPath",profilePicPath)
 	
 
 	uploadedPic = saveData.load("profileData.txt", system.TemporaryDirectory)
@@ -363,6 +362,7 @@ function scene:createScene( event )
 
 	newUserData = {}
 	userData = saveData.load(global.userDataPath)
+
 	userId = userData.id
 
 	addPhotoFnc.deleteTempImage(global.updateIconImage)
@@ -418,7 +418,7 @@ function scene:createScene( event )
 	
 	local email_textField =
 	{
-		text = userData.username, 
+		text = userData.email, 
 		x = textField_x,
 		y = account_background_textField_y+textField_height/2,
 		width = textField_width,

@@ -28,6 +28,7 @@ local loginFnc = require("Module.loginFnc")
 local localization = require("Localization.Localization")
 local global = require( "GlobalVar.global" )
 local saveData = require( "SaveData.SaveData" )
+local json = require("json")
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
@@ -64,7 +65,7 @@ local function animationFinishFnc()
 	if(isFinishTutorial)then --check user whether already finish tutorial
 		----------automatically login
 		local savedUserData = saveData.load(global.userDataPath)
-
+		
 		if(savedUserData)then
 
 			if(savedUserData.password)then
@@ -73,13 +74,11 @@ local function animationFinishFnc()
 
 				return true
 
-			elseif(environment ~= "simulator" and savedUserData.authData)then
-				if(savedUserData.authData.facebook)then
-					if(savedUserData.authData.facebook.id and savedUserData.authData.facebook.access_token)then
-						loginFnc.FBlogin(false)
-						return true
-					end
-				end
+			elseif(environment ~= "simulator" and savedUserData.fb_id and savedUserData.fbToken)then
+			
+				loginFnc.FBlogin(false)
+
+				return true
 			end
 		end
 		storyboard.gotoScene("Scene.LoginPageScene",enteringAppOption)
