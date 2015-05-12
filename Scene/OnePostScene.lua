@@ -163,6 +163,7 @@ local function requestOldPost()
 end
 
 local function reloadNewPost()
+	cancelAllLoad()
 	print("New")
 	setActivityIndicatorFnc(true)
 	scrollView:deleteAllPost()
