@@ -1570,15 +1570,21 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 						end
 						if (resultGroup.hasResult) then
 							if (resultGroup.noResultBg == nil) then
-								resultGroup.noResultBg = display.newRect(resultGroup, display.contentWidth * 0.5, resultGroupDisplayHeight * 0.5, display.contentWidth * 0.9, resultGroupDisplayHeight * 0.9)
-								resultGroup.noResultBg:setFillColor(0.7)
+								-- resultGroup.noResultBg = display.newRect(resultGroup, display.contentWidth * 0.5, resultGroupDisplayHeight * 0.5, display.contentWidth * 0.9, resultGroupDisplayHeight * 0.9)
+								-- resultGroup.noResultBg:setFillColor(0.7)
+								resultGroup.noResultBg = display.newImage(resultGroup, LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
+								resultGroup.noResultBg.x = display.contentWidth * 0.5
+								resultGroup.noResultBg.y = resultGroupDisplayHeight * 0.5
 								resultGroup.noResultBg.alpha = 0
 								resultGroup.transition = transition.to(resultGroup.noResultBg, {alpha = 1, transition = easing.outSine, time = POST_CHANGE_HEIGHT_TRANSITION_TIME})
 							end
 						else
 							if ((resultGroup.noResultBg == nil) and (resultGroupDisplayHeight > RESULT_HIDDEN_DEFAULT_HEIGHT + 50)) then
-								resultGroup.noResultBg = display.newRect(resultGroup, display.contentWidth * 0.5, resultGroupDisplayHeight * 0.5, display.contentWidth * 0.9, resultGroupDisplayHeight * 0.9)
-								resultGroup.noResultBg:setFillColor(0.7)
+								-- resultGroup.noResultBg = display.newRect(resultGroup, display.contentWidth * 0.5, resultGroupDisplayHeight * 0.5, display.contentWidth * 0.9, resultGroupDisplayHeight * 0.9)
+								-- resultGroup.noResultBg:setFillColor(0.7)
+								resultGroup.noResultBg = display.newImage(resultGroup, LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
+								resultGroup.noResultBg.x = display.contentWidth * 0.5
+								resultGroup.noResultBg.y = resultGroupDisplayHeight * 0.5
 							end
 							if (resultGroup.hasMask ~= true) then
 								resultGroup:setMask(postHiddenPartMask)
@@ -1596,6 +1602,8 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 					countDownImg.x = display.contentWidth * 0.5
 					countDownImg.y = resultGroupDisplayHeight * 0.5
 					resultGroup:insert(countDownImg)
+					countDownImg.xScale = 1.5
+					countDownImg.yScale = 1.5
 				else
 					local function noResultBgFadeOutListener(obj)
 						if (obj.parent) then
