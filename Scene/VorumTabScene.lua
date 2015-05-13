@@ -68,7 +68,6 @@ local tabbar
 local filterOption
 local filterData = {}
 
-local listenerTable
 --scene
 local sceneOptions = {}
 sceneOptions.sceneName = "VorumTabScene"
@@ -151,7 +150,7 @@ local function actionButtonListener(postGroup, postPartData, creatorId)
 	postButton.show(postGroup, postPartData, creatorId,scrollView)
 end
 local function createPostFnc(postData)
-	listenerTable = {
+	local listenerTable = {
 							votingListener = votingListener,	
 							pressedCreatorListener = pressedCreatorListener,
 							actionButtonListener = actionButtonListener,

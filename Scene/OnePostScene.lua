@@ -66,8 +66,6 @@ local sceneOptions = {}
 sceneOptions.sceneName = "OnePostScene"
 local temp_changeHeaderOption
 
-local listenerTable
-
 local backSceneHeaderOption
 
 local loadingIcon
@@ -135,7 +133,7 @@ local function actionButtonListener(postGroup, postPartData, creatorId)
 	postButton.show(postGroup, postPartData, creatorId,scrollView)
 end
 local function createPostFnc(postData)
-	listenerTable = {
+	local listenerTable = {
 		votingListener = votingListener,	
 		pressedCreatorListener = pressedCreatorListener,
 		actionButtonListener = actionButtonListener,
