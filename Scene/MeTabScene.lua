@@ -169,8 +169,10 @@ local function createPostForMyPost(postData) -- used for my post
 	
 	if((postData.expire_time ~= nil) and (tonumber(postData.expire_time) < os.time()) and (userId~=postData.user_id))then
 		notDisplayPostNum = notDisplayPostNum + 1
+	elseif(userId==postData.user_id)then
+		postView.newPost(scrollView, userId, postData, true, listenerTable)
 	else
-		postView.newPost(scrollView, userId, postData,true, listenerTable)
+		postView.newPost(scrollView, userId, postData, listenerTable)
 	end
 
 end
