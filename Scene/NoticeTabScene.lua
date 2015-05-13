@@ -108,22 +108,20 @@ local function cancelAllLoad()
 	networkFunction.cancelAllConnection()
 end
 
+local function goCouponScene(event)
+	if (event.phase == "moved") then
+		local dy = math.abs( ( event.y - event.yStart ) )
+        if ( dy > 10 ) then
+            scrollView:takeFocus( event )
+        end
+	elseif (event.phase == "ended") then
+		storyboard.gotoScene("Scene.RedemptionScene",newSceneOption)
+	end
+	return true
+end
+
 
 local function noticCreation(noticData)
-
-
-	local function goCouponScene(event)
-		if (event.phase == "moved") then
-			local dy = math.abs( ( event.y - event.yStart ) )
-	        if ( dy > 10 ) then
-	            scrollView:takeFocus( event )
-	        end
-		elseif (event.phase == "ended") then
-			
-		end
-		return true
-	end
-
 
 	local function goProfileScene(event)
 		if (event.phase == "moved") then
