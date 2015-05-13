@@ -1686,7 +1686,9 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	-- Result
 	resultGroup = display.newGroup()
 	postGroup:insert(resultGroup)
-	if (((isShowMyPostResult) and (postData.creator.id == userId)) or (postData.userVoted ~= nil)) then
+	if (((isShowMyPostResult)
+		and ((postData.creator == nil) or (userId ~= postData.creator.id)))
+		or (postData.userVoted ~= nil)) then
 		resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDisplayHeight, postData.choices, false)
 		resultGroup.y = postBasicPartHeight
 		resultGroup.hasResult = true
