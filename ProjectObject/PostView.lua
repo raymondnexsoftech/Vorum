@@ -1575,6 +1575,8 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 								resultGroup.noResultBg = display.newImage(resultGroup, LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
 								resultGroup.noResultBg.x = display.contentWidth * 0.5
 								resultGroup.noResultBg.y = resultGroupDisplayHeight * 0.5
+								resultGroup.noResultBg.xScale = 1.1
+								resultGroup.noResultBg.yScale = 1.1
 								resultGroup.noResultBg.alpha = 0
 								resultGroup.transition = transition.to(resultGroup.noResultBg, {alpha = 1, transition = easing.outSine, time = POST_CHANGE_HEIGHT_TRANSITION_TIME})
 							end
@@ -1585,6 +1587,8 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 								resultGroup.noResultBg = display.newImage(resultGroup, LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
 								resultGroup.noResultBg.x = display.contentWidth * 0.5
 								resultGroup.noResultBg.y = resultGroupDisplayHeight * 0.5
+								resultGroup.noResultBg.xScale = 1.1
+								resultGroup.noResultBg.yScale = 1.1
 							end
 							if (resultGroup.hasMask ~= true) then
 								resultGroup:setMask(postHiddenPartMask)
