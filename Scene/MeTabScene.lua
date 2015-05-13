@@ -63,7 +63,6 @@ local headerObjects
 local header
 local tabbar
 
-local listenerTable
 --scene
 local sceneOptions = {}
 sceneOptions.sceneName = "MeTabScene"
@@ -79,6 +78,9 @@ getPostParams.limit = 0
 local isNotShownNoPost = false
 
 local filterOption
+
+local notDisplayPostNum = 0
+
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -148,7 +150,7 @@ local function actionButtonListener(postGroup, postPartData, creatorId)
 	postButton.show(postGroup, postPartData, creatorId,scrollView)
 end
 local function createPostFnc(postData)
-	listenerTable = {
+	local listenerTable = {
 		votingListener = votingListener,	
 		pressedCreatorListener = pressedCreatorListener,
 		actionButtonListener = actionButtonListener,
@@ -156,13 +158,21 @@ local function createPostFnc(postData)
 	postView.newPost(scrollView, userId, postData, listenerTable)
 end
 
-local function createPostWithResultFnc(postData) -- used for my post
-	listenerTable = {
+local function createPostForMyPost(postData) -- used for my post
+
+	local listenerTable = {
 		votingListener = votingListener,	
 		pressedCreatorListener = pressedCreatorListener,
 		actionButtonListener = actionButtonListener,
 	}
-	postView.newPost(scrollView, userId, postData,true, listenerTable)
+
+	
+	if((postData.expire_time ~= nil) and (tonumber(postData.expire_time) < os.time()) and (userId~=postData.user_id))then
+		notDisplayPostNum = notDisplayPostNum + 1
+	else
+		postView.newPost(scrollView, userId, postData,true, listenerTable)
+	end
+
 end
 
 
@@ -192,6 +202,7 @@ local function getMyPostListener(event)
 	if (event.isError) then
 		print("error")
 	else
+
 		scrollView:resetDataRequestStatus()
 		if (type(event.postData)=="table") then
 			if(#event.postData==0)then
@@ -200,11 +211,24 @@ local function getMyPostListener(event)
 				end
 				return
 			end
+			print("get post num",#event.postData)
 			for i = 1,#event.postData do
-				createPostWithResultFnc(event.postData[i])
+				createPostForMyPost(event.postData[i])
 			end
 			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
-			
+
+			print("notDisplayPostNum",notDisplayPostNum)
+
+			if(notDisplayPostNum>0)then
+				local displayPostNum = scrollView:getPostTotal()
+				if(displayPostNum == 0 and notDisplayPostNum == getPostParams.limit)then
+					isNotShownNoPost = false
+				end
+				getPostParams.limit = notDisplayPostNum
+				newNetworkFunction.getMyPost(getPostParams, getMyPostListener)
+				notDisplayPostNum = 0
+			end
+
 		else
 			print(event[1].response)
 		end
@@ -234,6 +258,7 @@ local function getVotedPostListener(event)
 		end
 	end
 end
+
 -- friends
 local function getFriendPostListener(event)
 	setActivityIndicatorFnc(false)
@@ -257,9 +282,11 @@ local function getFriendPostListener(event)
 end
 
 local function requestOldPost()
+
 	print("Old")
 	isNotShownNoPost = true
 	getPostParams.limit = getOldPostNum
+
 	if(post_filter == "myPost")then
 		newNetworkFunction.getMyPost(getPostParams, getMyPostListener)
 	elseif(post_filter == "voted")then
@@ -277,6 +304,7 @@ local function reloadNewPost()
 	isNotShownNoPost = false
 	getPostParams.pushed_time = nil
 	getPostParams.limit = getNewPostNum
+
 	scrollView:deleteAllPost()
 	if(post_filter == "myPost")then
 		newNetworkFunction.getMyPost(getPostParams, getMyPostListener)
