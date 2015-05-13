@@ -1351,7 +1351,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	local creatorData
 	if (postData.creator == nil) then
 		isAnonymous = true
-	else
+	elseif (isAnonymous ~= true) then
 		creatorData = postData.creator
 	end
 	local creatorName
@@ -1687,7 +1687,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	resultGroup = display.newGroup()
 	postGroup:insert(resultGroup)
 	if (((isShowMyPostResult)
-		and ((postData.creator == nil) or (userId ~= postData.creator.id)))
+		and ((postData.creator ~= nil) and (userId == postData.creator.id)))
 		or (postData.userVoted ~= nil)) then
 		resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDisplayHeight, postData.choices, false)
 		resultGroup.y = postBasicPartHeight
