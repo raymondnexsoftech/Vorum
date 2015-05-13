@@ -166,9 +166,9 @@ local function tutorialOneAnimation()
 			image_A.isVisible = false
 			image_bigA.isVisible = true
 		if(animationPercent==0)then
-			trans_tut1Num3 = transition.to(image_three, { alpha = 1, time=300})
-			trans_tut1Num2 = transition.to(image_two, { alpha = 1, time=600, delay=300})
-			trans_tut1Num1 = transition.to(image_one, { alpha = 1, time=600, delay=900})
+			trans_tut1Num3 = transition.to(image_three, { alpha = 1, time = 300})
+			trans_tut1Num2 = transition.to(image_two, { alpha = 1, time = 600, delay = 300})
+			trans_tut1Num1 = transition.to(image_one, { alpha = 1, time = 600, delay = 900})
 		end
 		
 	end})
@@ -209,9 +209,9 @@ local function tutorial1MovingOutAnimation(animationPecent,isFullDis)
 		transition.cancel(trans_tut1Num3)
 	end
 
-	image_one.alpha=0
-	image_two.alpha=0
-	image_three.alpha=0
+	image_one.alpha = 0
+	image_two.alpha = 0
+	image_three.alpha = 0
 	image_A.isVisible = true
 	image_bigA.isVisible = false
 
@@ -231,10 +231,11 @@ local function tutorial1MovingOutAnimation(animationPecent,isFullDis)
 			-- image_three.alpha=0
 			-- image_A.isVisible = true
 			-- image_bigA.isVisible = false
-			animationPercent=1
+			animationPercent = 1
+			text_skip:toFront()
 		end})
 	end
-
+	text_skip:toFront()
 	
 end
 
@@ -267,14 +268,16 @@ local function tutorial2MovingOutAnimation(animationPecent,isFullDis)
 			image_circle_silver.alpha = 0
 			image_circle_brown.alpha = 0
 			image_circle_gray.alpha = 0
-			image_crown.alpha=0
-			image_result.alpha=0
-			image_bar.alpha=0
+			image_crown.alpha = 0
+			image_result.alpha = 0
+			image_bar.alpha = 0
 			
-			animationPercent=0
+			animationPercent = 0
 			
+			text_skip:toFront()
 		end})
 	end
+	text_skip:toFront()
 end
 
 local function tutorial1MovingInAnimation(animationPecent,isFullDis)
@@ -288,10 +291,11 @@ local function tutorial1MovingInAnimation(animationPecent,isFullDis)
 		trans_tut1Title = transition.to(image_title,{x=0,time=animationTime})
 		trans_tut1Sheet = transition.to(tut1_sheetDetails,{x=0,time=animationTime,onComplete=function(event)
 			tutorialOneAnimation()
-			animationPercent=0
+			animationPercent = 0
+			text_skip:toFront()
 		end})
 	end
-
+	text_skip:toFront()
 end
 
 local function tutorial2MovingInAnimation(animationPecent,isFullDis)
@@ -312,12 +316,14 @@ local function tutorial2MovingInAnimation(animationPecent,isFullDis)
 		print("2 Animation In")
 		trans_tut2Title = transition.to(image_title2,{x=0,time=animationTime})
 		trans_tut2Sheet = transition.to(tut2_sheetDetails,{x=0,y=0,time=animationTime,onComplete=function(event)
-			animationPercent=1
+			animationPercent = 1
 			if(image_circle_gold.alpha==0 or image_circle_silver.alpha==0 or image_circle_brown.alpha==0 or image_circle_gray.alpha==0 or image_crown.alpha==0 or image_result.alpha==0)then
 				tutorialTwoAnimation()
+				text_skip:toFront()
 			end
 		end})
 	end
+	text_skip:toFront()
 end
 
 
@@ -388,7 +394,7 @@ local function animationMovingTouchDectection(event)
 			dXPercent=animationPercent+dXPercent
 
 			if(dXPercent>1)then
-				dXPercent=1
+				dXPercent = 1
 			end
 			animationPercent=dXPercent
 			tutorial2MovingInAnimation(animationPercent,false)
@@ -441,7 +447,7 @@ local function animationMovingTouchDectection(event)
 			curTutorialPage = 1
 			-- print("gotoOne")
 		elseif(animationPercent<0.5 or (animationPercent<=0.5 and curTutorialPage == 1))then
-			speedPer = animationPercent+0.5
+			speedPer = animationPercent + 0.5
 			tutorial1MovingInAnimation(speedPer,true)
 			tutorial2MovingOutAnimation(speedPer,true)
 			curTutorialPage = 1
@@ -485,8 +491,8 @@ function scene:createScene( event )
 	--common
 	background = display.newRoundedRect( 0, 0, display.contentWidth, display.contentHeight, 0 )
 	background:setFillColor( 187/255,235/255,255/255 )
-	background.anchorX=0
-	background.anchorY=0
+	background.anchorX = 0
+	background.anchorY = 0
 	sceneGroup:insert(background)
 	background:addEventListener("touch",animationMovingTouchDectection)
 
@@ -498,13 +504,13 @@ function scene:createScene( event )
 		width = 0,
 		height = 0, 
 		font = "Helvetica",
-		fontSize=35.42
+		fontSize = 35.42
 	}
 
 	text_skip = display.newText(text_skip);
 	text_skip:setFillColor( 78/255, 184/255, 229/255 )
-	text_skip.anchorX=1
-	text_skip.anchorY=0
+	text_skip.anchorX = 1
+	text_skip.anchorY = 0
 	text_skip:addEventListener("touch",skipTutorial)
 	text_skip.width = 120
 	text_skip.height = 100
@@ -516,78 +522,78 @@ function scene:createScene( event )
 
 	
 	image_title = display.newImage( "Image/Tutorial/title.png", true )
-	image_title.x=0
-	image_title.y=144
-	image_title.anchorX=0
-	image_title.anchorY=0
-	image_title.x=-image_title.width
+	image_title.x = 0
+	image_title.y = 144
+	image_title.anchorX = 0
+	image_title.anchorY = 0
+	image_title.x = -image_title.width
 	tutorialOne:insert(image_title)
 	
 	image_background = display.newImage( "Image/Tutorial/squareBackground.png", true )
-	image_background.x=display.contentWidth	
-	image_background.y=440
-	image_background.anchorX=1
-	image_background.anchorY=0
+	image_background.x = display.contentWidth	
+	image_background.y = 440
+	image_background.anchorX = 1
+	image_background.anchorY = 0
 	tut1_sheetDetails:insert(image_background)
 	
 	image_B = display.newImage( "Image/Tutorial/b.png", true )
-	image_B.x=display.contentWidth	
-	image_B.y=image_background.y+210
-	image_B.anchorX=1
-	image_B.anchorY=0
+	image_B.x = display.contentWidth	
+	image_B.y = image_background.y+210
+	image_B.anchorX = 1
+	image_B.anchorY = 0
 	tut1_sheetDetails:insert(image_B)
 	
 	image_D = display.newImage( "Image/Tutorial/d.png", true )
-	image_D.x=display.contentWidth	
-	image_D.y=image_B.y+image_B.height-54
-	image_D.anchorX=1
-	image_D.anchorY=0
+	image_D.x = display.contentWidth	
+	image_D.y = image_B.y+image_B.height-54
+	image_D.anchorX = 1
+	image_D.anchorY = 0
 	tut1_sheetDetails:insert(image_D)
 	
 	image_C = display.newImage( "Image/Tutorial/c.png", true )
-	image_C.x=image_D.x-image_D.width+42
-	image_C.y=image_D.y-67
-	image_C.anchorX=1
-	image_C.anchorY=0
+	image_C.x = image_D.x-image_D.width+42
+	image_C.y = image_D.y-67
+	image_C.anchorX = 1
+	image_C.anchorY = 0
 	tut1_sheetDetails:insert(image_C)
 	
 	image_A = display.newImage( "Image/Tutorial/a.png", true )
-	image_A.x=image_B.x-image_B.width+43
-	image_A.y=image_background.y+143
-	image_A.anchorX=1
-	image_A.anchorY=0
+	image_A.x = image_B.x-image_B.width+43
+	image_A.y = image_background.y+143
+	image_A.anchorX = 1
+	image_A.anchorY = 0
 	tut1_sheetDetails:insert(image_A)
 	
 	image_bigA = display.newImage( "Image/Tutorial/bigA.png", true )
-	image_bigA.x=image_B.x-image_B.width+90
-	image_bigA.y=image_background.y+118
-	image_bigA.anchorX=1
-	image_bigA.anchorY=0
+	image_bigA.x = image_B.x-image_B.width+90
+	image_bigA.y = image_background.y+118
+	image_bigA.anchorX = 1
+	image_bigA.anchorY = 0
 	image_bigA.isVisible = false
 	tut1_sheetDetails:insert(image_bigA)
 	
 	image_one = display.newImage( "Image/Tutorial/1.png", true )
-	image_one.x=0
-	image_one.y=442
-	image_one.anchorX=0
-	image_one.anchorY=0
-	image_one.alpha=0
+	image_one.x = 0
+	image_one.y = 442
+	image_one.anchorX = 0
+	image_one.anchorY = 0
+	image_one.alpha = 0
 	-- image_one.isVisible = false
 	
 	image_two = display.newImage( "Image/Tutorial/2.png", true )
-	image_two.x=150
-	image_two.y=542
-	image_two.anchorX=0
-	image_two.anchorY=0
-	image_two.alpha=0
+	image_two.x = 150
+	image_two.y = 542
+	image_two.anchorX = 0
+	image_two.anchorY = 0
+	image_two.alpha = 0
 	-- image_two.isVisible=false
 	
 	image_three = display.newImage( "Image/Tutorial/3.png", true )
-	image_three.x=272
-	image_three.y=618
-	image_three.anchorX=0
-	image_three.anchorY=0
-	image_three.alpha=0
+	image_three.x = 272
+	image_three.y = 618
+	image_three.anchorX = 0
+	image_three.anchorY = 0
+	image_three.alpha = 0
 	-- image_three.isVisible=false
 	
 	tutorialOne:insert(image_three)
@@ -597,79 +603,79 @@ function scene:createScene( event )
 
 	
 	image_title2 = display.newImage( "Image/Tutorial/title2.png", true )
-	image_title2.x=0
-	image_title2.y=TUT2_TITLEY
-	image_title2.anchorX=0
-	image_title2.anchorY=1
-	image_title2.x=image_title2.width
+	image_title2.x = 0
+	image_title2.y = TUT2_TITLEY
+	image_title2.anchorX = 0
+	image_title2.anchorY = 1
+	image_title2.x = image_title2.width
 	tutorialTwo:insert(image_title2)
 	
 	image_background2 = display.newImage( "Image/Tutorial/rectBackground.png", true )
-	image_background2.x=0	
-	image_background2.y=0
-	image_background2.anchorX=0
-	image_background2.anchorY=0
+	image_background2.x = 0	
+	image_background2.y = 0
+	image_background2.anchorX = 0
+	image_background2.anchorY = 0
 	tut2_sheetDetails:insert(image_background2)
 	
 	image_circle_gold = display.newImage( "Image/Tutorial/circle_gold.png", true )
-	image_circle_gold.x=50
-	image_circle_gold.y=34
-	image_circle_gold.anchorX=0
-	image_circle_gold.anchorY=0
-	image_circle_gold.alpha=0
+	image_circle_gold.x = 50
+	image_circle_gold.y = 34
+	image_circle_gold.anchorX = 0
+	image_circle_gold.anchorY = 0
+	image_circle_gold.alpha = 0
 	tut2_sheetDetails:insert(image_circle_gold)
 	
 	image_circle_silver = display.newImage( "Image/Tutorial/circle_silver.png", true )
-	image_circle_silver.x=26
-	image_circle_silver.y=146
-	image_circle_silver.anchorX=0
-	image_circle_silver.anchorY=0
-	image_circle_silver.alpha=0
+	image_circle_silver.x = 26
+	image_circle_silver.y = 146
+	image_circle_silver.anchorX = 0
+	image_circle_silver.anchorY = 0
+	image_circle_silver.alpha = 0
 	tut2_sheetDetails:insert(image_circle_silver)
 	
 	image_circle_brown = display.newImage( "Image/Tutorial/circle_brown.png", true )
-	image_circle_brown.x=82
-	image_circle_brown.y=368
-	image_circle_brown.anchorX=0
-	image_circle_brown.anchorY=0
-	image_circle_brown.alpha=0
+	image_circle_brown.x = 82
+	image_circle_brown.y = 368
+	image_circle_brown.anchorX = 0
+	image_circle_brown.anchorY = 0
+	image_circle_brown.alpha = 0
 	tut2_sheetDetails:insert(image_circle_brown)
 	
 	image_circle_gray = display.newImage( "Image/Tutorial/circle_gray.png", true )
-	image_circle_gray.x=248
-	image_circle_gray.y=394
-	image_circle_gray.anchorX=0
-	image_circle_gray.anchorY=0
-	image_circle_gray.alpha=0
+	image_circle_gray.x = 248
+	image_circle_gray.y = 394
+	image_circle_gray.anchorX = 0
+	image_circle_gray.anchorY = 0
+	image_circle_gray.alpha = 0
 	tut2_sheetDetails:insert(image_circle_gray)
 	
 	image_crown = display.newImage( "Image/Tutorial/crown.png", true )
-	image_crown.x=136
-	image_crown.y=36
-	image_crown.anchorX=0
-	image_crown.anchorY=0
-	image_crown.alpha=0
+	image_crown.x = 136
+	image_crown.y = 36
+	image_crown.anchorX = 0
+	image_crown.anchorY = 0
+	image_crown.alpha = 0
 	tut2_sheetDetails:insert(image_crown)
 	
 	image_result = display.newImage( "Image/Tutorial/resultB.png", true )
-	image_result.x=174
-	image_result.y=220
-	image_result.anchorX=0
-	image_result.anchorY=0
-	image_result.alpha=0
+	image_result.x = 174
+	image_result.y = 220
+	image_result.anchorX = 0
+	image_result.anchorY = 0
+	image_result.alpha = 0
 	tut2_sheetDetails:insert(image_result)
 	
 	image_bar = display.newImage( "Image/Tutorial/genderBar.png", true )
-	image_bar.x=126
-	image_bar.y=398
-	image_bar.anchorX=0
-	image_bar.anchorY=0
-	image_bar.alpha=0
+	image_bar.x = 126
+	image_bar.y = 398
+	image_bar.anchorX = 0
+	image_bar.anchorY = 0
+	image_bar.alpha = 0
 	tut2_sheetDetails:insert(image_bar)
 	
-	tut1_sheetDetails.x=tut1_sheetDetails.width
-	tut2_sheetDetails.x=-tut2_sheetDetails.width
-	tut2_sheetDetails.y=-tut2_sheetDetails.height
+	tut1_sheetDetails.x = tut1_sheetDetails.width
+	tut2_sheetDetails.x = -tut2_sheetDetails.width
+	tut2_sheetDetails.y = -tut2_sheetDetails.height
 	tutorialOne:insert(tut1_sheetDetails)
 	tut1_sheetDetails:toBack()
 	tutorialTwo:insert(tut2_sheetDetails)
