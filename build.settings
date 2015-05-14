@@ -17,7 +17,7 @@ settings = {
 	iphone = {
 		plist = {
             --GPS
-            NSLocationWhenInUseUsageDescription = "Vorum want to use your GPS.",
+            NSLocationWhenInUseUsageDescription = "Vorum want to use your GPS to detemine your country.",
             
             UIApplicationExitsOnSuspend = false,
             FacebookAppID = "904553419585105",  --replace XXXXXXXXXX with your Facebook App ID
