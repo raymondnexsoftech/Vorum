@@ -151,7 +151,7 @@ return {
 					------ setting scene > about vorum scene
 					aboutVorum_headerTitle = "About Vorum",
 					aboutVorum_appIntro = "Vorum is a voting forum. Opinions are gathered to generate meaning insight.",
-					aboutVorum_appDesc = "Vorum is the 1st ever profit sharing mobile App. Any users can get a chance to share the profit from the sale of meaning insight.",
+					aboutVorum_appDesc = "Vorum is the 1st ever profit sharing mobile app. Any users can get a chance to share the profit from the sale of meaning insight.",
 					aboutVorum_contactWay = "Find out more on:",
 					aboutVorum_facebookContact = "Facebook: ",
 					aboutVorum_emailContact = "Email: ",
