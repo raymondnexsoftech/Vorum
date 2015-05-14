@@ -352,6 +352,9 @@ return {
 					post_updatingResult = "正在更新結果⋯",
 					post_deleting = "刪除中⋯",
 					
+					-- voting
+					alreadyVotePost = "你已對此帖投票",
+
 					--register>termAndConitions
 					termsAndConitions_title = "服務條款和私隱政策",
 					

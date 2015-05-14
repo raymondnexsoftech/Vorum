@@ -347,6 +347,9 @@ return {
 					post_femaleLetter = "F",
 					post_updatingResult = "Updating Result...",
 					post_deleting = "Deleting...",
+
+					-- voting
+					alreadyVotePost = "You are already voted the post",
 					
 					--register>termAndConitions
 					termsAndConitions_title = "Terms and conditions",

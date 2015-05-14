@@ -1138,6 +1138,7 @@ function networkFunction.votePost(params, listener)
 			return true
 		else
 			event.result = event.postData.choices
+			event.userVoted = event.postData.userVoted
 			listener(event)
 		end
 	end
@@ -1153,12 +1154,18 @@ function networkFunction.votePost(params, listener)
 		else
 			local response = json.decode(event[1].response)
 			if (response.code) then
-				event.isError = true
-				event.errorCode = response.code
-				listener(event)
-			else
-				networkFunction.getPost(params.post_id, getResultListener)
+				if (response.code == 22) then
+					native.showAlert( localization.getLocalization("alreadyVotePost"),
+										localization.getLocalization("alreadyVotePost"),
+										{localization.getLocalization("ok")})
+				else
+					event.isError = true
+					event.errorCode = response.code
+					listener(event)
+					return
+				end
 			end
+			networkFunction.getPost(params.post_id, getResultListener)
 		end
 	end
 	local dataToSend = deepCopyTable(params)

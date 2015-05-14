@@ -135,7 +135,7 @@ local function votingListener(postGroup, dataForVote)
 			if (event.code) then
 				-- TODO: check what the error is
 			elseif (event.result) then
-				postGroup:updateResult(event.result)
+				postGroup:updateResult(event.result, event.userVoted)
 			else
 				-- TODO: unknown error
 			end

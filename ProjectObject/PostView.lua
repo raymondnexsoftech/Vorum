@@ -1295,6 +1295,20 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 		horizontalScrollView.updateCrown(choiceTable)
 	end
 
+	function horizontalScrollView.updateChoice(userVoted)
+		for k, v in pairs(choiceGroupList) do
+			v.xScale = 1
+			v.yScale = 1
+		end
+		if (userVoted) then
+			if (choiceGroupList[userVoted]) then
+				choiceGroupList[userVoted].xScale = CHOICE_PIC_SELECTED_SCALE
+				choiceGroupList[userVoted].yScale = CHOICE_PIC_SELECTED_SCALE
+				choiceGroupList[userVoted]:toFront()
+			end
+		end
+	end
+
 	return horizontalScrollView
 end
 
@@ -1307,10 +1321,10 @@ end
 --   actionButtonListener(postGroup, postData, creatorData)
 
 -- functions:
---   postGroup.cancelPostCountDown()	-- not use
---   postGroup.getCountingDownChoice()	-- not use
---   postGroup:updateResult(choiceData)	-- pass new choiceData to update result
---   postGroup:readyForDelete()			-- show "deleting" post
+--   postGroup.cancelPostCountDown()				-- not use
+--   postGroup.getCountingDownChoice()				-- not use
+--   postGroup:updateResult(choiceData, userVoted)	-- pass new choiceData to update result
+--   postGroup:readyForDelete()						-- show "deleting" post
 --   postView.newPost(parentScrollView, userId, postData[, isShowMyPostResult][, listenerTable][, curTime])
 function postView.newPost(parentScrollView, userId, postData, ...)
 	local isShowMyPostResult, curTime
@@ -1875,7 +1889,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	end
 
 	-- functions
-	function postGroup:updateResult(choiceData)
+	function postGroup:updateResult(choiceData, userVoted)
 		if (postGroup.parent) then
 			resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDisplayHeight, choiceData, true)
 			local votedCount = 0
@@ -1896,6 +1910,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 			if (isHideResult ~= true) then
 				choiceScrollView.updateCrown(choiceData)
 			end
+			choiceScrollView.updateChoice(userVoted)
 		end
 	end
 
