@@ -809,6 +809,12 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 		listener = horScrollViewListener,
 	}
 	local function checkScrollViewFocus(event)
+		if (horizontalScrollView._widgetType ~= "scrollView") then
+			if (parentScrollView:checkFocusToScrollView(event) == true) then
+				return true
+			end
+			return false
+		end
 		if (event.phase == "began") then
 			if (horizontalScrollView:getView()._velocity ~= 0) then
 				horizontalScrollView:takeFocus(event)
@@ -1219,20 +1225,25 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 			insertChoiceLargePic(choiceImgInfo)
 		end
 	end
-	if (choicePicTotal > 1) then
-		horizontalScrollViewXMax = display.contentWidth * (choicePicTotal + 1)
-		horizontalScrollViewScrollWidth = display.contentWidth + (CHOICE_PIC_OBJECT_WIDTH * (choicePicTotal + 1)) + (CHOICE_PIC_OBJECT_SPACE * (choicePicTotal + 1))
-		horizontalScrollView:setScrollWidth(horizontalScrollViewScrollWidth)
-		choiceSelectGroupX2 = -horScrollViewObjIndexToX(choicePicTotal + 1) + CHOICE_PIC_OBJECT_SPACE + (display.contentWidth + CHOICE_PIC_OBJECT_WIDTH) * 0.5
-	elseif (choicePicTotal == 1) then
-		horizontalScrollViewXMax = display.contentWidth
-		horizontalScrollViewScrollWidth = display.contentWidth + (CHOICE_PIC_OBJECT_WIDTH * 1) + (CHOICE_PIC_OBJECT_SPACE * choicePicTotal)
-		horizontalScrollView:setScrollWidth(horizontalScrollViewScrollWidth)
-		choiceSelectGroupX2 = -horScrollViewObjIndexToX(1) + CHOICE_PIC_OBJECT_SPACE + (display.contentWidth + CHOICE_PIC_OBJECT_WIDTH) * 0.5
+	if (choicePicTotal <= 0) then
+		choiceSelectGroup.cancelPostCountDown = horizontalScrollView.cancelPostCountDown
+		choiceSelectGroup.getCountingDownChoice = horizontalScrollView.getCountingDownChoice
+		display.remove(horizontalScrollView)
+		horizontalScrollView = choiceSelectGroup
 	else
-		horizontalScrollView:setIsLocked(true)
+		if (choicePicTotal > 1) then
+			horizontalScrollViewXMax = display.contentWidth * (choicePicTotal + 1)
+			horizontalScrollViewScrollWidth = display.contentWidth + (CHOICE_PIC_OBJECT_WIDTH * (choicePicTotal + 1)) + (CHOICE_PIC_OBJECT_SPACE * (choicePicTotal + 1))
+			horizontalScrollView:setScrollWidth(horizontalScrollViewScrollWidth)
+			choiceSelectGroupX2 = -horScrollViewObjIndexToX(choicePicTotal + 1) + CHOICE_PIC_OBJECT_SPACE + (display.contentWidth + CHOICE_PIC_OBJECT_WIDTH) * 0.5
+		elseif (choicePicTotal == 1) then
+			horizontalScrollViewXMax = display.contentWidth
+			horizontalScrollViewScrollWidth = display.contentWidth + (CHOICE_PIC_OBJECT_WIDTH * 1) + (CHOICE_PIC_OBJECT_SPACE * choicePicTotal)
+			horizontalScrollView:setScrollWidth(horizontalScrollViewScrollWidth)
+			choiceSelectGroupX2 = -horScrollViewObjIndexToX(1) + CHOICE_PIC_OBJECT_SPACE + (display.contentWidth + CHOICE_PIC_OBJECT_WIDTH) * 0.5
+		end
+		horizontalScrollView:insert(choiceSelectGroup)
 	end
-	horizontalScrollView:insert(choiceSelectGroup)
 	choiceSelectGroup.x = display.contentWidth * 0.5 - CHOICE_PIC_WIDTH
 	choiceSelectGroup.y = HOR_SCROLL_HEIGHT * 0.5 - CHOICE_PIC_HEIGHT
 
@@ -1657,11 +1668,15 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 		end
 	end
 	local choiceScrollView = createPostChoiceScrollView(parentScrollView, postData, userId, isHideResult, votingResultListener)
-	choiceScrollView.y = postTitle.y + postTitle.contentHeight + HOR_SCROLL_HEIGHT * 0.5
+	local choiceScrollViewY = postTitle.y + postTitle.contentHeight + HOR_SCROLL_HEIGHT * 0.5
+	choiceScrollView.y = choiceScrollViewY
+	if (choiceScrollView._widgetType ~= "scrollView") then
+		choiceScrollView.y = choiceScrollView.y - CHOICE_PIC_HEIGHT
+	end
 	postGroup:insert(choiceScrollView)
 
 	-- Views and Votes
-	local viewsAndVotesY = choiceScrollView.y + HOR_SCROLL_HEIGHT * 0.5 + 20
+	local viewsAndVotesY = choiceScrollViewY + HOR_SCROLL_HEIGHT * 0.5 + 20
 	local viewTextStr = "0"
 	local noOfViews = tonumber(postData.views)
 	if (noOfViews) then
