@@ -32,11 +32,12 @@ end
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
-
 local cipher
 if (openssl) then
 	cipher = openssl.get_cipher ( "aes-256-cbc" )
 end
+
+local DEFAULT_ENCRYPTION_KEY = "E48D037D308C"		-- nil = no default encryption, string = use this key for encryption if no key is provided
 
 ---------------------------------------------------------------
 -- Variables
@@ -66,6 +67,9 @@ function saveData.save(...)
 		return false
 	end
 	encryptionKey = arg[argIdx + 1]
+	if ((encryptionKey == nil) and (DEFAULT_ENCRYPTION_KEY ~= nil)) then
+		encryptionKey = DEFAULT_ENCRYPTION_KEY
+	end
 
 	local tempPath = system.pathForFile("", baseDir)
 	local success = lfs.chdir(tempPath) -- returns true on success
@@ -121,11 +125,14 @@ function saveData.load(...)
 	end
 	baseDir = baseDir or system.DocumentsDirectory
 	encryptionKey = arg[argIdx]
+	if ((encryptionKey == nil) and (DEFAULT_ENCRYPTION_KEY ~= nil)) then
+		encryptionKey = DEFAULT_ENCRYPTION_KEY
+	end
 
 	local filePath = system.pathForFile(path, baseDir)
 	local file = io.open( filePath, "r" )
 	if (file == nil) then
-		return false
+		return nil
 	end
 	local dataFromFile = file:read("*a")
 	io.close( file )
@@ -146,7 +153,6 @@ function saveData.load(...)
 end
 
 function saveData.delete(path, baseDir)
-	baseDir = baseDir or system.DocumentsDirectory
 	return os.remove(system.pathForFile(path, baseDir))
 end
 
