@@ -17,27 +17,10 @@ local LOCAL_SETTINGS = {
 -- Require Parts
 ---------------------------------------------------------------
 require ( "SystemUtility.Debug" )
-local moduleUtility = require("SystemUtility.ModuleUtility")
-local lfs = require("lfs")
-local json = require("json")
-local openssl, crypto, mime
-if (moduleUtility.checkModuleExist("plugin.openssl")) then
-	openssl = require( "plugin.openssl" )
-	crypto = require( "crypto" )
-	mime = require ( "mime" )
-else
-	debugLog("WARNING: cannot use encryption in save data")
-end
-
+local saveData = require( "SaveData.SaveData" )
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
-local cipher
-if (openssl) then
-	cipher = openssl.get_cipher ( "aes-256-cbc" )
-end
-
-local DEFAULT_ENCRYPTION_KEY = "E48D037D308C"		-- nil = no default encryption, string = use this key for encryption if no key is provided
 
 ---------------------------------------------------------------
 -- Variables
@@ -50,113 +33,24 @@ local DEFAULT_ENCRYPTION_KEY = "E48D037D308C"		-- nil = no default encryption, s
 ---------------------------------------------------------------
 -- Functions
 ---------------------------------------------------------------
-local saveData = {}
+local tableSave = {}
 
--- saveData.save(path[, baseDir], data[, encryptionKey])
-function saveData.save(...)
-	local path, baseDir, data, encryptionKey
-	path = arg[1]
-	local argIdx = 2
-	if (type(arg[argIdx]) == "userdata") then
-		baseDir = arg[argIdx]
-		argIdx = argIdx + 1
-	end
-	baseDir = baseDir or system.DocumentsDirectory
-	data = arg[argIdx]
-	if (type(data) ~= "table") then
-		return false
-	end
-	encryptionKey = arg[argIdx + 1]
-	if ((encryptionKey == nil) and (DEFAULT_ENCRYPTION_KEY ~= nil)) then
-		encryptionKey = DEFAULT_ENCRYPTION_KEY
-	end
-
-	local tempPath = system.pathForFile("", baseDir)
-	local success = lfs.chdir(tempPath) -- returns true on success
-
-	if (success) then
-		local pathPointer = string.find(path, "/", 1)
-		while (pathPointer ~= nil) do
-			local curFolderPath = string.sub(path, 1, pathPointer - 1)
-			lfs.mkdir(curFolderPath)
-			pathPointer = string.find(path, "/", pathPointer + 1)
-		end
-	else
-		return false
-	end
-
-	local filePath = system.pathForFile(path, baseDir)
-	local file = io.open( filePath, "w" )
-	if (file == nil) then
-		return false
-	end
-
-	local dataToStore = data
-	-- for k, v in pairs(data) do
-	-- 	local typeOfVariable = type(v)
-	-- 	if ((typeOfVariable == "function") or (typeOfVariable == "userdata")) then
-	-- 		debugLog("The type of data in key \"" .. k .. "\" is \"" .. typeOfVariable .."\", which is not supported in save data. This field will be ignored.")
-	-- 	else
-	-- 		dataToStore[k] = v
-	-- 	end
-	-- end
-	local dataToFile
-	if ((encryptionKey == nil) or (encryptionKey == "") or (openssl == nil)) then
-		dataToFile = json.encode(dataToStore)
-	else
-		local key = crypto.digest( crypto.sha256, encryptionKey )
-		dataToFile = mime.b64(cipher:encrypt(json.encode(dataToStore), key))
-	end
-	file:write(dataToFile)
-	io.close( file )
-	file = nil
-
-	return true
-end
-
--- saveData.load(path[, baseDir][, encryptionKey])
-function saveData.load(...)
-	local path, baseDir, encryptionKey
-	path = arg[1]
-	local argIdx = 2
-	if (type(arg[argIdx]) == "userdata") then
-		baseDir = arg[argIdx]
-		argIdx = argIdx + 1
-	end
-	baseDir = baseDir or system.DocumentsDirectory
-	encryptionKey = arg[argIdx]
-	if ((encryptionKey == nil) and (DEFAULT_ENCRYPTION_KEY ~= nil)) then
-		encryptionKey = DEFAULT_ENCRYPTION_KEY
-	end
-
-	local filePath = system.pathForFile(path, baseDir)
-	local file = io.open( filePath, "r" )
-	if (file == nil) then
-		return nil
-	end
-	local dataFromFile = file:read("*a")
-	io.close( file )
-	file = nil
-
-	local returnData
-	if ((encryptionKey == nil) or (encryptionKey == "") or (openssl == nil)) then
-		returnData = json.decode(dataFromFile)
-	else
-		local key = crypto.digest( crypto.sha256, encryptionKey )
-		local decryptedData = cipher:decrypt(mime.unb64(dataFromFile), key)
-		if (string.sub(decryptedData, 1, 1) ~= "{") then
-			return false
-		end
-		returnData = json.decode(decryptedData)
-	end
+function tableSave.save(...)
+	local returnData = saveData.save(...)
 	return returnData
 end
 
-function saveData.delete(path, baseDir)
-	return os.remove(system.pathForFile(path, baseDir))
+function tableSave.load(...)
+	local returnData = saveData.load(...)
+	return returnData
 end
 
-function saveData.push(...)
+function tableSave.delete(path, baseDir)
+	local returnData = saveData.delete(path, baseDir)
+	return returnData
+end
+
+function tableSave.push(...)
 	print("PUSHPUSHPUSH!!!!!!")
 	local path, baseDir, data, encryptionKey
 	path = arg[1]
@@ -186,7 +80,7 @@ function saveData.push(...)
 	return false
 end
 
-function saveData.pop(...)
+function tableSave.pop(...)
 	print("POPPOPPOP!!!!!!")
 	local path, baseDir, encryptionKey
 	path = arg[1]
@@ -216,4 +110,4 @@ function saveData.pop(...)
 	return false
 end
 
-return saveData
+return tableSave

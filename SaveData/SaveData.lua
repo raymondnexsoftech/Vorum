@@ -153,6 +153,7 @@ function saveData.load(...)
 end
 
 function saveData.delete(path, baseDir)
+	baseDir = baseDir or system.DocumentsDirectory
 	return os.remove(system.pathForFile(path, baseDir))
 end
 
