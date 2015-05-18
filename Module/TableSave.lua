@@ -18,6 +18,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 require ( "SystemUtility.Debug" )
 local saveData = require( "SaveData.SaveData" )
+local json = require("json")
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
@@ -66,15 +67,15 @@ function tableSave.push(...)
 	end
 	encryptionKey = arg[argIdx + 1]
 	
-	local dataTable = saveData.load(path,baseDir)
+	local dataTable = saveData.load(path,baseDir,encryptionKey)
 	if(not dataTable)then -- new Table
 		dataTable = {}
 		dataTable[1] = data
-		saveData.save(path,baseDir,dataTable)
+		saveData.save(path,baseDir,dataTable,encryptionKey)
 		return true
 	else	-- replace old Table
 		dataTable[#dataTable+1] = data
-		saveData.save(path,baseDir,dataTable)
+		saveData.save(path,baseDir,dataTable,encryptionKey)
 		return true
 	end
 	return false
@@ -91,8 +92,7 @@ function tableSave.pop(...)
 	end
 	baseDir = baseDir or system.DocumentsDirectory
 	encryptionKey = arg[argIdx]
-	
-	local dataTable = saveData.load(path,baseDir)
+	local dataTable = saveData.load(path,baseDir,encryptionKey)
 	
 	if(not dataTable)then -- no table return nil
 		return nil
@@ -103,7 +103,7 @@ function tableSave.pop(...)
 			local returnData
 			returnData = dataTable[#dataTable]
 			dataTable[#dataTable] = nil
-			saveData.save(path,baseDir,dataTable)
+			saveData.save(path,baseDir,dataTable,encryptionKey)
 			return returnData
 		end
 	end

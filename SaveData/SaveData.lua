@@ -144,7 +144,7 @@ function saveData.load(...)
 	else
 		local key = crypto.digest( crypto.sha256, encryptionKey )
 		local decryptedData = cipher:decrypt(mime.unb64(dataFromFile), key)
-		if (string.sub(decryptedData, 1, 1) ~= "{") then
+		if (string.sub(decryptedData, 1, 1) ~= "{" and string.sub(decryptedData, 1, 1) ~= "[") then
 			return false
 		end
 		returnData = json.decode(decryptedData)

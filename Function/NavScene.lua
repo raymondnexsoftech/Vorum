@@ -10,6 +10,15 @@ function moduleGroup.back()
 	oldSceneOptions.effect = "slideRight"
     oldSceneOptions.time = 400
 	local oldData = tableSave.pop(global.sceneTransDataPath,global.TEMPBASEDIR)
+
+	if(type(oldData)~="table")then
+		tableSave.delete(global.sceneTransDataPath,global.TEMPBASEDIR)
+		storyboard.gotoScene("Scene.VorumTabScene",oldSceneOptions)
+		print("There is no table, may be error.",oldData)
+		return 
+	end
+
+
 	oldSceneOptions.params = oldData.params
 	if(not oldSceneOptions.params)then
 		oldSceneOptions.params = {}
@@ -103,7 +112,6 @@ function moduleGroup.goPost(sceneOptions,curData,passData,creatorId,goSceneEffec
 	newSceneOptions.params = passData
 	newSceneOptions.effect = "slideLeft"
     newSceneOptions.time = 400
-    
 
     if(type(goSceneEffectOption)=="table")then
     	if(type(goSceneEffectOption.effect)=="string")then
@@ -113,7 +121,6 @@ function moduleGroup.goPost(sceneOptions,curData,passData,creatorId,goSceneEffec
     		newSceneOptions.time = goSceneEffectOption.time
     	end
     end
-
 
 	if(sceneOptions.sceneName == "OnePostScene2" )then
 		storyboard.gotoScene("Scene.OnePostScene",newSceneOptions)
