@@ -359,7 +359,7 @@ end
 function networkFunction.registerPushDevice()
 	stopRegistering()
 	registerDevice()
-	registerPushTimer = timer.performWithDelay(1000, registerDevice, 0)
+	registerPushTimer = timer.performWithDelay(5000, registerDevice, 0)
 end
 
 -- Unregister Push Device
@@ -389,7 +389,7 @@ end
 function networkFunction.unregisterPushDevice()
 	stopRegistering()
 	unregisterDevice()
-	registerPushTimer = timer.performWithDelay(1000, unregisterDevice, 0)
+	registerPushTimer = timer.performWithDelay(5000, unregisterDevice, 0)
 end
 
 -- Get Notification List
