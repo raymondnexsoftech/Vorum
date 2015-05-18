@@ -58,9 +58,19 @@ local function goToVorumTabSceneFnc(event)
 	storyboard.gotoScene("Scene.VorumTabScene")
 	global.currentSceneNumber = 3
 end
+
+
+
 local function goToNoticeTabSceneFnc(event)
-	storyboard.gotoScene("Scene.NoticeTabScene")
-	global.currentSceneNumber = 4
+	-- storyboard.gotoScene("Scene.NoticeTabScene")
+	-- global.currentSceneNumber = 4
+	local tabbar = headTabFnc.getTabbar()
+	native.showAlert(localization.getLocalization("noticeNotWorkTitle"),localization.getLocalization("noticeNotWorkDesc"),{localization.getLocalization("ok")})
+	timer.performWithDelay( 100, function(event)
+		tabbar:setSelected(global.currentSceneNumber)  
+	end
+	)
+
 end
 local function goToSettingTabSceneFnc(event)
 	storyboard.gotoScene("Scene.SettingTabScene")
@@ -119,7 +129,7 @@ local SETTING = {
 											        id = "notice",
 											        size = 16,
 											        labelYOffset = -8,
-											        onPress = goToNoticeTabSceneFnc,
+											        -- onPress = goToNoticeTabSceneFnc,
 											    },
 											    {
 											    	width = 59,

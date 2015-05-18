@@ -381,6 +381,10 @@ return {
 					--
 					noPost = "沒有帖子",
 					
+					--notice is not work
+					noticeNotWorkTitle = "通知",
+					noticeNotWorkDesc = "通知頁面尚未開放。",
+
 					-- Tag
 					Appraisal = "評核",
 					Anonymous = "匿名",

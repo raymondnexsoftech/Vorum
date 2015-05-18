@@ -375,6 +375,10 @@ return {
 					facebookShareErrorTitle = "Share error",
 					facebookShareErrorDesc = "Share to Facebook unsuccessfully.",
 
+					--notice is not work
+					noticeNotWorkTitle = "Notification",
+					noticeNotWorkDesc = "Notification is not opened now.",
+
 
 					-- Tag
 					Appraisal = "Appraisal",
