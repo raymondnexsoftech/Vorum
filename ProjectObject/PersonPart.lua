@@ -115,11 +115,33 @@ local function changeRelationshiplistener(event)
 
 			if(response.code==37 or response.code==35)then --35 sent, 37 already send
 				print("sent request")
-				-- relationship = "pending"
+
+				local addFriendList = saveData.load(global.addFriendListSavePath)
+
+				if(type(addFriendList)~="table")then
+					addFriendList = {}
+				end
+
+				addFriendList[personId] = true
+
+				saveData.save(global.addFriendListSavePath,addFriendList)
+
+				relationship = "pending"
 			elseif(response.code==50)then
 				relationship = "noRelation"
 			elseif(response.code==48)then
 				print("cancel request")
+
+				local addFriendList = saveData.load(global.addFriendListSavePath)
+
+				if(type(addFriendList)~="table")then
+					addFriendList = {}
+				end
+
+				addFriendList[personId] = false
+
+				saveData.save(global.addFriendListSavePath,addFriendList)
+
 				relationship = "noRelation"
 			elseif(response.code==36)then
 				print("addFriedn each other")
@@ -148,10 +170,9 @@ local function addFriendFnc(event)
 			end
 		end
 	elseif ( phase == "ended" or phase == "cancelled" ) then
-		-- newNetworkFunction.addFriend(requestParams, changeRelationshiplistener)
+
 		newNetworkFunction.friendRequestAction(requestParams, changeRelationshiplistener)
 
-		
 	end
 	return true
 end
@@ -554,6 +575,11 @@ local function getMemberProfileListener(event)
 		returnGroup.updateUserData(response)
 		saveData.save(profileData_savePath,global.TEMPBASEDIR,response)
 
+		if(relationship=="pending")then
+			relationshipButtonGeneration()
+			return
+		end
+
 		if(relationship ~= "self")then
 			print(relationship,"relationship")
 			if (tostring(response.isFriend)=="1") then
@@ -599,6 +625,13 @@ function returnGroup.create(input_personData,input_scrollView)
 	
 	if(userId == personId)then--check whether self
 		relationship = "self"
+	else
+		local addFriendList = saveData.load(global.addFriendListSavePath)
+		if(type(addFriendList)=="table")then
+			if(addFriendList[personId])then
+				relationship = "pending"
+			end
+		end
 	end
 	
 	profileData_savePath = "user/"..personId.."/profileData.sav"

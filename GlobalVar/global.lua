@@ -25,6 +25,8 @@ global.post3CouponImage = "newCoupon.jpg"
 
 global.tutorialSavePath = "user/tutorial.sav"
 
+global.addFriendListSavePath = "user/addFriendList.sav"
+
 global.TEMPBASEDIR = system.TemporaryDirectory
 
 global.currentSceneNumber = 3
