@@ -92,6 +92,8 @@ local function getUserDataListener(event)
 
 			responseInfo.sessionToken = newNetworkFunction.getSessionToken()
 
+			newNetworkFunction.registerPushDevice()
+
 			saveData.save(global.userDataPath,responseInfo)
 
 			if(boolean_isNotice)then --stop to go vorum scene if this is notification

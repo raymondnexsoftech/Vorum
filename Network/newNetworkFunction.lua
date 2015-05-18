@@ -305,6 +305,7 @@ local function createTableForRegisterDevice(token)
 	else
 		returnTable.os = "iOS"
 	end
+	returnTable.sessionToken = sessionToken
 	return returnTable
 end
 
@@ -335,9 +336,11 @@ end
 -- Register Push Device
 local function registerPushDevice(params, listener)
 	local apiParams = createParamsForApiNumber(1)
+	local paramsToSend = deepCopyTable(params)
+	paramsToSend.sessionToken = nil
 	apiParams[1].params = {
 								headers = createVorumNetworkHeader(sessionToken),
-								body = json.encode(params)
+								body = json.encode(paramsToSend)
 							}
 	apiParams[1].url = API_DEVICE_BASE
 	apiParams[1].method = "POST"
@@ -356,17 +359,19 @@ end
 function networkFunction.registerPushDevice()
 	stopRegistering()
 	registerDevice()
-	registerPushTimer = timer.performWithDelay(15000, registerDevice, 0)
+	registerPushTimer = timer.performWithDelay(1000, registerDevice, 0)
 end
 
 -- Unregister Push Device
 local function unregisterPushDevice(params, listener)
 	local apiParams = createParamsForApiNumber(1)
+	local paramsToSend = deepCopyTable(params)
+	paramsToSend.sessionToken = nil
 	apiParams[1].params = {
-								headers = createVorumNetworkHeader(sessionToken),
-								body = json.encode(params)
+								headers = createVorumNetworkHeader(params.sessionToken),
+								body = json.encode(paramsToSend)
 							}
-	apiParams[1].url = API_DEVICE_BASE
+	apiParams[1].url = API_DEVICE_BASE .. "/unregister"
 	apiParams[1].method = "POST"
 	pushDeviceRequest = networkHandler.requestNetwork(apiParams, listener, "unregisterPushDevice")
 end
@@ -384,7 +389,7 @@ end
 function networkFunction.unregisterPushDevice()
 	stopRegistering()
 	unregisterDevice()
-	registerPushTimer = timer.performWithDelay(15000, unregisterDevice, 0)
+	registerPushTimer = timer.performWithDelay(1000, unregisterDevice, 0)
 end
 
 -- Get Notification List
