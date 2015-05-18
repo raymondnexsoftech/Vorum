@@ -70,6 +70,8 @@ local filterData = {}
 --scene
 local sceneOptions = {}
 sceneOptions.sceneName = "VorumTabScene"
+
+local changeHeaderOptionPassIn
 local temp_changeHeaderOption
 local backSceneHeaderOption
 
@@ -77,6 +79,7 @@ local loadingIcon
 local filterOption
 
 local isNotShownNoPost = false
+
 
 ---------------------------------------------------------------
 -- Functions Prototype
@@ -145,9 +148,11 @@ end
 local function pressedCreatorListener(creatorData)
 	navScene.go(sceneOptions,nil,creatorData,creatorData.id)
 end
+
 local function actionButtonListener(postGroup, postPartData, creatorId)
 	postButton.show(postGroup, postPartData, creatorId,scrollView)
 end
+
 local function createPostFnc(postData)
 	local listenerTable = {
 							votingListener = votingListener,	
@@ -157,6 +162,7 @@ local function createPostFnc(postData)
 	postView.newPost(scrollView, userId, postData, listenerTable)
 	
 end
+
 local function getFilterData(getType)
 
 	filterData.limit = nil
@@ -196,7 +202,6 @@ local function getFilterData(getType)
 	else
 		filterData.isMyCountry = false
 	end
-
 
 end
 
@@ -258,7 +263,6 @@ local function reloadNewPost()
 	isNotShownNoPost = false
 	getFilterData("new")
 	scrollView:deleteAllPost()
-
 	if(filterData.isMyCountry)then
 		if(userData.country=="" or userData.country==nil)then
 			setActivityIndicatorFnc(false)
@@ -293,7 +297,6 @@ local function touch_changeFilterChoiceFnc(event)
 	return true
 end
 local function setDefaultFilterFnc(event)
-	
 	changeFilterChoiceFnc(event.id)
 end
 ---------------------type end
@@ -327,12 +330,12 @@ function scene:createScene( event )
 	sceneGroup = self.view
 
 	if(event.params)then
-		userData = event.params --get user data
-		backSceneHeaderOption = userData.backSceneHeaderOption --now it is back scene
-	else
-		userData = saveData.load(global.userDataPath)
+		changeHeaderOptionPassIn = event.params --get user data
+		if(type(changeHeaderOptionPassIn)=="table")then
+			backSceneHeaderOption = changeHeaderOptionPassIn.backSceneHeaderOption --now it is back scene
+		end
 	end
-	
+	userData = saveData.load(global.userDataPath)
 	userId = userData.id
 	
 	--header
