@@ -129,7 +129,7 @@ local function changeRelationshiplistener(event)
 				relationship = "pending"
 			elseif(response.code==50)then
 				relationship = "noRelation"
-			elseif(response.code==48)then
+			elseif(response.code==48 or response.code==40)then
 				print("cancel request")
 
 				local addFriendList = saveData.load(global.addFriendListSavePath)
@@ -143,6 +143,7 @@ local function changeRelationshiplistener(event)
 				saveData.save(global.addFriendListSavePath,addFriendList)
 
 				relationship = "noRelation"
+
 			elseif(response.code==36)then
 				print("addFriedn each other")
 				relationship = "friend"
