@@ -65,7 +65,7 @@ local function animationFinishFnc()
 	if(isFinishTutorial)then --check user whether already finish tutorial
 		----------automatically login
 		local savedUserData = saveData.load(global.userDataPath)
-		
+
 		if(savedUserData)then
 
 			if(savedUserData.password)then
@@ -76,7 +76,7 @@ local function animationFinishFnc()
 
 			elseif(environment ~= "simulator" and savedUserData.fb_id and savedUserData.fbToken)then
 			
-				loginFnc.FBlogin(false)
+				loginFnc.updateFBData(savedUserData, false)
 
 				return true
 			end

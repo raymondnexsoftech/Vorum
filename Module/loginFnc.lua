@@ -204,6 +204,7 @@ end
 
 local function facebookLogin_getUserDataListener(event)
 
+	native.setActivityIndicator( false )
 	if (event.isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 		storyboard.gotoScene( "Scene.LoginPageScene")
@@ -219,8 +220,10 @@ local function facebookLogin_getUserDataListener(event)
 
 			newNetworkFunction.registerPushDevice()
 
-			for k,v in pairs(facebookLogin_responseInfo) do
-				responseInfo[k] = v
+			if (facebookLogin_responseInfo) then
+				for k,v in pairs(facebookLogin_responseInfo) do
+					responseInfo[k] = v
+				end
 			end
 
 			saveData.save(global.userDataPath,responseInfo)
@@ -307,6 +310,28 @@ function returnGroup.FBlogin(input_boolean_isNotice)
 	boolean_isNotice = input_boolean_isNotice or false
 	facebookLogin.login(facebookLoginListener)
 end
+
+function returnGroup.updateFBData(fbData,input_boolean_isNotice)
+
+	native.setActivityIndicator( true )
+
+	boolean_isNotice = input_boolean_isNotice or false
+	
+	newNetworkFunction.updateFbLoginData(fbData)
+
+	facebookLoginData = fbData
+
+	facebookLogin_responseInfo = {
+										fb_id = fbData.fb_id,
+										fbToken = fbData.fbToken,
+										sessionToken = fbData.sessionToken,
+									}
+
+
+	newNetworkFunction.getUserData(facebookLogin_getUserDataListener)
+
+end
+
 
 return returnGroup
 
