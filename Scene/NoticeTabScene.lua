@@ -128,11 +128,14 @@ local function noticCreation(noticData)
 		relatedUser = noticData.from
 	elseif(type(noticData.to)=="table")then
 		relatedUser = noticData.to
+	elseif(type(noticData.sharer)=="table")then
+		relatedUser = noticData.sharer
 	else
 		relatedUser = noticData
 	end
 
 	local relatedUserId = tostring(relatedUser.id)
+	local userGender = tostring(relatedUser.gender)
 
 	local function goProfileScene(event)
 		if (event.phase == "moved") then
@@ -153,7 +156,10 @@ local function noticCreation(noticData)
 	            scrollView:takeFocus( event )
 	        end
 		elseif (event.phase == "ended") then
-			navScene.goPost(sceneOptions,nil,noticData,nil,newSceneOption)
+			local postData = {}
+			postData.id = noticData.post_id
+			postData.title = tostring(noticData.post_title)
+			navScene.goPost(sceneOptions,nil,postData,nil,newSceneOption)
 		end
 		return true
 	end
@@ -163,7 +169,6 @@ local function noticCreation(noticData)
 	local user_icon_background 
 	local user_icon
 	local user_icon_savePath = "user/" .. tostring(relatedUserId) .. "/img"
-	local userGender
 
 
 	local thisPostGroup = display.newGroup()
@@ -254,15 +259,15 @@ local function noticCreation(noticData)
 	text_actionMessage.anchorY = 0
 	thisPostGroup:insert( text_actionMessage )
 	
-	if(type(noticData.member)=="table")then
-		userGender = noticData.member.gender
-	end
-	if (noticData.type == "post_voted") then
-		text_actionMessage.text = noticData.from.name..localization.getLocalization("notice_action_postVoted")
-		thisGroupBg:addEventListener( "touch", goOnePostScene )
+	relatedUser.name = tostring(relatedUser.name)
+	if (noticData.type == "post_vote") then
+		-- no related user data
+		text_actionMessage.text = relatedUser.name..localization.getLocalization("notice_action_postVoted")
+		thisGroupBg:addEventListener( "touch", goOnePostScene ) 
 	
 	elseif (noticData.type == "post_share") then
-		text_actionMessage.text = noticData.from.name..localization.getLocalization("notice_action_postShare")
+		-- done
+		text_actionMessage.text = relatedUser.name..localization.getLocalization("notice_action_postShare")
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 	
 	elseif (noticData.type == "post_expired")then
@@ -270,15 +275,18 @@ local function noticCreation(noticData)
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 
 	elseif (noticData.type == "friend_request") then
-		text_actionMessage.text = noticData.from.name..localization.getLocalization("notice_action_addFriend")
+		-- user who receive notication is wrong
+		text_actionMessage.text = relatedUser.name..localization.getLocalization("notice_action_addFriend")
 		thisGroupBg:addEventListener( "touch", goProfileScene )
 
 	elseif (noticData.type == "friend_accept")then
-		text_actionMessage.text = noticData.to.name..localization.getLocalization("notice_action_acceptFriend")
+		-- done
+		text_actionMessage.text = relatedUser.name..localization.getLocalization("notice_action_acceptFriend")
 		thisGroupBg:addEventListener( "touch", goProfileScene )
 
 	elseif (noticData.type == "new_coupon") then
-		text_actionMessage.text = localization.getLocalization("notice_action_newCoupon")..noticData.from.name..localization.getLocalization("notice_action_newCoupon2")
+		--done
+		text_actionMessage.text = localization.getLocalization("notice_action_newCoupon")..relatedUser.name..localization.getLocalization("notice_action_newCoupon2")
 		thisGroupBg:addEventListener( "touch", goCouponScene )
 	end
 
