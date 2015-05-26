@@ -1633,6 +1633,11 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 					resultGroup:insert(countDownImg)
 					countDownImg.xScale = 1.5
 					countDownImg.yScale = 1.5
+					if (countDownImg.contentHeight > resultGroupDisplayHeight * 0.8) then
+						local countImgScale = (resultGroupDisplayHeight * 0.8) / countDownImg.height
+						countDownImg.xScale = countImgScale
+						countDownImg.yScale = countImgScale
+					end
 				else
 					local function noResultBgFadeOutListener(obj)
 						if (obj.parent) then
