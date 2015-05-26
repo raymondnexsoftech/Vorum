@@ -122,6 +122,17 @@ end
 
 
 local function noticCreation(noticData)
+	local relatedUser
+
+	if(type(noticData.from)=="table")then
+		relatedUser = noticData.from
+	elseif(type(noticData.to)=="table")then
+		relatedUser = noticData.to
+	else
+		relatedUser = noticData
+	end
+
+	local relatedUserId = tostring(relatedUser.id)
 
 	local function goProfileScene(event)
 		if (event.phase == "moved") then
@@ -130,7 +141,7 @@ local function noticCreation(noticData)
 	            scrollView:takeFocus( event )
 	        end
 		elseif (event.phase == "ended") then
-			navScene.go(sceneOptions,nil,noticData.member,nil,newSceneOption)
+			navScene.go(sceneOptions,nil,relatedUser,nil,newSceneOption)
 		end
 		return true
 	end
@@ -147,12 +158,12 @@ local function noticCreation(noticData)
 		return true
 	end
 
+	
 
 	local user_icon_background 
 	local user_icon
-	local user_icon_savePath = "user/" .. tostring(noticData.user_id) .. "/img"
+	local user_icon_savePath = "user/" .. tostring(relatedUserId) .. "/img"
 	local userGender
-
 
 
 	local thisPostGroup = display.newGroup()
@@ -184,8 +195,6 @@ local function noticCreation(noticData)
 	user_icon_background.anchorY = 0.5
 
 	
-
-
 	local userIconFnc = function(fileInfo)
 		if(userIcon)then
 			display.remove(userIcon)
@@ -231,9 +240,9 @@ local function noticCreation(noticData)
 
 	local text_actionMessage = {
 		text = "", 
-		x = 161,
+		x = 160,
 		y = 25,
-		width = 300,
+		width = display.contentWidth-160,
 		height = 85, 
 		font = "Helvetica",
 		fontSize=30
@@ -249,11 +258,11 @@ local function noticCreation(noticData)
 		userGender = noticData.member.gender
 	end
 	if (noticData.type == "post_voted") then
-		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_postVoted")
+		text_actionMessage.text = noticData.from.name..localization.getLocalization("notice_action_postVoted")
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 	
 	elseif (noticData.type == "post_share") then
-		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_postShare")
+		text_actionMessage.text = noticData.from.name..localization.getLocalization("notice_action_postShare")
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 	
 	elseif (noticData.type == "post_expired")then
@@ -261,15 +270,15 @@ local function noticCreation(noticData)
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 
 	elseif (noticData.type == "friend_request") then
-		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_addFriend")
+		text_actionMessage.text = noticData.from.name..localization.getLocalization("notice_action_addFriend")
 		thisGroupBg:addEventListener( "touch", goProfileScene )
 
 	elseif (noticData.type == "friend_accept")then
-		text_actionMessage.text = noticData.member.name..localization.getLocalization("notice_action_acceptFriend")
+		text_actionMessage.text = noticData.to.name..localization.getLocalization("notice_action_acceptFriend")
 		thisGroupBg:addEventListener( "touch", goProfileScene )
 
 	elseif (noticData.type == "new_coupon") then
-		text_actionMessage.text = localization.getLocalization("notice_action_newCoupon")..noticData.member.name..localization.getLocalization("notice_action_newCoupon2")
+		text_actionMessage.text = localization.getLocalization("notice_action_newCoupon")..noticData.from.name..localization.getLocalization("notice_action_newCoupon2")
 		thisGroupBg:addEventListener( "touch", goCouponScene )
 	end
 
@@ -283,7 +292,7 @@ local function noticCreation(noticData)
 	end
 
 	--------------- post time
-	local tempTimeString = fncForLocalization.getPostCreatedAt(noticData.createdAt,0)
+	local tempTimeString = fncForLocalization.getPostCreatedAt(noticData.create_time,0)
 
 	if(not tempTimeString)then
 		tempTimeString = ""
@@ -292,12 +301,12 @@ local function noticCreation(noticData)
 	local text_timeAgo =
 	{
 		text = tostring(tempTimeString), 
-		x = 596,
-		y = 46,
+		x = display.contentWidth-20,
+		y = 90,
 		width = 0,
 		height = 0, 
 		font = "Helvetica",
-		fontSize=30
+		fontSize=22
 	}
 
 	text_timeAgo = display.newText(text_timeAgo);
