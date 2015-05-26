@@ -564,7 +564,7 @@ local function getMemberProfileListener(event)
 		print(errorStr)
 	else
 		local response 
-	
+		
 		
 		if(type(event.userData)=="table")then
 			response = event.userData
@@ -576,10 +576,6 @@ local function getMemberProfileListener(event)
 		returnGroup.updateUserData(response)
 		saveData.save(profileData_savePath,global.TEMPBASEDIR,response)
 
-		if(relationship=="pending")then
-			relationshipButtonGeneration()
-			return
-		end
 
 		if(relationship ~= "self")then
 			print(relationship,"relationship")
@@ -595,6 +591,12 @@ local function getMemberProfileListener(event)
 			else
 				print("No relation")
 				relationship = "noRelation"
+				local addFriendList = saveData.load(global.addFriendListSavePath)
+				if(type(addFriendList)=="table")then
+					if(addFriendList[personId])then
+						relationship = "pending"
+					end
+				end
 			end
 			relationshipButtonGeneration()
 			
@@ -626,13 +628,6 @@ function returnGroup.create(input_personData,input_scrollView)
 	
 	if(userId == personId)then--check whether self
 		relationship = "self"
-	else
-		local addFriendList = saveData.load(global.addFriendListSavePath)
-		if(type(addFriendList)=="table")then
-			if(addFriendList[personId])then
-				relationship = "pending"
-			end
-		end
 	end
 	
 	profileData_savePath = "user/"..personId.."/profileData.sav"
