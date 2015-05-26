@@ -73,6 +73,8 @@ local uploadedPic
 
 local genderOption
 
+local facebookData
+
 local goToLoginSceneOption =
 {
     effect = "fade",
@@ -236,6 +238,9 @@ local function registerUserListener(event)
 end
 local function registerUser()
 	print("sign up")
+	if ((facebookData ~= nil) and (facebookData.token ~= nil)) then
+		userData.fb_token = facebookData.token
+	end
 	newNetworkFnc.signup(userData, registerUserListener)
 end
 local function uploadPicListener(event)
@@ -815,10 +820,14 @@ function scene:enterScene( event )
 	storyboard.purgeAll()
 
 	-- Place the code below
+	facebookData = nil
+	if ((event.params ~= nil) and (event.params.fb ~= nil)) then
+		facebookData = event.params.fb
+	end
 end
 
 -- Called when scene is about to move offscreen:
-function scene:exitScene()
+function scene:exitScene(event)
 	debugLog( "Exiting " .. LOCAL_SETTINGS.NAME .. " Scene")
 
 	-- removing check system key event
@@ -826,7 +835,7 @@ function scene:exitScene()
 	hardwareButtonHandler.removeCallback(onKeyEvent)
 	hardwareButtonHandler.deactivate()
 	hardwareButtonHandler.clearAllCallback()
-	
+
 	-- Place the code below
 end
 

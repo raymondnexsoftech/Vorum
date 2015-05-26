@@ -286,7 +286,13 @@ local function facebookLoginListener(event)
 			print("-----------")
 			print("create new ac", tostring(event.facebookId), tostring(event.facebookToken))
 			print("-----------")
-			storyboard.gotoScene( "Scene.RegisterPageScene" ,goToRegSceneOption)
+			local goToRegSceneOpt = {}
+			goToRegSceneOpt.effect = goToRegSceneOption.effect
+			goToRegSceneOpt.time = goToRegSceneOption.time
+			goToRegSceneOpt.params = {
+										fb = {id = event.facebookId, token = event.facebookToken}
+									}
+			storyboard.gotoScene( "Scene.RegisterPageScene" ,goToRegSceneOpt)
 		elseif (event.isLinkAccount) then
 			print("-----------")
 			print("link acc")
