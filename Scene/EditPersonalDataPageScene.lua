@@ -241,6 +241,7 @@ local function uploadPicListener(event)
 		saveData.save("profileData.txt", system.TemporaryDirectory, event.filename)
 		uploadedPic = event.filename
 		newUserData.profile_pic = event.filename
+		print("newUserData.profile_pic",newUserData.profile_pic)
 		updateUserData()
 		
 		return
@@ -252,7 +253,6 @@ end
 local function uploadedPictureFnc()
 	--get icon path
 	profilePicPath = addPhotoFnc.getImageRealPath(global.updateIconImage)
-
 	if(not profilePicPath)then
 		if(havePhoto and not profile_button_addPhoto.photo)then
 			newUserData.profile_pic = ""
@@ -261,7 +261,7 @@ local function uploadedPictureFnc()
 
 	uploadedPic = saveData.load("profileData.txt", system.TemporaryDirectory)
 
-	if ((uploadedPic == nil) or (profilePicPath == nil)) then
+	if type(profilePicPath)=="nil" then
 		updateUserData()
 	else
 		local picTable = {
