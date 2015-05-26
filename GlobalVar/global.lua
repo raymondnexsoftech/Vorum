@@ -53,6 +53,7 @@ global.backSceneOption = {
 										},
 									 }
 						}
+global.isFacebookLogin = false
 
 -- color
 global.maleColor = {88/255,175/255,231/255}

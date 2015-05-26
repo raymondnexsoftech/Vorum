@@ -535,6 +535,7 @@ function scene:enterScene( event )
 	storyboard.purgeAll()
 
 	-- Place the code below
+	global.isFacebookLogin = false
 end
 
 -- Called when scene is about to move offscreen:

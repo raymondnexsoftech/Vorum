@@ -262,6 +262,8 @@ local function facebookLoginListener(event)
 			print("-----------")
 			print("data",json.encode(event))
 
+			global.isFacebookLogin = true
+
 			facebookLogin_responseInfo = json.decode(event[1].response)
 
 
@@ -333,6 +335,7 @@ function returnGroup.updateFBData(fbData,input_boolean_isNotice)
 										sessionToken = fbData.sessionToken,
 									}
 
+	global.isFacebookLogin = true
 
 	newNetworkFunction.getUserData(facebookLogin_getUserDataListener)
 

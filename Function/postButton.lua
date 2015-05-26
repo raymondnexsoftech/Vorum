@@ -34,7 +34,7 @@ local FunctionGroup = {}
 local postObj
 local postData
 local userData
-local optionVaule
+local optionValue
 local scrollView
 ---------------------------------------------------------------
 -- Functions Prototype
@@ -185,6 +185,12 @@ local function shareToWhatsappFnc(event)
 	return true
 end
 
+local function addActionButton(string, actionFnc, index)
+	optionValue.choiceObj[index] = string
+	optionValue.choiceFnc[index] = actionFnc
+	return index + 1
+end
+
 function FunctionGroup.show(postGroup, postPartData, creatorData,scrollViewObj)
 	--		loadUserData()
 	userData = {}
@@ -193,31 +199,29 @@ function FunctionGroup.show(postGroup, postPartData, creatorData,scrollViewObj)
 	postData = postPartData
 	scrollView = scrollViewObj
 
-	optionVaule = 
+	optionValue = 
 	{
 		choiceObj = {},
 		choiceFnc = {},
 		cancelButtonText = localization.getLocalization("postButton_cancel"),
 		choiceObj_fontFamily = "Helvetica",
 	}
-	optionVaule.choiceObj[1] = localization.getLocalization("postButton_push")
-	optionVaule.choiceFnc[1] = pushFnc
-	optionVaule.choiceObj[2] = localization.getLocalization("postButton_report")
-	optionVaule.choiceFnc[2] = reportFnc
-	optionVaule.choiceObj[3] = localization.getLocalization("postButton_shareToWhatsapp")
-	optionVaule.choiceFnc[3] = shareToWhatsappFnc
-	optionVaule.choiceObj[4] = localization.getLocalization("postButton_shareToFacebook")
-	optionVaule.choiceFnc[4] = shareToFacebookFnc
-	
-	if(creatorData and userData.id == creatorData.id)then
-		optionVaule.choiceObj[5] = localization.getLocalization("postButton_delete")
-		optionVaule.choiceFnc[5] = deleteFnc
-	else
-		optionVaule.choiceObj[5] = localization.getLocalization("postButton_shareToMyWall")
-		optionVaule.choiceFnc[5] = shareFnc
+	local btnIndex = 1
+	btnIndex = addActionButton(localization.getLocalization("postButton_push"), pushFnc, btnIndex)
+	btnIndex = addActionButton(localization.getLocalization("postButton_report"), reportFnc, btnIndex)
+	btnIndex = addActionButton(localization.getLocalization("postButton_shareToWhatsapp"), shareToWhatsappFnc, btnIndex)
+	if (global.isFacebookLogin) then
+		btnIndex = addActionButton(localization.getLocalization("postButton_shareToFacebook"), shareToFacebookFnc, btnIndex)
 	end
 	
-	functionalOption.create(optionVaule)
+	if(creatorData and userData.id == creatorData.id)then
+		-- Temporary no this function now
+		-- btnIndex = addActionButton(localization.getLocalization("postButton_delete"), deleteFnc, btnIndex)
+	else
+		btnIndex = addActionButton(localization.getLocalization("postButton_shareToMyWall"), shareFnc, btnIndex)
+	end
+	
+	functionalOption.create(optionValue)
 	
 end
 
