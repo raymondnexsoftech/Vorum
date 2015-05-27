@@ -45,8 +45,8 @@ local scrollView
 
 local facebookText = "www.facebook.com/VorumApp"
 local facebookLink = "https://m.facebook.com/VorumApp"
-local emailText = "Founder@VorumApp.com"
-local emailLink = "Founder@VorumApp.com"
+local emailText = "founder@vorumapp.com"
+local emailLink = "founder@vorumapp.com"
 local websiteText = "http://www.vorumapp.com/"
 local websiteLink = "http://www.vorumapp.com/"
 

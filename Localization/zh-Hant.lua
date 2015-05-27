@@ -138,6 +138,7 @@ return {
 					contact_headerTitle = "聯絡我們",
 					contact_partnership = "合作關係",
 					contact_content = "如果你想加入我們作推廣，請聯絡我們。",
+					contact_phoneTo = "打電話到 %s？",
 					------ setting scene > tutorial scene
 					tutorial_skip = "跳過",
 					------ setting scene > redemption scene

@@ -35,9 +35,9 @@ local global = require( "GlobalVar.global" )
 --Create a storyboard scene for this module
 local scene = storyboard.newScene()
 local sceneGroup --scene.group
-local phoneNumberString = "+852 23582935"
-local phoneNumber = "+852-23582935"
-local email = "cnfjrvjscn@email.com"
+local phoneNumberString = "+852-52-9382-57"
+local phoneNumber = "+852-52-9382-57"
+local email = "founder@vorumapp.com"
 
 local emailOptions =
 {
@@ -62,7 +62,15 @@ end
 
 local function phoneCallFnc(event)
 	if(event.phase=="ended" or event.phase =="cancelled")then
-		system.openURL("tel:"..phoneNumber)
+		local alertString = string.format(localization.getLocalization("contact_phoneTo"), phoneNumberString)
+		native.showAlert(alertString,
+						alertString,
+						{localization.getLocalization("yes"), localization.getLocalization("no")},
+						function(e)
+							if (e.index == 1) then
+								system.openURL("tel:"..phoneNumber)
+							end
+						end)
 	end
 	return true
 end
@@ -160,7 +168,7 @@ function scene:createScene( event )
 	local text_phoneNumber =
 	{
 		text = phoneNumberString,
-		x = 192,
+		x = 165,
 		y = image_phone.y,
 		width = 0,
 		height = 0, 
@@ -186,7 +194,7 @@ function scene:createScene( event )
 	local text_email =
 	{
 		text = email,
-		x = 192,
+		x = 165,
 		y = image_email.y,
 		width = 0,
 		height = 0, 
