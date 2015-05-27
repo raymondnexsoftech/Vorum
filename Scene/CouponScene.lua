@@ -185,6 +185,8 @@ function scene:createScene( event )
 						couponPic.x = couponX
 						couponPic.y = couponPic.contentHeight * 0.5 + 10
 						couponTextGroup.y = couponPic.contentHeight + 30
+						local tabbar = headTabFnc.getTabbar()
+						scrollView:setScrollHeight(couponTextGroup.y + couponTextGroup.contentHeight + tabbar.height)
 					end
 				end
 			end
