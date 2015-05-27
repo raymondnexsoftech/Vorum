@@ -420,14 +420,45 @@ local function getPostHeightAndDetailPos(postBasicPartHeight, resultGroup, resul
 	return postHeight, detailPartPos
 end
 
-local function resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDisplayHeight, choiceData, isAnimating)
+local function toRedemptionPageListener(event)
+	local parentScrollView = event.target.parentScrollView
+	if ((parentScrollView ~= nil) and (parentScrollView.parent ~= nil)) then
+		if (parentScrollView:checkFocusToScrollView(event) == true) then
+			return false
+		end
+	end
+	if (event.phase == "ended") then
+		local storyboard = require("storyboard")
+		local SCENE_OPTION = {
+								effect = "slideLeft",
+								time = 400,
+							}
+		storyboard.gotoScene( "Scene.RedemptionScene", SCENE_OPTION)
+	end
+	return true
+end
+
+local function resultGroupDisplayResult(parentScrollView, resultGroup, isHideResult, resultGroupDisplayHeight, choiceData, isAnimating)
 	if (resultGroup.isHaveResult == true) then
 		isAnimating = false
 	end
 	if (isHideResult) then
+		-- local couponInstructionTextOption = {
+		-- 										parent = resultGroup,
+		-- 										text = localization.getLocalization("post_PleaseGoToSettingRedemptionToSeeCoupon"),
+		-- 										x = display.contentWidth * 0.5,
+		-- 										y = resultGroupDisplayHeight * 0.4,
+		-- 										width = display.contentWidth * 0.8,
+		-- 										height = 0,
+		-- 										font = POST_VIEW_COMMON_FONT,
+		-- 										fontSize = POST_COUPON_TEXT_FONTSIZE,
+		-- 										align = "center",
+		-- 									}
+		-- local couponInstructionText = display.newText(couponInstructionTextOption)
+		-- couponInstructionText:setFillColor(1, 0, 0)
 		local couponInstructionTextOption = {
 												parent = resultGroup,
-												text = localization.getLocalization("post_PleaseGoToSettingRedemptionToSeeCoupon"),
+												text = localization.getLocalization("post_ClickHereToGoToRedemptionPage"),
 												x = display.contentWidth * 0.5,
 												y = resultGroupDisplayHeight * 0.4,
 												width = display.contentWidth * 0.8,
@@ -438,6 +469,11 @@ local function resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDi
 											}
 		local couponInstructionText = display.newText(couponInstructionTextOption)
 		couponInstructionText:setFillColor(1, 0, 0)
+		local toRedemptionPageBtn = display.newRect(resultGroup, couponInstructionText.x, couponInstructionText.y, couponInstructionText.contentWidth, couponInstructionText.contentHeight)
+		toRedemptionPageBtn.alpha = 0
+		toRedemptionPageBtn.isHitTestable = true
+		toRedemptionPageBtn.parentScrollView = parentScrollView
+		toRedemptionPageBtn:addEventListener("touch", toRedemptionPageListener)
 		if (isAnimating) then
 			couponInstructionText.alpha = 0
 			transition.to(couponInstructionText, {alpha = 1, time = SHOW_RESULT_TRANSITION_TIME, transition = easing.outSine})
@@ -1727,7 +1763,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	if (((isShowMyPostResult)
 		and ((postData.creator ~= nil) and (userId == postData.creator.id)))
 		or (postData.userVoted ~= nil)) then
-		resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDisplayHeight, postData.choices, false)
+		resultGroupDisplayResult(parentScrollView, resultGroup, isHideResult, resultGroupDisplayHeight, postData.choices, false)
 		resultGroup.y = postBasicPartHeight
 		resultGroup.hasResult = true
 		resultGroup.isHidden = false
@@ -1896,7 +1932,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 	-- functions
 	function postGroup:updateResult(choiceData, userVoted)
 		if (postGroup.parent) then
-			resultGroupDisplayResult(resultGroup, isHideResult, resultGroupDisplayHeight, choiceData, true)
+			resultGroupDisplayResult(parentScrollView, resultGroup, isHideResult, resultGroupDisplayHeight, choiceData, true)
 			local votedCount = 0
 			for k, choice in pairs(choiceData) do
 				if (choice.count.total) then

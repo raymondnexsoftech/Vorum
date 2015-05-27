@@ -340,6 +340,7 @@ return {
 					expireTime_Expired = "Expired",
 					expireTime_Remain = "Remain ",
 					post_PleaseGoToSettingRedemptionToSeeCoupon = "Please go to Setting > Redemption to get the coupon",
+					post_ClickHereToGoToRedemptionPage = "Click here to go to redemption page to get the coupon",
 					post_Result = "RESULT",
 					post_noVote = "No Vote",
 					post_same = "Same",

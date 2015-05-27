@@ -344,6 +344,7 @@ return {
 					expireTime_Expired = "逾時",
 					expireTime_Remain = "尚餘 ",
 					post_PleaseGoToSettingRedemptionToSeeCoupon = "請前往 設定 > 換領 以獲取優惠劵",
+					post_ClickHereToGoToRedemptionPage = "按此前往\"換領\"以獲取優惠劵",
 					post_Result = "結果",
 					post_noVote = "沒有投票",
 					post_same = "相同",
