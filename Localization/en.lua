@@ -135,7 +135,7 @@ return {
 					contact_headerTitle = "Contact",
 					contact_partnership = "Partnership",
 					contact_content = "What if your company want to join our partnership to settle a promotion, please feel free to contact us.",
-					contact_phoneTo = "Phone to %s?",
+					contact_phoneTo = "Call %s?",
 					------ setting scene > tutorial scene
 					tutorial_skip = "Skip",
 					------ setting scene > redemption scene
