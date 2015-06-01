@@ -171,7 +171,7 @@ function scene:createScene( event )
 	local aboutText1Option = {
 								text = aboutText1Str,
 								x = LEFTPADDING,
-								y = 180,
+								y = 150,
 								width = CONTENTWIDTH,
 								height = 0, 
 								font = "Helvetica",
@@ -231,6 +231,7 @@ function scene:createScene( event )
 	emailDisplayText:addEventListener("touch",openEmail)
 	scrollView:insert(emailDisplayText)
 
+	scrollView:setScrollHeight(emailDisplayText.y + emailDisplayText.contentHeight + tabbar.height)
 
 	-- text_appIntro =
 	-- {
