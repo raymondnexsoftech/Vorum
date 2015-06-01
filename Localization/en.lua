@@ -151,12 +151,24 @@ return {
 					coupon_headerTitle = "Coupon",
 					------ setting scene > about vorum scene
 					aboutVorum_headerTitle = "About Vorum",
-					aboutVorum_appIntro = "Vorum is a voting forum. Opinions are gathered to generate meaning insight.",
-					aboutVorum_appDesc = "Vorum is the 1st ever profit sharing mobile app. Any users can get a chance to share the profit from the sale of meaning insight.",
-					aboutVorum_contactWay = "Find out more on:",
-					aboutVorum_facebookContact = "Facebook: ",
-					aboutVorum_emailContact = "Email: ",
-					aboutVorum_websiteContact  = "Website: ",
+					-- aboutVorum_appIntro = "Vorum is a voting forum. Opinions are gathered to generate meaning insight.",
+					-- aboutVorum_appDesc = "Vorum is the 1st ever profit sharing mobile app. Any users can get a chance to share the profit from the sale of meaning insight.",
+					-- aboutVorum_contactWay = "Find out more on:",
+					-- aboutVorum_facebookContact = "Facebook: ",
+					-- aboutVorum_emailContact = "Email: ",
+					-- aboutVorum_websiteContact  = "Website: ",
+					aboutVorumDesc1 = {
+										"Vorum - a voting forum with minimal words:",
+										"If you wish to make a change to this world by gathering people's thought, you can make it happen in Vorum.",
+										"Vorum - a profit sharing mobile application:",
+										"User's participation is the key to the success of our business. As we recognise user's contribution, we created a profit sharing mechanism in our business model.",
+										"Any users get a chance to share the Vorum's profit of advertising income and the sale of voting result.",
+										"Check out our URL:",
+										},
+					aboutVorumDesc2 = {
+										"to find out more how you can make a difference to this world or the opportunity to make extra money.",
+										"Contact us at email:",
+									},
 					------ profile scene
 					profile_unfriend = "Unfriend",
 					------ cat screen

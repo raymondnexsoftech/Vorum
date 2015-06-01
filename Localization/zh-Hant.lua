@@ -154,12 +154,24 @@ return {
 					coupon_headerTitle = "優惠劵",
 					------ setting scene > about vorum scene
 					aboutVorum_headerTitle = "關於Vorum",
-					aboutVorum_appIntro = "Vorum是一個投票的論壇。 收集大家對各種事物的意見和看法。",
-					aboutVorum_appDesc = "Vorum是第一個分享益處的手機應用程式。 所有的使用者都有機會透過分享他們的意見和見法來獲得益處。",
-					aboutVorum_contactWay = "尋找更多資料:",
-					aboutVorum_facebookContact = "Facebook: ",
-					aboutVorum_emailContact = "電郵: ",
-					aboutVorum_websiteContact  = "網站: ",
+					-- aboutVorum_appIntro = "Vorum是一個投票的論壇。 收集大家對各種事物的意見和看法。",
+					-- aboutVorum_appDesc = "Vorum是第一個分享益處的手機應用程式。 所有的使用者都有機會透過分享他們的意見和見法來獲得益處。",
+					-- aboutVorum_contactWay = "尋找更多資料:",
+					-- aboutVorum_facebookContact = "Facebook: ",
+					-- aboutVorum_emailContact = "電郵: ",
+					-- aboutVorum_websiteContact  = "網站: ",
+					aboutVorumDesc1 = {
+										"Vorum - 一個以最少字為主的投票論壇",
+										"如果你希望收集別人意見，以改變世界，Vorum 能幫你一臂之力。",
+										"Vorum - 一個分享收益的手機應用程式",
+										"用家參與就是成功的關鍵。我們了解用家的貢獻的重要性，因此我們在營運模式中加入了分享收益的機制。",
+										"任何用家都能夠有機會由 Vorum 的廣告收益及銷售投票結果獲得收益。",
+										"按此進入我們的網頁：",
+										},
+					aboutVorumDesc2 = {
+										"看看如何可以創造與別不同的世界，以及獲取額外利潤。",
+										"以電郵與我們聯絡：",
+									},
 					------ profile scene
 					profile_unfriend = "絕交",
 					------ cat screen

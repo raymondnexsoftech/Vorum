@@ -45,7 +45,7 @@ local scrollView
 
 local facebookText = "www.facebook.com/VorumApp"
 local facebookLink = "https://m.facebook.com/VorumApp"
-local emailText = "founder@vorumapp.com"
+local emailText = "Founder@VorumApp.com"
 local emailLink = "founder@vorumapp.com"
 local websiteText = "http://www.vorumapp.com/"
 local websiteLink = "http://www.vorumapp.com/"
@@ -120,6 +120,23 @@ local function openWebsite(event)
 	end
     return true
 end
+
+local function combineAboutString(aboutStringKey)
+	local aboutTextStr = ""
+	local strIdx = 1
+	local curStr = localization.getLocalization(aboutStringKey, strIdx)
+	while (true) do
+		aboutTextStr = aboutTextStr .. curStr
+		strIdx = strIdx + 1
+		curStr = localization.getLocalization(aboutStringKey, strIdx)
+		if ((curStr ~= nil) and (curStr ~= "")) then
+			curStr = "\n\n" .. curStr
+		else
+			return aboutTextStr
+		end
+	end
+end
+
 -- Create the scene
 function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
@@ -135,6 +152,7 @@ function scene:createScene( event )
 	end
 	headTabFnc.setDisplayStatus(true)
 	--
+
 	scrollView = widget.newScrollView
 	{
 		top = 0,
@@ -149,154 +167,219 @@ function scene:createScene( event )
 	}
 	sceneGroup:insert(scrollView)
 
-	text_appIntro =
-	{
-		text = localization.getLocalization("aboutVorum_appIntro"),
-		x = LEFTPADDING,
-		y = 180,
-		width = CONTENTWIDTH,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_appIntro = display.newText(text_appIntro);
-	text_appIntro:setFillColor(81/255, 81/255, 81/255 )
-	text_appIntro.anchorX=0
-	text_appIntro.anchorY=0
-	scrollView:insert(text_appIntro)
-	
-	text_appDesc =
-	{
-		text = localization.getLocalization("aboutVorum_appDesc"),
-		x = LEFTPADDING,
-		y = text_appIntro.y+text_appIntro.height+LINESPACE,
-		width = CONTENTWIDTH,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_appDesc = display.newText(text_appDesc);
-	text_appDesc:setFillColor(81/255, 81/255, 81/255 )
-	text_appDesc.anchorX=0
-	text_appDesc.anchorY=0
-	scrollView:insert(text_appDesc)
-	
-	
-	text_contactWay =
-	{
-		text = localization.getLocalization("aboutVorum_contactWay"),
-		x = LEFTPADDING,
-		y = text_appDesc.y+text_appDesc.height+LINESPACE,
-		width = CONTENTWIDTH,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_contactWay = display.newText(text_contactWay);
-	text_contactWay:setFillColor(81/255, 81/255, 81/255 )
-	text_contactWay.anchorX=0
-	text_contactWay.anchorY=0
-	scrollView:insert(text_contactWay)
-	
-	text_facebookIntro =
-	{
-		text = localization.getLocalization("aboutVorum_facebookContact"),
-		x = LEFTPADDING,
-		y = text_contactWay.y+text_contactWay.height+LINESPACE,
-		width = 0,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_facebookIntro = display.newText(text_facebookIntro);
-	text_facebookIntro:setFillColor(81/255, 81/255, 81/255 )
-	text_facebookIntro.anchorX=0
-	text_facebookIntro.anchorY=0
-	scrollView:insert(text_facebookIntro)
-	
-	text_facebook = 
-	{
-		text = facebookText,
-		x = text_facebookIntro.x+text_facebookIntro.width,
-		y = text_facebookIntro.y,
-		width = CONTENTWIDTH-text_facebookIntro.width,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_facebook = display.newText(text_facebook);
-	text_facebook:setFillColor(15/255, 114/255, 218/255)
-	text_facebook.anchorX=0
-	text_facebook.anchorY=0
-	text_facebook:addEventListener("touch",openFacebook)
-	scrollView:insert(text_facebook)
-	
-	text_emailIntro =
-	{
-		text = localization.getLocalization("aboutVorum_emailContact"),
-		x = LEFTPADDING,
-		y = text_facebookIntro.y+text_facebookIntro.height+LINESPACE,
-		width = 0,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_emailIntro = display.newText(text_emailIntro);
-	text_emailIntro:setFillColor(81/255, 81/255, 81/255 )
-	text_emailIntro.anchorX=0
-	text_emailIntro.anchorY=0
-	scrollView:insert(text_emailIntro)
-	
-	text_email = 
-	{
-		text = emailText,
-		x = text_emailIntro.x+text_emailIntro.width,
-		y = text_emailIntro.y,
-		width = CONTENTWIDTH-text_emailIntro.width,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_email = display.newText(text_email)
-	text_email:setFillColor(15/255, 114/255, 218/255)
-	text_email.anchorX=0
-	text_email.anchorY=0
-	text_email:addEventListener("touch",openEmail)
-	scrollView:insert(text_email)
+	local aboutText1Str = combineAboutString("aboutVorumDesc1")
+	local aboutText1Option = {
+								text = aboutText1Str,
+								x = LEFTPADDING,
+								y = 180,
+								width = CONTENTWIDTH,
+								height = 0, 
+								font = "Helvetica",
+								fontSize=30
+							}
+	local aboutText1 = display.newText(aboutText1Option);
+	aboutText1:setFillColor(81/255, 81/255, 81/255 )
+	aboutText1.anchorX=0
+	aboutText1.anchorY=0
+	scrollView:insert(aboutText1)
+
+	local websiteDisplayTextOption = {
+									text = websiteText .. "\n",
+									x = LEFTPADDING,
+									y = aboutText1.y + aboutText1.contentHeight,
+									width = CONTENTWIDTH,
+									height = 0, 
+									font = "Helvetica",
+									fontSize=30
+								}
+	local websiteDisplayText = display.newText(websiteDisplayTextOption);
+	websiteDisplayText:setFillColor(15/255, 114/255, 218/255)
+	websiteDisplayText.anchorX=0
+	websiteDisplayText.anchorY=0
+	websiteDisplayText:addEventListener("touch",openWebsite)
+	scrollView:insert(websiteDisplayText)
+
+	local aboutText2Str = combineAboutString("aboutVorumDesc2")
+	local aboutText2Option = {
+								text = aboutText2Str,
+								x = LEFTPADDING,
+								y = websiteDisplayText.y + websiteDisplayText.contentHeight,
+								width = CONTENTWIDTH,
+								height = 0, 
+								font = "Helvetica",
+								fontSize=30
+							}
+	local aboutText2 = display.newText(aboutText2Option);
+	aboutText2:setFillColor(81/255, 81/255, 81/255 )
+	aboutText2.anchorX=0
+	aboutText2.anchorY=0
+	scrollView:insert(aboutText2)
+
+	local emailDisplayTextOption = {
+										text = emailText .. "\n",
+										x = LEFTPADDING,
+										y = aboutText2.y + aboutText2.contentHeight,
+										width = CONTENTWIDTH,
+										height = 0, 
+										font = "Helvetica",
+										fontSize=30
+									}
+	local emailDisplayText = display.newText(emailDisplayTextOption)
+	emailDisplayText:setFillColor(15/255, 114/255, 218/255)
+	emailDisplayText.anchorX=0
+	emailDisplayText.anchorY=0
+	emailDisplayText:addEventListener("touch",openEmail)
+	scrollView:insert(emailDisplayText)
 
 
-	text_webisteIntro =
-	{
-		text = localization.getLocalization("aboutVorum_websiteContact"),
-		x = LEFTPADDING,
-		y = text_emailIntro.y+text_emailIntro.height+LINESPACE,
-		width = 0,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_webisteIntro = display.newText(text_webisteIntro);
-	text_webisteIntro:setFillColor(81/255, 81/255, 81/255 )
-	text_webisteIntro.anchorX=0
-	text_webisteIntro.anchorY=0
-	scrollView:insert(text_webisteIntro)
+	-- text_appIntro =
+	-- {
+	-- 	text = localization.getLocalization("aboutVorum_appIntro"),
+	-- 	x = LEFTPADDING,
+	-- 	y = 180,
+	-- 	width = CONTENTWIDTH,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_appIntro = display.newText(text_appIntro);
+	-- text_appIntro:setFillColor(81/255, 81/255, 81/255 )
+	-- text_appIntro.anchorX=0
+	-- text_appIntro.anchorY=0
+	-- scrollView:insert(text_appIntro)
+	
+	-- text_appDesc =
+	-- {
+	-- 	text = localization.getLocalization("aboutVorum_appDesc"),
+	-- 	x = LEFTPADDING,
+	-- 	y = text_appIntro.y+text_appIntro.height+LINESPACE,
+	-- 	width = CONTENTWIDTH,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_appDesc = display.newText(text_appDesc);
+	-- text_appDesc:setFillColor(81/255, 81/255, 81/255 )
+	-- text_appDesc.anchorX=0
+	-- text_appDesc.anchorY=0
+	-- scrollView:insert(text_appDesc)
+	
+	
+	-- text_contactWay =
+	-- {
+	-- 	text = localization.getLocalization("aboutVorum_contactWay"),
+	-- 	x = LEFTPADDING,
+	-- 	y = text_appDesc.y+text_appDesc.height+LINESPACE,
+	-- 	width = CONTENTWIDTH,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_contactWay = display.newText(text_contactWay);
+	-- text_contactWay:setFillColor(81/255, 81/255, 81/255 )
+	-- text_contactWay.anchorX=0
+	-- text_contactWay.anchorY=0
+	-- scrollView:insert(text_contactWay)
+	
+	-- text_facebookIntro =
+	-- {
+	-- 	text = localization.getLocalization("aboutVorum_facebookContact"),
+	-- 	x = LEFTPADDING,
+	-- 	y = text_contactWay.y+text_contactWay.height+LINESPACE,
+	-- 	width = 0,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_facebookIntro = display.newText(text_facebookIntro);
+	-- text_facebookIntro:setFillColor(81/255, 81/255, 81/255 )
+	-- text_facebookIntro.anchorX=0
+	-- text_facebookIntro.anchorY=0
+	-- scrollView:insert(text_facebookIntro)
+	
+	-- text_facebook = 
+	-- {
+	-- 	text = facebookText,
+	-- 	x = text_facebookIntro.x+text_facebookIntro.width,
+	-- 	y = text_facebookIntro.y,
+	-- 	width = CONTENTWIDTH-text_facebookIntro.width,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_facebook = display.newText(text_facebook);
+	-- text_facebook:setFillColor(15/255, 114/255, 218/255)
+	-- text_facebook.anchorX=0
+	-- text_facebook.anchorY=0
+	-- text_facebook:addEventListener("touch",openFacebook)
+	-- scrollView:insert(text_facebook)
+	
+	-- text_emailIntro =
+	-- {
+	-- 	text = localization.getLocalization("aboutVorum_emailContact"),
+	-- 	x = LEFTPADDING,
+	-- 	y = text_facebookIntro.y+text_facebookIntro.height+LINESPACE,
+	-- 	width = 0,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_emailIntro = display.newText(text_emailIntro);
+	-- text_emailIntro:setFillColor(81/255, 81/255, 81/255 )
+	-- text_emailIntro.anchorX=0
+	-- text_emailIntro.anchorY=0
+	-- scrollView:insert(text_emailIntro)
+	
+	-- text_email = 
+	-- {
+	-- 	text = emailText,
+	-- 	x = text_emailIntro.x+text_emailIntro.width,
+	-- 	y = text_emailIntro.y,
+	-- 	width = CONTENTWIDTH-text_emailIntro.width,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_email = display.newText(text_email)
+	-- text_email:setFillColor(15/255, 114/255, 218/255)
+	-- text_email.anchorX=0
+	-- text_email.anchorY=0
+	-- text_email:addEventListener("touch",openEmail)
+	-- scrollView:insert(text_email)
 
-	text_website = 
-	{
-		text = websiteText,
-		x = text_webisteIntro.x+text_webisteIntro.width,
-		y = text_webisteIntro.y,
-		width = CONTENTWIDTH-text_webisteIntro.width,
-		height = 0, 
-		font = "Helvetica",
-		fontSize=30
-	}
-	text_website = display.newText(text_website);
-	text_website:setFillColor(15/255, 114/255, 218/255)
-	text_website.anchorX=0
-	text_website.anchorY=0
-	text_website:addEventListener("touch",openWebsite)
-	scrollView:insert(text_website)
+
+	-- text_webisteIntro =
+	-- {
+	-- 	text = localization.getLocalization("aboutVorum_websiteContact"),
+	-- 	x = LEFTPADDING,
+	-- 	y = text_emailIntro.y+text_emailIntro.height+LINESPACE,
+	-- 	width = 0,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_webisteIntro = display.newText(text_webisteIntro);
+	-- text_webisteIntro:setFillColor(81/255, 81/255, 81/255 )
+	-- text_webisteIntro.anchorX=0
+	-- text_webisteIntro.anchorY=0
+	-- scrollView:insert(text_webisteIntro)
+
+	-- text_website = 
+	-- {
+	-- 	text = websiteText,
+	-- 	x = text_webisteIntro.x+text_webisteIntro.width,
+	-- 	y = text_webisteIntro.y,
+	-- 	width = CONTENTWIDTH-text_webisteIntro.width,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize=30
+	-- }
+	-- text_website = display.newText(text_website);
+	-- text_website:setFillColor(15/255, 114/255, 218/255)
+	-- text_website.anchorX=0
+	-- text_website.anchorY=0
+	-- text_website:addEventListener("touch",openWebsite)
+	-- scrollView:insert(text_website)
 
 end
 
