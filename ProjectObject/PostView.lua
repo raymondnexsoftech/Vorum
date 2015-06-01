@@ -1717,9 +1717,12 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 					updatingResultText.alpha = 0
 					transition.to(updatingResultText, {alpha = 1, time = RESULT_BG_FADE_OUT_TIME})
 					resultGroup.updatingResultText = updatingResultText
+					local spinnerSheet = graphics.newImageSheet(LOCAL_SETTINGS.RES_DIR .. "loading.png", {width = 630, height = 630, numFrames = 1, sheetContentWidth = 630, sheetContentHeight = 630})
 					local loadingSpin = widget.newSpinner{
 															width = 80,
 															height = 80,
+															sheet = spinnerSheet,
+															startFrame = 1,
 															deltaAngle = 30,
 															incrementEvery = 100,
 														}

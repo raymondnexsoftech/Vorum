@@ -4,6 +4,9 @@
 -- Sizable activity indicator
 ---------------------------------------------------------------
 
+-- uncomment the below code to get the directory of the file
+local resDir = (...):match("(.-)[^%.]+$")
+
 -- Local Constant Setting
 local LOCAL_SETTINGS = {
 						RES_DIR = "",					-- Common resource directory for scene
@@ -133,12 +136,25 @@ function sizableActivityIndicatorFnc.newActivityIndicator(...)
 	if (spinnerSize > 80) then
 		spinnerSize = 80
 	end
-	group.spinner = widget.newSpinner{
-										width = spinnerSize,
-										height = spinnerSize,
-										deltaAngle = 30,
-										incrementEvery = 100
-										}
+	local resDirForfile = string.gsub(resDir, "%.", "/")
+	local spinnerSheet = graphics.newImageSheet(resDirForfile .. "SizableActivityIndicator.png", {width = 100, height = 100, numFrames = 1, sheetContentWidth = 100, sheetContentHeight = 100})
+	if (spinnerSheet) then
+		group.spinner = widget.newSpinner{
+												width = spinnerSize,
+												height = spinnerSize,
+												sheet = spinnerSheet,
+												startFrame = 1,
+												deltaAngle = 30,
+												incrementEvery = 100,
+											}
+	else
+		group.spinner = widget.newSpinner{
+												width = spinnerSize,
+												height = spinnerSize,
+												deltaAngle = 30,
+												incrementEvery = 100
+											}
+	end
 	group.spinner.x = width / 2
 	group.spinner.y = height / 2
 	group:insert(group.spinner)
