@@ -703,9 +703,10 @@ local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
 	-- if ((origBg ~= nil) and (origBg.parent ~= nil)) then
 	-- 	origBg.alpha = 0
 	-- end
+	local choiceBgCover
 	if (img) then
-		local choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
-		choiceBgCover.alpha = 0.7
+		choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
+		choiceBgCover.alpha = 0.9
 		choiceBgCover:toBack()
 	else
 		img = display.newImage(LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
@@ -1266,6 +1267,18 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 		choiceSelectGroup.getCountingDownChoice = horizontalScrollView.getCountingDownChoice
 		display.remove(horizontalScrollView)
 		horizontalScrollView = choiceSelectGroup
+		for i = 1, #CHOICE_LETTER_TABLE do
+			local curChoiceGroup = choiceGroupList[CHOICE_LETTER_TABLE[i]]
+			if (curChoiceGroup == nil) then
+				break
+			end
+			local choicePicSizeAndPos = CHOICE_PIC_SIZE_AND_POS[choiceTotal][i]
+			if (choicePicSizeAndPos.height > CHOICE_PIC_HEIGHT + 1) then
+				curChoiceGroup:setMask(twoChoiceMask)
+			else
+				curChoiceGroup:setMask(fourChoiceMask)
+			end
+		end
 	else
 		if (choicePicTotal > 1) then
 			horizontalScrollViewXMax = display.contentWidth * (choicePicTotal + 1)
