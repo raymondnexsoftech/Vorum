@@ -132,7 +132,6 @@ local function noticCreation(noticData)
 		relatedUser = noticData.sharer
 	elseif(type(noticData.coupon_creator)=="table")then
 		relatedUser = noticData.coupon_creator
-		print("aa",json.encode(relatedUser))
 	else
 		relatedUser = noticData
 	end
@@ -265,7 +264,7 @@ local function noticCreation(noticData)
 	relatedUser.name = tostring(relatedUser.name)
 	if (noticData.type == "post_vote") then
 		-- no related user data
-		text_actionMessage.text = relatedUser.name..localization.getLocalization("notice_action_postVoted")
+		text_actionMessage.text = localization.getLocalization("notice_action_postVoted")..relatedUser.name..localization.getLocalization("notice_action_postVoted2")
 		thisGroupBg:addEventListener( "touch", goOnePostScene ) 
 	
 	elseif (noticData.type == "post_share") then
@@ -274,11 +273,12 @@ local function noticCreation(noticData)
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 	
 	elseif (noticData.type == "post_expired")then
+		--done
 		text_actionMessage.text = localization.getLocalization("notice_action_postExpired")
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 
 	elseif (noticData.type == "friend_request") then
-		-- user who receive notication is wrong
+		--done
 		text_actionMessage.text = relatedUser.name..localization.getLocalization("notice_action_addFriend")
 		thisGroupBg:addEventListener( "touch", goProfileScene )
 

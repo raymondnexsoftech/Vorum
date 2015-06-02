@@ -109,7 +109,8 @@ return {
 					------- notice scene
 					notice_headerTitle = "Notification",
 
-					notice_action_postVoted = " voted your post.",
+					notice_action_postVoted = "Your post \"",
+					notice_action_postVoted2 = "\" was voted.",
 					notice_action_postShare = " shared your post.",
 					notice_action_postExpired = "Your post expired.",
 					notice_action_addFriend = " added you as a friend.",
