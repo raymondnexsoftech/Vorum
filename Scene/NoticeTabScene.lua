@@ -130,6 +130,9 @@ local function noticCreation(noticData)
 		relatedUser = noticData.to
 	elseif(type(noticData.sharer)=="table")then
 		relatedUser = noticData.sharer
+	elseif(type(noticData.coupon_creator)=="table")then
+		relatedUser = noticData.coupon_creator
+		print("aa",json.encode(relatedUser))
 	else
 		relatedUser = noticData
 	end
@@ -237,7 +240,7 @@ local function noticCreation(noticData)
 	userIconFnc({path = "Image/User/anonymous.png", baseDir = system.ResourceDirectory})--temp image
 
 
-	local userIconInfo = newNetworkFunction.getVorumFile(noticData.profile_pic, user_icon_savePath, userIconListener)
+	local userIconInfo = newNetworkFunction.getVorumFile(relatedUser.profile_pic, user_icon_savePath, userIconListener)
 	if ((userIconInfo ~= nil) and (userIconInfo.request == nil)) then
 		userIconFnc(userIconInfo)
 	end
