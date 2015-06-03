@@ -159,11 +159,12 @@ return {
 					-- aboutVorum_emailContact = "Email: ",
 					-- aboutVorum_websiteContact  = "Website: ",
 					aboutVorumDesc1 = {
-										"Vorum - a voting forum with minimal words:",
-										"If you wish to make a change to this world by gathering people's thought, you can make it happen in Vorum.",
-										"Vorum - a profit sharing mobile application:",
+										"Vorum - a voting forum with minimal words",
+										"We show picture and choices without overwhelming messages. It is easy to read and understand.",
+										"Vorum - a platform that gathers user's thoughts",
+										"Any users can easily make a change to this world by gathering people's thoughts",
+										"Vorum - a profit sharing mobile application",
 										"User's participation is the key to the success of our business. As we recognise user's contribution, we created a profit sharing mechanism in our business model.",
-										"Any users get a chance to share the Vorum's profit of advertising income and the sale of voting result.",
 										"Check out our URL:",
 										},
 					aboutVorumDesc2 = {
