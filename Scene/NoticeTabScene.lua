@@ -286,7 +286,9 @@ local function noticCreation(noticData)
 	
 	elseif (noticData.type == "post_expired")then
 		--done
-		text_actionMessage.text = localization.getLocalization("notice_action_postExpired")
+		local postTitle = noticData.post_title or ""
+		postTitle = tostring(postTitle)
+		text_actionMessage.text = localization.getLocalization("notice_action_postExpired")..postTitle..localization.getLocalization("notice_action_postExpired2")
 		thisGroupBg:addEventListener( "touch", goOnePostScene )
 
 	elseif (noticData.type == "friend_request") then
