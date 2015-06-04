@@ -397,9 +397,8 @@ local function getNotificationList(params, listener)
 	local apiParams = createParamsForApiNumber(1)
 	apiParams[1].params = {
 								headers = createVorumNetworkHeader(sessionToken),
-								body = json.encode(params)
 							}
-	apiParams[1].url = API_NOTIFICATION_BASE
+	apiParams[1].url = API_NOTIFICATION_BASE .. "?" .. convertToUrlParam(params)
 	apiParams[1].method = "GET"
 	return networkHandler.requestNetwork(apiParams, listener, "getNotificationList")
 end
