@@ -75,12 +75,10 @@ local mostVotedSelection_background
 local mostVotedChoice = {}
 local mostId = {}
 	  mostId.id_lastest = "Latest"
-	  mostId.id_all = "vote_count_all"
-	  mostId.id_week = "vote_count_week"
-	  mostId.id_month = "vote_count_month"
+	  mostId.id_all = "voted_all"
+	  mostId.id_week = "voted_week"
+	  mostId.id_month = "voted_month"
 local mostVotedSelection = mostId.id_lastest --set default
-	  
-
 	  
 local tagSelection_background_moreWidth = display.contentWidth
 local tagSelection_background_moreHeight = 30

@@ -250,11 +250,13 @@ local function getVorumPostListener(event)
 		end
 	end
 end
+
 local function requestOldPost()
 	isNotShownNoPost = true
 	getFilterData("old")
 	newNetworkFunction.getVorumPost(filterData,getVorumPostListener)
 end
+
 local function reloadNewPost()
 	cancelAllLoad()
 
@@ -273,6 +275,7 @@ local function reloadNewPost()
 
 	newNetworkFunction.getVorumPost(filterData,getVorumPostListener)
 end
+
 function scene.refresh()
 	reloadNewPost()
 end
