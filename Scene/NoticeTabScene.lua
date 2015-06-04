@@ -42,6 +42,9 @@ local ROW_HEIGHT = 124
 local USERICON_WIDTH = 102
 local USERICON_HEIGHT = 102
 local USERICON_MASKPATH = "Image/User/creatorMask.png"
+
+local getNewPostNum = 10
+local getOldPostNum = 10
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
@@ -57,6 +60,8 @@ local scrollView
 local userData
 local userId
 
+local getNotificationListData = {}
+getNotificationListData.offset = 0
 
 local loadingIcon
 
@@ -340,7 +345,7 @@ local function noticCreation(noticData)
 end
 
 local function getNotificationListListener(event)
-	print(event[1].response)
+
 	setActivityIndicatorFnc(false)
 
 	if (event.isError) then
@@ -349,19 +354,22 @@ local function getNotificationListListener(event)
 		local response = json.decode( event[1].response )
 		for i=1,#response do
 			noticCreation(response[i])
+			getNotificationListData.offset = getNotificationListData.offset+1
 		end
 	end
 end
 
 local function requestOldPost()
-	-- newNetworkFunction.getVorumPost(filterData,getVorumPostListener)
+	print(json.encode(getNotificationListData),"getNotificationListData")
+	newNetworkFunction.getNotificationList(getNotificationListData,getNotificationListListener)
 end
 local function reloadNewPost()
 	cancelAllLoad()
 	setActivityIndicatorFnc(true)
 
 	scrollView:deleteAllPost()
-	newNetworkFunction.getNotificationList(getNotificationListListener)
+	getNotificationListData.offset = 0
+	newNetworkFunction.getNotificationList(getNotificationListData,getNotificationListListener)
 end
 
 -- Create the scene
