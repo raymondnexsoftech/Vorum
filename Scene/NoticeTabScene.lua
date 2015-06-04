@@ -124,13 +124,17 @@ end
 local function noticCreation(noticData)
 	local relatedUser
 
-	if(type(noticData.from)=="table")then
-		relatedUser = noticData.from
-	elseif(type(noticData.to)=="table")then
-		relatedUser = noticData.to
-	elseif(type(noticData.sharer)=="table")then
+	if (noticData.type == "post_vote") then
+		relatedUser = noticData
+	elseif (noticData.type == "post_share") then
 		relatedUser = noticData.sharer
-	elseif(type(noticData.coupon_creator)=="table")then
+	elseif (noticData.type == "post_expired")then
+		relatedUser = noticData
+	elseif (noticData.type == "friend_request") then
+		relatedUser = noticData.from
+	elseif (noticData.type == "friend_accept")then
+		relatedUser = noticData.to
+	elseif (noticData.type == "new_coupon") then
 		relatedUser = noticData.coupon_creator
 	else
 		relatedUser = noticData
