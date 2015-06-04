@@ -116,7 +116,7 @@ return {
 					notice_action_postVoted2 = "。",
 					notice_action_postShare = " 分享你的帖子。",
 					notice_action_postExpired = "你的帖子已經停止投票。",
-					notice_action_addFriend = " 遨請你作為朋友。",
+					notice_action_addFriend = " 邀請你作為朋友。",
 					notice_action_acceptFriend = " 接受你作為朋友。",
 					notice_action_newCoupon = "你取得一個來自",
 					notice_action_newCoupon2 = "的優惠卷。",
