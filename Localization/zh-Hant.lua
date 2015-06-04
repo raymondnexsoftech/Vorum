@@ -132,7 +132,7 @@ return {
 					setting_signOut = "登出",
 					--
 					relationship_addFriend_button = "加為朋友",
-					relationship_unfriend_button = "Unfriend",
+					relationship_unfriend_button = "移除好友",
 					relationship_pending_button = "請求中",
 					relationship_approval_button = "允許",
 					relationship_reject_button = "拒絕",
@@ -184,7 +184,7 @@ return {
 					cat_headerRightButton = "完成",
 					cat_tag = "標籤",
 					cat_latest = "最新",
-					cat_mostVoted = "Most",
+					cat_mostVoted = "最多投票",
 					cat_mostVoted_all = "全部",
 					cat_mostVoted_week = "1周",
 					cat_mostVoted_month = "1個月",
