@@ -160,7 +160,8 @@ local function noticCreation(noticData)
 		elseif (event.phase == "ended") then
 			local postData = {}
 			postData.id = noticData.post_id
-			postData.title = tostring(noticData.post_title)
+			postData.title = noticData.post_title or ""
+			postData.title = tostring(postData.title)
 			navScene.goPost(sceneOptions,nil,postData,nil,newSceneOption)
 		end
 		return true
@@ -264,7 +265,9 @@ local function noticCreation(noticData)
 	relatedUser.name = tostring(relatedUser.name)
 	if (noticData.type == "post_vote") then
 		-- no related user data
-		text_actionMessage.text = localization.getLocalization("notice_action_postVoted")..relatedUser.name..localization.getLocalization("notice_action_postVoted2")
+		local postTitle = noticData.post_title or ""
+		postTitle = tostring(postTitle)
+		text_actionMessage.text = localization.getLocalization("notice_action_postVoted")..postTitle..localization.getLocalization("notice_action_postVoted2")
 		thisGroupBg:addEventListener( "touch", goOnePostScene ) 
 	
 	elseif (noticData.type == "post_share") then
