@@ -97,12 +97,11 @@ local function textListener( event )
     if ( event.phase == "began" ) then
         -- user begins editing defaultField
         -- print( event.text )
-
+        event.target.text = stringUtility.trimStringSpace(event.target.text)
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
         -- do something with defaultField text
-    elseif ( event.phase == "editing" ) then
-
         event.target.text = stringUtility.trimStringSpace(event.target.text)
+    elseif ( event.phase == "editing" ) then
 
 		local emojiTrimmedString, isEmojiDetected = stringUtility.trimEmoji(event.target.text)
 		if (isEmojiDetected) then

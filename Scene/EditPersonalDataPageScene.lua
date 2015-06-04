@@ -117,11 +117,13 @@ end
 local function textListener( event )
     if ( event.phase == "began" ) then
 
+    	event.target.text = stringUtility.trimStringSpace(event.target.text)
+
     elseif ( event.phase == "ended" or event.phase == "submitted" ) then
 
+  		event.target.text = stringUtility.trimStringSpace(event.target.text)
+
     elseif ( event.phase == "editing" ) then
-      
-    	event.target.text = stringUtility.trimStringSpace(event.target.text)
       
 		local emojiTrimmedString, isEmojiDetected = stringUtility.trimEmoji(event.target.text)
 		if (isEmojiDetected) then
