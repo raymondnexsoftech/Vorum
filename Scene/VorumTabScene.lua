@@ -174,6 +174,7 @@ local function getFilterData(getType)
 		filterData.limit = getOldPostNum
 	elseif(getType=="new")then
 		filterData.pushed_time = nil
+		filterData.offset = 0
 		filterData.limit = getNewPostNum
 	else
 		filterData.limit = getPostNum
@@ -242,6 +243,7 @@ local function getVorumPostListener(event)
 
 			for i = 1, #event.postData do
 				createPostFnc(event.postData[i])
+				filterData.offset = filterData.offset+1
 			end
 			filterData.pushed_time = event.postData[#event.postData].pushed_time-1
 
