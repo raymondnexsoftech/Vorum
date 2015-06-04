@@ -112,8 +112,8 @@ return {
 					------- notice scene
 					notice_headerTitle = "通知",
 					
-					notice_action_postVoted = "有人投了你的帖子",
-					notice_action_postVoted2 = "。",
+					notice_action_postVoted = "有人投了你的帖子\"",
+					notice_action_postVoted2 = "\"。",
 					notice_action_postShare = " 分享你的帖子。",
 					notice_action_postExpired = "你的帖子\"",
 					notice_action_postExpired2 = "\"已經停止投票。",

@@ -67,7 +67,7 @@ local loadingIcon
 
 
 local newSceneOption = {
-	effect = "fade",
+	effect = "slideLeft",
 	time = 400,
 }
 
@@ -127,10 +127,11 @@ end
 
 
 local function noticCreation(noticData)
+
 	local relatedUser
 
-	if (noticData.type == "post_vote") then
-		relatedUser = noticData
+	if (noticData.type == "post_voted") then
+		relatedUser = noticData.voter
 	elseif (noticData.type == "post_share") then
 		relatedUser = noticData.sharer
 	elseif (noticData.type == "post_expired")then
@@ -175,8 +176,6 @@ local function noticCreation(noticData)
 		end
 		return true
 	end
-
-	
 
 	local user_icon_background 
 	local user_icon
@@ -254,7 +253,6 @@ local function noticCreation(noticData)
 		userIconFnc(userIconInfo)
 	end
 
-
 	local text_actionMessage = {
 		text = "", 
 		x = 160,
@@ -272,10 +270,11 @@ local function noticCreation(noticData)
 	thisPostGroup:insert( text_actionMessage )
 	
 	relatedUser.name = tostring(relatedUser.name)
-	if (noticData.type == "post_vote") then
-		-- no related user data
+	if (noticData.type == "post_voted") then
+		-- done
 		local postTitle = noticData.post_title or ""
 		postTitle = tostring(postTitle)
+	
 		text_actionMessage.text = localization.getLocalization("notice_action_postVoted")..postTitle..localization.getLocalization("notice_action_postVoted2")
 		thisGroupBg:addEventListener( "touch", goOnePostScene ) 
 	
@@ -362,7 +361,6 @@ local function getNotificationListListener(event)
 end
 
 local function requestOldPost()
-	print(json.encode(getNotificationListData),"getNotificationListData")
 	newNetworkFunction.getNotificationList(getNotificationListData,getNotificationListListener)
 end
 local function reloadNewPost()
