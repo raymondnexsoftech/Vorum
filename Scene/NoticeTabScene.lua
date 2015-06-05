@@ -64,7 +64,7 @@ local getNotificationListData = {}
 getNotificationListData.offset = 0
 
 local loadingIcon
-
+local isNotShownNoNotic
 
 local newSceneOption = {
 	effect = "slideLeft",
@@ -103,6 +103,27 @@ local function setActivityIndicatorFnc(boolean_loadingSwitch)
 	if(type(loadingIcon)=="table" and loadingIcon.parent)then
 		loadingIcon:toBack()
 	end
+end
+
+local function noNoticShowFnc()
+	local noNoticGroup = display.newGroup()
+	local noNoticText = {
+		parent = noNoticGroup,
+		text = localization.getLocalization("noNotic"),     
+		x = display.contentCenterX,
+		y = display.contentCenterY-header.height,
+		width = display.contentWidth, 
+		height = 0,
+		font = "Helvetica",   
+		fontSize = 92,
+		align = "center",
+	}
+
+	noNoticText = display.newText( noNoticText )
+	noNoticText.anchorX = 0.5
+	noNoticText.anchorY = 0.5
+	noNoticText:setFillColor( 0, 0, 0 )
+	scrollView:addNewPost(noNoticGroup, noNoticText.y+noNoticText.height)
 end
 
 local function cancelAllLoad()
@@ -357,19 +378,30 @@ local function getNotificationListListener(event)
 	if (event.isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
+		scrollView:resetDataRequestStatus()
 		local response = json.decode( event[1].response )
-		for i=1,#response do
-			noticCreation(response[i])
-			getNotificationListData.offset = getNotificationListData.offset+1
+		if(type(response)=="table")then
+			if(#response==0)then
+				if(not isNotShownNoNotic)then
+					noNoticShowFnc()
+				end
+				return
+			end
+			for i=1,#response do
+				noticCreation(response[i])
+				getNotificationListData.offset = getNotificationListData.offset+1
+			end
 		end
 	end
 end
 
 local function requestOldPost()
+	isNotShownNoNotic = true
 	newNetworkFunction.getNotificationList(getNotificationListData,getNotificationListListener)
 end
 local function reloadNewPost()
 	cancelAllLoad()
+	isNotShownNoNotic = false
 	setActivityIndicatorFnc(true)
 
 	scrollView:deleteAllPost()
@@ -402,17 +434,17 @@ function scene:createScene( event )
 													backgroundColor = {243/255,243/255,243/255},
 													hideScrollBar = true,
 													left = 0,
-													top = 0,
+													top = header.height,
 													width = display.contentWidth,
-													height = display.contentHeight,
-													topPadding = header.height,
+													height = display.contentHeight-header.height,
+													topPadding = 0,
 													refreshHeader = {
-													height = 0,
-													textToPull="",
-													textToRelease="",
-													loadingText="",
+														height = 0,
+														textToPull="",
+														textToRelease="",
+														loadingText="",
 													},
-													bottomPadding = ROW_HEIGHT,
+													bottomPadding = 0,
 													-- scrollHeight = display.contentHeight * 2,
 													horizontalScrollDisabled = true,
 													listener = svListener,

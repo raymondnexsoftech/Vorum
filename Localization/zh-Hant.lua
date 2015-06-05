@@ -398,6 +398,7 @@ return {
 
 					--
 					noPost = "沒有帖子",
+					noNotic = "沒有通知",
 					
 					--notice is not work
 					noticeNotWorkTitle = "通知",

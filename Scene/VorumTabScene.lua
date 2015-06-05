@@ -262,7 +262,6 @@ end
 local function reloadNewPost()
 	cancelAllLoad()
 
-
 	setActivityIndicatorFnc(true)
 	isNotShownNoPost = false
 	getFilterData("new")

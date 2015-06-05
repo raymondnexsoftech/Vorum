@@ -385,7 +385,7 @@ return {
 					forgetPasswordSuccessDesc = "Please check you email to reset password.",
 					--
 					noPost = "No post",
-
+					noNotic = "No notification",
 					--facebook share
 					facebookShareSuccessTitle = "Share successfully",
 					facebookShareSuccessDesc = "Share to Facebook successfully.",
