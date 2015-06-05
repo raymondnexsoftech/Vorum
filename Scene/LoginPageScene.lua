@@ -19,10 +19,10 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local coronaTextField = require("Module.CoronaTextField")
 local localization = require("Localization.Localization")
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local saveData = require( "SaveData.SaveData" )
 local json = require( "json" )
 local facebook = require( "facebook" )

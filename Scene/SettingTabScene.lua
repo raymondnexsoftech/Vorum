@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local localization = require("Localization.Localization")
 local headerView = require( "ProjectObject.HeaderView" )
@@ -28,7 +28,7 @@ local personPart = require( "ProjectObject.PersonPart" )
 local saveData = require( "SaveData.SaveData" )
 local json = require( "json" )
 local global = require( "GlobalVar.global" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local scrollViewForPost = require( "ProjectObject.ScrollViewForPost" )
 local newNetworkFunction = require("Network.newNetworkFunction")
 ---------------------------------------------------------------
@@ -158,7 +158,7 @@ local function changeLanguageFnc(event)
 		saveData.save(global.languageDataPath,langSetting)
 		localization.setLocale(locale)
 		sceneCreation()
-		print(locale)
+		-- print(locale)
 		for i=1,5 do
 			if(tabName[i])then
 				headTabFnc.updateTabbarText(i, localization.getLocalization(tabName[i]))
@@ -548,7 +548,7 @@ function scene:exitScene()
 	-- removing check system key event
 	Runtime:removeEventListener( "key", onKeyEvent )
 	-- Place the code below
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 -- Called prior to the removal of scene's "view" (display group)

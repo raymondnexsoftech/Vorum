@@ -20,11 +20,11 @@ local LOCAL_SETTINGS = {
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
 local coronaTextField = require("Module.CoronaTextField")
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local addPhotoFnc = require("Function.addPhoto")
 local birthSelectFnc = require("Function.birthSelectFnc")
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local geolocationUtility = require("SystemUtility.GeolocationUtility")
 local saveData = require( "SaveData.SaveData" )
 local global = require( "GlobalVar.global" )
@@ -219,13 +219,13 @@ local function registerUserListener(event)
 		
 		if(response.code)then
 			response.code = tonumber(response.code)
-			print(tostring(response.code).." "..tostring(response.message))
+			-- print(tostring(response.code).." "..tostring(response.message))
 			if(response.code==2)then
 				native.showAlert(localization.getLocalization("registerFail_registerTitle"),localization.getLocalization("registerFail_emailAlreadyRegistered"),{localization.getLocalization("ok")})
 			end
 		else
 			--register success
-			print(event[1].response)
+			-- print(event[1].response)
 			saveData.delete("profileData.txt", system.TemporaryDirectory)
 			addPhotoFnc.deleteTempImage(global.registerImagePath)
 			native.showAlert(localization.getLocalization("registerSuccess_registerTitle"),localization.getLocalization("registerSuccess_register"),{localization.getLocalization("ok")})
@@ -236,7 +236,7 @@ local function registerUserListener(event)
 	
 end
 local function registerUser()
-	print("sign up")
+	-- print("sign up")
 	if ((facebookData ~= nil) and (facebookData.token ~= nil)) then
 		userData.fb_token = facebookData.token
 	end
@@ -244,7 +244,7 @@ local function registerUser()
 end
 local function uploadPicListener(event)
 
-	print("upload finish")
+	-- print("upload finish")
 	userData.profile_pic = event.filename
 	registerUser()
 	-- native.setActivityIndicator( false )
@@ -286,19 +286,19 @@ local function countryCheckingAndRegister(event)
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 		return false
 	elseif(event.isGPSError)then
-		print("event.isGPSError",event.isGPSError)
+		-- print("event.isGPSError",event.isGPSError)
 		native.showAlert(localization.getLocalization("GPS_openGpsTitle"),localization.getLocalization("GPS_openGps"),{localization.getLocalization("GPS_openGpsOption_open"),localization.getLocalization("GPS_openGpsOption_continue")},GPSOptionsListener)
 		return false
 	elseif(event.isAPIError)then
-		print("event.isAPIError",event.isAPIError)
+		-- print("event.isAPIError",event.isAPIError)
 		return false
 	elseif(event.country)then
-		print("event.country",event.country)
+		-- print("event.country",event.country)
 		--get my country
 		userData.country = event.country
 		registerUserFnc()
 	else
-		print("ERROR No data")
+		-- print("ERROR No data")
 		return false
 	end
 end
@@ -799,7 +799,7 @@ function scene:willEnterScene( event )
 
 	-- adding key event for scene transition
 	Runtime:addEventListener( "key", onSceneTransitionKeyEvent )
-	print("reg add")
+	-- print("reg add")
 	-- Place the code below
 end
 function scene:enterScene( event )
@@ -807,7 +807,7 @@ function scene:enterScene( event )
 
 	-- removing key event for scene transition
 	Runtime:removeEventListener( "key", onSceneTransitionKeyEvent )
-	print("reg remove")
+	-- print("reg remove")
 	-- adding check system key event
 	-- Runtime:addEventListener( "key", onKeyEvent )
 	hardwareButtonHandler.clearAllCallback()

@@ -16,7 +16,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require ( "Localization.Localization" )
 local storyboard = require ( "storyboard" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )

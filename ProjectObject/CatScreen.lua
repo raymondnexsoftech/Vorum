@@ -18,7 +18,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local returnGroup = {}
@@ -168,7 +168,7 @@ local function mostVotedSelectionBackground(target)
 	group_cat:insert(mostVotedSelection_background)
 	mostVotedSelection_background:toBack();
 	background:toBack();
-	print(target.id)
+	-- print(target.id)
 end
 local function selection_mostVoted(event)
 	if (event.phase == "ended" or event.phase == "cancelled") then
@@ -190,7 +190,7 @@ local function tagSelectionBackground(target)
 	group_cat:insert(tagSelection_background)
 	tagSelection_background:toBack();
 	background:toBack();
-	print(target.id)
+	-- print(target.id)
 end
 
 local function selection_tag(event)
@@ -201,7 +201,7 @@ local function selection_tag(event)
 end
 
 local function background_touch(event)
-	print("This is background")
+	-- print("This is background")
 	return true
 end
 

@@ -19,10 +19,10 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local json = require( "json" )
 local scrollViewForPost = require( "ProjectObject.ScrollViewForPost" )
 local headerView = require( "ProjectObject.HeaderView" )
@@ -141,7 +141,7 @@ local function cancelAllLoad()
 		display.remove(loadingIcon)
 		loadingIcon = nil
 	end
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 local function votingListener(postGroup, dataForVote)
@@ -188,7 +188,7 @@ end
 
 local function getMemberPostListener(event)
 	if (type(event.postData)=="table") then
-		print("dd",json.encode(event.postData))
+		-- print("dd",json.encode(event.postData))
 		if(#event.postData==0)then
 			if(not isNotShownNoPost)then
 				noPostShowFnc()
@@ -207,14 +207,14 @@ local function getMemberPostListener(event)
 end
 
 local function requestOldPost()
-	print("Old")
+	-- print("Old")
 	isNotShownNoPost = true
 	getPostParams.limit = getOldPostNum
 	newNetworkFunction.getMemberPost(memberId, getPostParams, getMemberPostListener)
 end
 
 local function reloadNewPost()
-	print("New")
+	-- print("New")
 	cancelAllLoad()
 
 	setActivityIndicatorFnc(true)

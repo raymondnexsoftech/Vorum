@@ -109,7 +109,7 @@ function new( imageSet, slideBackground, top, bottom )
 			
 	function touchListener (self, touch) 
 		local phase = touch.phase
-		print("slides", phase)
+		-- print("slides", phase)
 		if ( phase == "began" ) then
             -- Subsequent touch events will target button even if they are outside the contentBounds of button
             display.getCurrentStage():setFocus( self )
@@ -128,7 +128,7 @@ function new( imageSet, slideBackground, top, bottom )
 						
 				if tween then transition.cancel(tween) end
 	
-				print(imgNum)
+				-- print(imgNum)
 				
 				local delta = touch.x - prevPos
 				prevPos = touch.x
@@ -146,7 +146,7 @@ function new( imageSet, slideBackground, top, bottom )
 			elseif ( phase == "ended" or phase == "cancelled" ) then
 				
 				dragDistance = touch.x - startPos
-				print("dragDistance: " .. dragDistance)
+				-- print("dragDistance: " .. dragDistance)
 				
 				if (dragDistance < -40 and imgNum < #images) then
 					nextImage()
@@ -172,7 +172,7 @@ function new( imageSet, slideBackground, top, bottom )
 	end
 	
 	function setSlideNumber()
-		print("setSlideNumber", imgNum .. " of " .. #images)
+		-- print("setSlideNumber", imgNum .. " of " .. #images)
 		imageNumberText.text = imgNum .. " of " .. #images
 		imageNumberTextShadow.text = imgNum .. " of " .. #images
 	end
@@ -222,8 +222,8 @@ function new( imageSet, slideBackground, top, bottom )
 	
 	function g:jumpToImage(num)
 		local i
-		print("jumpToImage")
-		print("#images", #images)
+		-- print("jumpToImage")
+		-- print("#images", #images)
 		for i = 1, #images do
 			if i < num then
 				images[i].x = -screenW*.5;
@@ -238,7 +238,7 @@ function new( imageSet, slideBackground, top, bottom )
 	end
 
 	function g:cleanUp()
-		print("slides cleanUp")
+		-- print("slides cleanUp")
 		background:removeEventListener("touch", touchListener)
 	end
 

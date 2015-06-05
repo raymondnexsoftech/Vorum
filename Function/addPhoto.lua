@@ -12,11 +12,11 @@
 -- Require Parts
 ---------------------------------------------------------------
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local localization = require("Localization.Localization")
 local lfs = require( "lfs" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local sizableActivityIndicatorFnc = require("Module.SizableActivityIndicator")
 local tunePhotoModule = require("Module.TunePhoto")
 local functionalOption = require( "Module.FunctionalOption" )

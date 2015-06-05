@@ -9,7 +9,7 @@
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local coronaTextField = require("Module.CoronaTextField")
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local global = require( "GlobalVar.global" )
 local saveData = require( "SaveData.SaveData" )
 local json = require( "json" )
@@ -53,7 +53,7 @@ local goToRegSceneOption =
 
 local function responseCodeAlertBox(code)
 	if(code==14)then -- email still not verified
-		print("Not Verified")
+		-- print("Not Verified")
 		native.showAlert(localization.getLocalization("loginError_errorTitle"),
 							localization.getLocalization("loginError_emailNoVerified"),
 							{localization.getLocalization("yes"), localization.getLocalization("no")},
@@ -245,22 +245,22 @@ local function facebookLoginListener(event)
 	
 	if (event.isError) then
 		-- Error
-		print("-----------")
-		print("Error")
-		print("-----------")
+		-- print("-----------")
+		-- print("Error")
+		-- print("-----------")
 	elseif (event.isLoginError) then
 		-- Login error
-		print("-----------")
-		print("Login Error")
-		print("-----------")
+		-- print("-----------")
+		-- print("Login Error")
+		-- print("-----------")
 	else
 		if (event.isLoginSuccess) then
-			print("-----------")
-			print("userId:", tostring(event.userId))
-			print("Token:", tostring(event.sessionToken))
-			print("Facebook Token", tostring(event.fbToken))
-			print("-----------")
-			print("data",json.encode(event))
+			-- print("-----------")
+			-- print("userId:", tostring(event.userId))
+			-- print("Token:", tostring(event.sessionToken))
+			-- print("Facebook Token", tostring(event.fbToken))
+			-- print("-----------")
+			-- print("data",json.encode(event))
 
 			global.isFacebookLogin = true
 
@@ -285,9 +285,9 @@ local function facebookLoginListener(event)
 			newNetworkFunction.getUserData(facebookLogin_getUserDataListener)
 
 		elseif (event.isCreateNewAcc) then
-			print("-----------")
-			print("create new ac", tostring(event.facebookId), tostring(event.facebookToken))
-			print("-----------")
+			-- print("-----------")
+			-- print("create new ac", tostring(event.facebookId), tostring(event.facebookToken))
+			-- print("-----------")
 			local goToRegSceneOpt = {}
 			goToRegSceneOpt.effect = goToRegSceneOption.effect
 			goToRegSceneOpt.time = goToRegSceneOption.time
@@ -296,19 +296,19 @@ local function facebookLoginListener(event)
 									}
 			storyboard.gotoScene( "Scene.RegisterPageScene" ,goToRegSceneOpt)
 		elseif (event.isLinkAccount) then
-			print("-----------")
-			print("link acc")
+			-- print("-----------")
+			-- print("link acc")
 			linkListener = event.linkAccountListener
-			print("-----------")
+			-- print("-----------")
 			popupLinkTextField()
 		elseif (event.linkError) then
-			print("-----------")
-			print("link acc error")
-			print("-----------")
+			-- print("-----------")
+			-- print("link acc error")
+			-- print("-----------")
 		else
-			print("-----------")
-			print("Unknown")
-			print("-----------")
+			-- print("-----------")
+			-- print("Unknown")
+			-- print("-----------")
 		end
 	end
 	

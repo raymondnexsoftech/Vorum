@@ -25,7 +25,7 @@ local goOption_defaultVaule = {
 function moduleGroup.removeKeyEvent()
 	if(sceneData.sceneKeyEventFnc)then
 		if(type(sceneData.sceneKeyEventFnc[curSceneNum])=="function")then
-			print("remove key event",curSceneNum)
+			-- print("remove key event",curSceneNum)
 			Runtime:removeEventListener( "key",  sceneData.sceneKeyEventFnc[curSceneNum] )
 		end
 	end	
@@ -33,7 +33,7 @@ end
 function moduleGroup.setKeyEvent()
 	if(sceneData.sceneKeyEventFnc)then
 		if(type(sceneData.sceneKeyEventFnc[curSceneNum])=="function")then
-			print("add key event",curSceneNum)
+			-- print("add key event",curSceneNum)
 			Runtime:addEventListener( "key", sceneData.sceneKeyEventFnc[curSceneNum] )
 		end
 	end
@@ -73,7 +73,7 @@ function moduleGroup.go(newGoOption)
 			curSceneNum = curSceneNum+1
 			boolean_goTrans = true
 		else
-			print("It is last scene.")
+			-- print("It is last scene.")
 		end
 	elseif(string.lower(goOption.scene)=="previous")then
 		if(curSceneNum>0)then
@@ -82,7 +82,7 @@ function moduleGroup.go(newGoOption)
 			curSceneNum = curSceneNum-1
 			boolean_goTrans = true
 		else
-			print("It is first scene.")
+			-- print("It is first scene.")
 		end
 	elseif(type(goOption.scene)=="number")then
 		if(goOption.scene>0 and goOption.scene<totalSceneNum and goOption.scene~=curSceneNum)then

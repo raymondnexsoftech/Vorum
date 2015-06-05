@@ -11,7 +11,7 @@
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local saveData = require( "SaveData.SaveData" )
@@ -76,7 +76,7 @@ local tagSelection = tagId.id_general --set default
 ---------------------------------------------------------------
 
 local function background_touch(event)
-	print("This is background")
+	-- print("This is background")
 	return true
 end
 function returnGroup.loadData(callBackFnc)

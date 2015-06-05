@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local headerView = require( "ProjectObject.HeaderView" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
@@ -33,7 +33,7 @@ local stringUtility = require("SystemUtility.StringUtility")
 local scrollViewForMultiScene = require("Module.scrollViewForMultiScene")
 local optionModule = require("Module.Option")
 local tagSelectionFnc = require("Function.tagSelectionFnc")
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local newNetworkFunction = require("Network.newNetworkFunction")
 local hardwareButtonHandler = require("ProjectObject.HardwareButtonHandler")
 ---------------------------------------------------------------
@@ -739,7 +739,7 @@ local function createCouponListener(event)
 	if (event[1].isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_newCoupon"),{localization.getLocalization("ok")})
 	else
-		print(event[1].response)
+		-- print(event[1].response)
 		
 	end
 end
@@ -747,7 +747,7 @@ local function createPostListener(event)
 	if (event[1].isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_newPost"),{localization.getLocalization("ok")})
 	else
-		print(event[1].response)
+		-- print(event[1].response)
 		if(isVip and couponText)then
 			native.showAlert(localization.getLocalization("newCouponSuccessTitle"),localization.getLocalization("newCouponSuccess"),{localization.getLocalization("ok")})
 		else
@@ -787,10 +787,10 @@ local function uploadPicListener(event)
 
 	if (event.uploadedData) then
 		uploadedSuccessList[event.uploadedData.key] = event.uploadedData.filename
-		print(event.uploadedData.key)
+		-- print(event.uploadedData.key)
 	end
 	if (event.isFinished) then
-		print("Finished")
+		-- print("Finished")
 		saveData.save("postPicData.txt", system.TemporaryDirectory, uploadedSuccessList)
 		if (event.uploadErrorList) then
 			local errorMsg = "Error:"
@@ -865,31 +865,31 @@ local function newPostFnc(event)
 			postData.photoList.questionPic = {}
 			postData.photoList.questionPic.path = temp_post1TitleImagePath
 			postData.photoList.questionPic.baseDir = BASEDIR 
-			print("get question Image",postData.photoList.questionPic.path)
+			-- print("get question Image",postData.photoList.questionPic.path)
 		end
 		if(temp_post2ChoiceAImage)then
 			postData.photoList.answerPicA = {}
 			postData.photoList.answerPicA.path = temp_post2ChoiceAImage
 			postData.photoList.answerPicA.baseDir = BASEDIR 
-			print("get post2 choice A Image",postData.photoList.answerPicA.path)
+			-- print("get post2 choice A Image",postData.photoList.answerPicA.path)
 		end
 		if(temp_post2ChoiceBImage)then
 			postData.photoList.answerPicB = {}
 			postData.photoList.answerPicB.path = temp_post2ChoiceBImage
 			postData.photoList.answerPicB.baseDir = BASEDIR 
-			print("get post2 choice B Image",postData.photoList.answerPicB.path)
+			-- print("get post2 choice B Image",postData.photoList.answerPicB.path)
 		end
 		if(temp_post2ChoiceCImage)then
 			postData.photoList.answerPicC = {}
 			postData.photoList.answerPicC.path = temp_post2ChoiceCImage
 			postData.photoList.answerPicC.baseDir = BASEDIR
-			print("get post2 choice C Image",postData.photoList.answerPicC.path)			
+			-- print("get post2 choice C Image",postData.photoList.answerPicC.path)			
 		end
 		if(temp_post2ChoiceDImage)then
 			postData.photoList.answerPicD = {}
 			postData.photoList.answerPicD.path = temp_post2ChoiceDImage
 			postData.photoList.answerPicD.baseDir = BASEDIR 
-			print("get post2 choice D Image",postData.photoList.answerPicD.path)	
+			-- print("get post2 choice D Image",postData.photoList.answerPicD.path)	
 		end
 		--set question title desc link
 		
@@ -913,21 +913,21 @@ local function newPostFnc(event)
 
 		postData.post.choices[1] = {}
 		postData.post.choices[1].text = choiceData[1].textField.text
-		print("get choice A text",postData.post.choices[1].text)	
+		-- print("get choice A text",postData.post.choices[1].text)	
 		
 		postData.post.choices[2] = {}
 		postData.post.choices[2].text = choiceData[2].textField.text
-		print("get choice B text",postData.post.choices[2].text)	
+		-- print("get choice B text",postData.post.choices[2].text)	
 		
 		if((choiceData[3].textField.text and choiceData[3].textField.text~="") or temp_post2ChoiceCImage)then
 		postData.post.choices[3] = {}
 		postData.post.choices[3].text = choiceData[3].textField.text
-		print("get choice C text",postData.post.choices[3].text)	
+		-- print("get choice C text",postData.post.choices[3].text)	
 		
 			if((choiceData[4].textField.text and choiceData[4].textField.text~="") or temp_post2ChoiceDImage)then
 				postData.post.choices[4] = {}
 				postData.post.choices[4].text = choiceData[4].textField.text
-				print("get choice D text",postData.post.choices[4].text)	
+				-- print("get choice D text",postData.post.choices[4].text)	
 			end
 		end
 
@@ -942,23 +942,23 @@ local function newPostFnc(event)
 		--set country
 		if(userData.country)then
 			postData.post.country = userData.country
-			print("set country",postData.post.country)
+			-- print("set country",postData.post.country)
 		end
 		
 		--VIP
 		isVip = false
 		if((userData.vip ~= nil) and (tonumber(userData.vip) > 0))then
 			isVip = true
-			print("is Vip",isVip)
+			-- print("is Vip",isVip)
 			
 			if (isCouponTextExist) then
 				couponText = post3_title_textField.text
 				postData.post.coupon = {}
 				postData.post.coupon.text = couponText
-				print("get coupon text",couponText)
+				-- print("get coupon text",couponText)
 			else
 				couponText = nil
-				print("no coupon text",nil)
+				-- print("no coupon text",nil)
 			end
 			--set hide result
 
@@ -975,14 +975,14 @@ local function newPostFnc(event)
 				postData.photoList.couponPic = {}
 				postData.photoList.couponPic.path = temp_couponPic
 				postData.photoList.couponPic.baseDir = BASEDIR 
-				print("get coupon Picture",postData.photoList.couponPic.path)
+				-- print("get coupon Picture",postData.photoList.couponPic.path)
 			end
 		end
 		--
 		uploadedPic = saveData.load("postPicData.txt", system.TemporaryDirectory)
 		if (uploadedPic) then
 			createPost()
-			print("already upload photo and create post")
+			-- print("already upload photo and create post")
 		else
 			if(postData.photoList)then
 			

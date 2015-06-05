@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local localization = require("Localization.Localization")
 local headerView = require( "ProjectObject.HeaderView" )

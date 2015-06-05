@@ -19,10 +19,10 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local json = require( "json" )
 local scrollViewForPost = require( "ProjectObject.ScrollViewForPost" )
 local headerView = require( "ProjectObject.HeaderView" )
@@ -106,7 +106,7 @@ local function cancelAllLoad()
 		display.remove(loadingIcon)
 		loadingIcon = nil
 	end
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 local function votingListener(postGroup, dataForVote)
@@ -161,7 +161,7 @@ end
 
 local function reloadNewPost()
 	cancelAllLoad()
-	print("New")
+	-- print("New")
 	setActivityIndicatorFnc(true)
 	scrollView:deleteAllPost()
 	newNetworkFunction.getPost(postId,getOnePostListener)
@@ -248,7 +248,7 @@ local function sceneCreation()
 													reloadDataListener = reloadNewPost,
 													postSpace = 35
 												}
-	print(json.encode(postData))
+	-- print(json.encode(postData))
 	-- group_personPart = personPart.create(postData,scrollView)
 	-- scrollView:setScrollViewHead(group_personPart, group_personPart.height)
 	

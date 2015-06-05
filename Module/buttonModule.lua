@@ -24,7 +24,7 @@ local defaultValue = {
 }
 
 local function nothing(event)
-	print("error",event.phase)
+	-- print("error",event.phase)
 	return true
 end
 local function isWithinBounds( object, event )
@@ -37,7 +37,7 @@ local function isWithinBounds( object, event )
 			isWithinBounds = bounds.xMin <= x and bounds.xMax >= x and bounds.yMin <= y and bounds.yMax >= y
 		end
 	end
-	print(bounds.xMin,bounds.xMax,bounds.yMin,bounds.yMax)
+	-- print(bounds.xMin,bounds.xMax,bounds.yMin,bounds.yMax)
 	return isWithinBounds
 end
 function moduleGroup.newButton(moduleData)

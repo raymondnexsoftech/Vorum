@@ -20,12 +20,12 @@ local LOCAL_SETTINGS = {
 
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local localization = require("Localization.Localization")
 local headerView = require( "ProjectObject.HeaderView" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local saveData = require( "SaveData.SaveData" )
 local json = require( "json" )
 local global = require( "GlobalVar.global" )
@@ -106,7 +106,7 @@ local function changeRelationshiplistener(event)
 	if (event.isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
-		print("event",event[1].response)
+		-- print("event",event[1].response)
 		local response = json.decode(event[1].response)
 
 		if(type(response)=="table" and response.code)then
@@ -114,7 +114,7 @@ local function changeRelationshiplistener(event)
 			response.code = tonumber( response.code )
 
 			if(response.code==37 or response.code==35)then --35 sent, 37 already send
-				print("sent request")
+				-- print("sent request")
 
 				local addFriendList = saveData.load(global.addFriendListSavePath)
 
@@ -130,7 +130,7 @@ local function changeRelationshiplistener(event)
 			elseif(response.code==50)then
 				relationship = "noRelation"
 			elseif(response.code==48 or response.code==40)then
-				print("cancel request")
+				-- print("cancel request")
 
 				local addFriendList = saveData.load(global.addFriendListSavePath)
 
@@ -145,16 +145,16 @@ local function changeRelationshiplistener(event)
 				relationship = "noRelation"
 
 			elseif(response.code==36)then
-				print("addFriedn each other")
+				-- print("addFriedn each other")
 				relationship = "friend"
 			elseif(response.code==39)then
-				print("accept")
+				-- print("accept")
 				relationship = "friend"
 			elseif(response.code==46)then
-				print("reject")
+				-- print("reject")
 				relationship = "noRelation"
 			end
-			print("relationship",relationship)
+			-- print("relationship",relationship)
 			relationshipButtonGeneration()
 		end
 	end
@@ -423,7 +423,7 @@ relationshipButtonGeneration = function ()
 	normalStatusAdjustFnc()
 
 	if (relationship == "friend") then
-		print("Friend")
+		-- print("Friend")
 		relationship = "friend"
 		relationshipButton = widget.newButton
 		{
@@ -449,7 +449,7 @@ relationshipButtonGeneration = function ()
 
 	elseif (relationship == "pending") then
 
-		print("Is pending from other user")
+		-- print("Is pending from other user")
 		relationship = "pending"
 		relationshipButton = widget.newButton
 		{
@@ -477,7 +477,7 @@ relationshipButtonGeneration = function ()
 
 		waitingStatusAdjustFnc()
 
-		print("Waiting your approval")
+		-- print("Waiting your approval")
 		relationship = "waiting"
 		relationshipButton = widget.newButton
 		{
@@ -525,7 +525,7 @@ relationshipButtonGeneration = function ()
 
 	elseif(relationship == "noRelation")then
 
-		print("No relation")
+		-- print("No relation")
 		relationship = "noRelation"
 		relationshipButton = widget.newButton
 		{
@@ -561,7 +561,7 @@ local function getMemberProfileListener(event)
 		for i = 1, #event do
 			errorStr = errorStr .. " " .. tostring(event[i].isError)
 		end
-		print(errorStr)
+		-- print(errorStr)
 	else
 		local response 
 		
@@ -578,18 +578,18 @@ local function getMemberProfileListener(event)
 
 
 		if(relationship ~= "self")then
-			print(relationship,"relationship")
+			-- print(relationship,"relationship")
 			if (tostring(response.isFriend)=="1") then
-				print("Friend")
+				-- print("Friend")
 				relationship = "friend"
 			elseif (event.isPending) then
-				print("Is pending from other user")
+				-- print("Is pending from other user")
 				relationship = "pending"
 			elseif (tostring(event.hasRequest)=="1") then
-				print("Waiting your approval")
+				-- print("Waiting your approval")
 				relationship = "waiting"
 			else
-				print("No relation")
+				-- print("No relation")
 				relationship = "noRelation"
 				local addFriendList = saveData.load(global.addFriendListSavePath)
 				if(type(addFriendList)=="table")then
@@ -618,7 +618,7 @@ function returnGroup.create(input_personData,input_scrollView)
 	userId = userData.user_id or userData.id
 	personId = personData.user_id or personData.id
 	
-	print("personDaata",json.encode( personData ))
+	-- print("personDaata",json.encode( personData ))
 
 	requestParams.id = personId
 	

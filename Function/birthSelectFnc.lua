@@ -96,8 +96,8 @@ function returnGroup.birthdaySelection(event,year,month,day,updateFnc,scrollView
 								break
 							end
 						end
-						print(nowTime.year,nowTime.month,nowTime.day)
-						print(currentYear,numMonth,currentDay)
+						-- print(nowTime.year,nowTime.month,nowTime.day)
+						-- print(currentYear,numMonth,currentDay)
 						if((tonumber(currentYear)>tonumber(nowTime.year))or(tonumber(currentYear)>=tonumber(nowTime.year)and tonumber(numMonth)>tonumber(nowTime.month))or(tonumber(currentYear)>=tonumber(nowTime.year)and tonumber(numMonth)>=tonumber(nowTime.month) and tonumber(currentDay)>tonumber(nowTime.day)))then
 							native.showAlert(localization.getLocalization("birthdayError_title"),localization.getLocalization("birthdayError_overNow"),{localization.getLocalization("ok")})
 							return false
@@ -110,7 +110,7 @@ function returnGroup.birthdaySelection(event,year,month,day,updateFnc,scrollView
 								return false
 							end
 						end
-						print("birday",totalDaysOfMon,currentDay,numMonth)
+						-- print("birday",totalDaysOfMon,currentDay,numMonth)
 						updateFnc(currentYear,currentMonth,currentDay)
 					end
 				end

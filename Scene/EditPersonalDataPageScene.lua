@@ -21,12 +21,12 @@ local LOCAL_SETTINGS = {
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
 local coronaTextField = require("Module.CoronaTextField")
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local addPhotoFnc = require("Function.addPhoto")
 local birthSelectFnc = require("Function.birthSelectFnc")
 local saveData = require( "SaveData.SaveData" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local geolocationUtility = require("SystemUtility.GeolocationUtility")
 local global = require( "GlobalVar.global" )
 local headerView = require( "ProjectObject.HeaderView" )
@@ -236,14 +236,14 @@ end
 local function uploadPicListener(event)
 
 	if (event.fileNotFound) then
-		print("File not found")
+		-- print("File not found")
 	elseif (event.networkError) then
-		print("Network Error")
+		-- print("Network Error")
 	else
 		saveData.save("profileData.txt", system.TemporaryDirectory, event.filename)
 		uploadedPic = event.filename
 		newUserData.profile_pic = event.filename
-		print("newUserData.profile_pic",newUserData.profile_pic)
+		-- print("newUserData.profile_pic",newUserData.profile_pic)
 		updateUserData()
 		
 		return
@@ -292,24 +292,24 @@ end
 
 local function countryChecking(event)
 	native.setActivityIndicator( false )
-		print("bb")
+		-- print("bb")
 	if(event.isNetworkError)then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 		return false
 	elseif(event.isGPSError)then
-		print("event.isGPSError",event.isGPSError)
+		-- print("event.isGPSError",event.isGPSError)
 		native.showAlert(localization.getLocalization("GPS_openGpsTitle"),localization.getLocalization("GPS_openGps"),{localization.getLocalization("GPS_openGpsOption_open"),localization.getLocalization("GPS_openGpsOption_continue")},GPSOptionsListener)
 		return false
 	elseif(event.isAPIError)then
-		print("event.isAPIError",event.isAPIError)
+		-- print("event.isAPIError",event.isAPIError)
 		return false
 	elseif(event.country)then
-		print("event.country",event.country)
+		-- print("event.country",event.country)
 		--get my country
 		newUserData.country = event.country
 		uploadedPictureFnc()
 	else
-		print("ERROR No data")
+		-- print("ERROR No data")
 		return false
 	end
 end
@@ -346,7 +346,7 @@ local function updateFnc(event)
 	local day_num
 	
 	if(booldean_birthHadSelected)then
-		print("update birth")
+		-- print("update birth")
 		for i=1,#month_array do
 			if(month==month_array[i])then
 				month_num = i

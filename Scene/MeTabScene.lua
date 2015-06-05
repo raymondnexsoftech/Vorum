@@ -19,10 +19,10 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local json = require( "json" )
 local scrollViewForPost = require( "ProjectObject.ScrollViewForPost" )
 local headerView = require( "ProjectObject.HeaderView" )
@@ -123,7 +123,7 @@ local function cancelAllLoad()
 		display.remove(loadingIcon)
 		loadingIcon = nil
 	end
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 local function votingListener(postGroup, dataForVote)
@@ -199,7 +199,7 @@ end
 local function getMyPostListener(event)
 	setActivityIndicatorFnc(false)
 	if (event.isError) then
-		print("error")
+		-- print("error")
 	else
 
 		scrollView:resetDataRequestStatus()
@@ -210,13 +210,13 @@ local function getMyPostListener(event)
 				end
 				return
 			end
-			print("get post num",#event.postData)
+			-- print("get post num",#event.postData)
 			for i = 1,#event.postData do
 				createPostForMyPost(event.postData[i])
 			end
 			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
 
-			print("notDisplayPostNum",notDisplayPostNum)
+			-- print("notDisplayPostNum",notDisplayPostNum)
 
 			if(notDisplayPostNum>0)then
 				local displayPostNum = scrollView:getPostTotal()
@@ -229,7 +229,7 @@ local function getMyPostListener(event)
 			end
 
 		else
-			print(event[1].response)
+			-- print(event[1].response)
 		end
 	end
 end
@@ -275,14 +275,14 @@ local function getFriendPostListener(event)
 			end
 			getPostParams.pushed_time = tonumber(event.postData[#event.postData].pushed_time)-1
 		else
-			print("no post data")
+			-- print("no post data")
 		end
 	end
 end
 
 local function requestOldPost()
 
-	print("Old")
+	-- print("Old")
 	isNotShownNoPost = true
 	getPostParams.limit = getOldPostNum
 
@@ -296,7 +296,7 @@ local function requestOldPost()
 end
 
 local function reloadNewPost()
-	print("New")
+	-- print("New")
 	cancelAllLoad()
 	setActivityIndicatorFnc(true)
 

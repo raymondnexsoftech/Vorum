@@ -52,7 +52,7 @@ function tableSave.delete(path, baseDir)
 end
 
 function tableSave.push(...)
-	print("PUSHPUSHPUSH!!!!!!")
+	-- print("PUSHPUSHPUSH!!!!!!")
 	local path, baseDir, data, encryptionKey
 	path = arg[1]
 	local argIdx = 2
@@ -82,7 +82,7 @@ function tableSave.push(...)
 end
 
 function tableSave.pop(...)
-	print("POPPOPPOP!!!!!!")
+	-- print("POPPOPPOP!!!!!!")
 	local path, baseDir, encryptionKey
 	path = arg[1]
 	local argIdx = 2

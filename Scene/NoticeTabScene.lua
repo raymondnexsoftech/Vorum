@@ -19,12 +19,12 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local localization = require("Localization.Localization")
 local headerView = require( "ProjectObject.HeaderView" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local saveData = require( "SaveData.SaveData" )
 local json = require( "json" )
 local global = require( "GlobalVar.global" )
@@ -131,7 +131,7 @@ local function cancelAllLoad()
 		display.remove(loadingIcon)
 		loadingIcon = nil
 	end
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 local function goCouponScene(event)

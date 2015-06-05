@@ -8,7 +8,7 @@ local launchArgs = ...
 -- Require Parts
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local global = require( "GlobalVar.global" )
 local saveData = require( "SaveData.SaveData" )
 local networkFunction = require("Network.newNetworkFunction")

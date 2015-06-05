@@ -18,7 +18,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local catScreen = require("ProjectObject.CatScreen")
 local searchScreen = require("ProjectObject.SearchScreen")

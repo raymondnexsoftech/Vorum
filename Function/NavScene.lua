@@ -14,7 +14,7 @@ function moduleGroup.back()
 	if(type(oldData)~="table")then
 		tableSave.delete(global.sceneTransDataPath,global.TEMPBASEDIR)
 		storyboard.gotoScene("Scene.VorumTabScene",oldSceneOptions)
-		print("There is no table, may be error.",oldData)
+		-- print("There is no table, may be error.",oldData)
 		return 
 	end
 
@@ -42,7 +42,7 @@ function moduleGroup.back()
 		tableSave.delete(global.sceneTransDataPath,global.TEMPBASEDIR)
 		storyboard.gotoScene("Scene.MeTabScene",oldSceneOptions)
 	else
-		print("error, no scene or wrong scene.")
+		-- print("error, no scene or wrong scene.")
 		tableSave.delete(global.sceneTransDataPath,global.TEMPBASEDIR)
 		storyboard.gotoScene("Scene.VorumTabScene",oldSceneOptions)
 	end

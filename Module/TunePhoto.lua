@@ -646,7 +646,7 @@ keyEventFunction = function(event)
 end
 
 local function backgroundFnc(event)
-	print("This is background")
+	-- print("This is background")
 	return true
 end
 function moduleGroup.tune(newModuleData)
@@ -654,7 +654,7 @@ function moduleGroup.tune(newModuleData)
 	moduleData = newModuleData
 	
 	if(not moduleData.photoSavePath or not moduleData.newPhotoSavePath)then
-		print("no photoSavePath or newPhotoSavePath")
+		-- print("no photoSavePath or newPhotoSavePath")
 		return
 	end
 	

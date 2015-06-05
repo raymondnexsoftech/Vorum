@@ -4,4 +4,4 @@
 -- Settings for debug 
 ---------------------------------------------------------------
 
-IS_DEBUG_LOG_ENABLE = true		-- enable debug log
+IS_DEBUG_LOG_ENABLE = false		-- enable debug log

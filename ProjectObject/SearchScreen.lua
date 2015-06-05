@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
@@ -29,7 +29,7 @@ local saveData = require( "SaveData.SaveData" )
 local global = require( "GlobalVar.global" )
 local json = require( "json" )
 local stringUtility = require("SystemUtility.StringUtility")
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local optionModule = require("Module.Option")
 local navScene = require("Function.NavScene")
 local networkFile = require("Network.NetworkFile")
@@ -141,7 +141,7 @@ local function cancelAllLoad()
 		display.remove(loadingIcon)
 		loadingIcon = nil
 	end
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 
@@ -285,7 +285,7 @@ local function createResult(resultData)
 		if(resultData)then
 			if(resultData.userId)then
 				userId = resultData.userId
-				print(userId,"userId")
+				-- print(userId,"userId")
 			end
 			if(resultData.profile_pic)then
 				if(resultData.profile_pic.url)then
@@ -431,7 +431,7 @@ end
 local function createPostResultList(event)
 	setActivityIndicatorFnc(false)
 	if (event[1].isError) then
-		print("error")
+		-- print("error")
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
 		local response = json.decode(event[1].response)
@@ -451,18 +451,18 @@ local function createPostResultList(event)
 			end
 			
 		else							-- if error occur
-			print(event[1].response)
+			-- print(event[1].response)
 		end
 	end
 end
 local function createPeopleResultList(event)
 	setActivityIndicatorFnc(false)
 	if (event[1].isError) then
-		print("error")
+		-- print("error")
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
 		local response = json.decode(event[1].response)
-		print(event[1].response)
+		-- print(event[1].response)
 		if (type(response)=="table") then		-- if post data exist
 
 			if(#response==0)then
@@ -477,7 +477,7 @@ local function createPeopleResultList(event)
 				searchParams.offset = searchParams.offset+1
 			end
 		else							-- if error occur
-			print(event[1].response)
+			-- print(event[1].response)
 		end
 	end
 end
@@ -485,7 +485,7 @@ end
 
 
 local function searchFnc()
-	print("searchString",searchString)
+	-- print("searchString",searchString)
 	cancelAllLoad()
 
 	scrollView:deleteAllPost()
@@ -504,13 +504,13 @@ local function searchFnc()
 			setActivityIndicatorFnc(true)
 			clockTimer = timer.performWithDelay( 1, function(event) 
 				newNetworkFunction.searchPost(searchParams, createPostResultList)
-				print("search post")
+				-- print("search post")
 			end)
 		elseif(searchType =="people")then
 			setActivityIndicatorFnc(true)
 			clockTimer = timer.performWithDelay( 1, function(event) 
 				newNetworkFunction.searchUser(searchParams, createPeopleResultList)
-				print("search people")
+				-- print("search people")
 			end)
 		end	
 	end
@@ -518,7 +518,7 @@ end
 
 
 local function requestOldResult()
-	print("Old")
+	-- print("Old")
 	if(searchString~="")then
 		isNotShownNoResult = true
 
@@ -531,19 +531,19 @@ local function requestOldResult()
 		if(searchType =="post")then
 			clockTimer = timer.performWithDelay( 1, function(event) 
 				newNetworkFunction.searchPost(searchParams, createPostResultList)
-				print("search post")
+				-- print("search post")
 			end)
 		elseif(searchType =="people")then
 			clockTimer = timer.performWithDelay( 1, function(event) 
 				newNetworkFunction.searchUser(searchParams, createPeopleResultList)
-				print("search people")
+				-- print("search people")
 			end)
 		end	
 	end	
 end
 
 local function reloadNewResult()
-	print("New")
+	-- print("New")
 	searchFnc()
 end
 
@@ -579,12 +579,12 @@ local function searchType_setDefault(event)
 end
 
 local function background_touch(event)
-	print("This is background")
+	-- print("This is background")
 	return true
 end
 
 local function searchTextListener( event )
-	print(event.phase, event.target)
+	-- print(event.phase, event.target)
 
 	if ( event.phase == "began" ) then
 

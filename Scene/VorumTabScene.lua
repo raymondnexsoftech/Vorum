@@ -19,10 +19,10 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local json = require( "json" )
 local scrollViewForPost = require( "ProjectObject.ScrollViewForPost" )
 local headerView = require( "ProjectObject.HeaderView" )
@@ -122,7 +122,7 @@ local function cancelAllLoad()
 		display.remove(loadingIcon)
 		loadingIcon = nil
 	end
-	networkFunction.cancelAllConnection()
+	newNetworkFunction.cancelAllConnection()
 end
 
 local function onBackButtonPressed()
@@ -248,7 +248,7 @@ local function getVorumPostListener(event)
 			filterData.pushed_time = event.postData[#event.postData].pushed_time-1
 
 		else
-			print(event[1].response)
+			-- print(event[1].response)
 		end
 	end
 end

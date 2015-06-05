@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local headerView = require( "ProjectObject.HeaderView" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
@@ -216,13 +216,13 @@ local function tutorial1MovingOutAnimation(animationPecent,isFullDis)
 	image_bigA.isVisible = false
 
 	if(not isFullDis)then
-		print("1 Move Out")
+		-- print("1 Move Out")
 		image_title.x=-image_title.width*animationPecent
 		tut1_sheetDetails.x=tut1_sheetDetails.width*animationPecent
 		
 	else
 		animationTime=ANIMATION_NORNALTIME*animationPecent
-		print("1 Animation Out")
+		-- print("1 Animation Out")
 		trans_tut1Title = transition.to(image_title,{x=-image_title.width,time=animationTime})
 		trans_tut1Sheet = transition.to(tut1_sheetDetails,{x=tut1_sheetDetails.width,time=animationTime,onComplete=function(event)
 			--reset
@@ -248,13 +248,13 @@ local function tutorial2MovingOutAnimation(animationPecent,isFullDis)
 	end
 	if(not isFullDis)then
 		animationPecent=1-animationPecent
-		print("2 Move Out")
+		-- print("2 Move Out")
 		image_title2.x=image_title2.width*animationPecent
 		tut2_sheetDetails.x=-tut2_sheetDetails.width*animationPecent
 		tut2_sheetDetails.y=-tut2_sheetDetails.height*animationPecent
 	else
 		animationTime=ANIMATION_NORNALTIME*animationPecent
-		print("2 Animation Out")
+		-- print("2 Animation Out")
 		trans_tut2Title = transition.to(image_title2,{x=image_title2.width,time=animationTime})
 		trans_tut2Sheet = transition.to(tut2_sheetDetails,{x=-tut2_sheetDetails.width,y=-tut2_sheetDetails.height,time=animationTime,onComplete=function(event)
 			--cancel transition
@@ -282,12 +282,12 @@ end
 
 local function tutorial1MovingInAnimation(animationPecent,isFullDis)
 	if(not isFullDis)then
-		print("1 Move In")
+		-- print("1 Move In")
 		image_title.x=-image_title.width*animationPecent
 		tut1_sheetDetails.x=tut1_sheetDetails.width*animationPecent
 	else
 		animationTime=ANIMATION_NORNALTIME*animationPecent
-		print("1 Animation In")
+		-- print("1 Animation In")
 		trans_tut1Title = transition.to(image_title,{x=0,time=animationTime})
 		trans_tut1Sheet = transition.to(tut1_sheetDetails,{x=0,time=animationTime,onComplete=function(event)
 			tutorialOneAnimation()
@@ -307,13 +307,13 @@ local function tutorial2MovingInAnimation(animationPecent,isFullDis)
 	end
 	if(not isFullDis)then
 		animationPecent=1-animationPecent
-		print("2 Move In")
+		-- print("2 Move In")
 		image_title2.x=image_title2.width*animationPecent
 		tut2_sheetDetails.x=-tut2_sheetDetails.width*animationPecent
 		tut2_sheetDetails.y=-tut2_sheetDetails.height*animationPecent
 	else
 		animationTime=ANIMATION_NORNALTIME*animationPecent
-		print("2 Animation In")
+		-- print("2 Animation In")
 		trans_tut2Title = transition.to(image_title2,{x=0,time=animationTime})
 		trans_tut2Sheet = transition.to(tut2_sheetDetails,{x=0,y=0,time=animationTime,onComplete=function(event)
 			animationPercent = 1
@@ -412,7 +412,7 @@ local function animationMovingTouchDectection(event)
 			end
 			animationPercent=dXPercent
 		
-			print("moveLeft",animationPercent)
+			-- print("moveLeft",animationPercent)
 			tutorial1MovingInAnimation(animationPercent,false)
 			tutorial2MovingOutAnimation(animationPercent,false)
 			curTutorialPage = 1
@@ -427,7 +427,7 @@ local function animationMovingTouchDectection(event)
 		diffTime = lastTime - startTime
 		speed = diffX/diffTime 
 		if(speed == 0 )then --not moving
-			print("0 speed")
+			-- print("0 speed")
 			resumeTrans()
 			return true
 		end

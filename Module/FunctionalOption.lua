@@ -194,7 +194,7 @@ end
 
 local function backgronud_touch(event)
 	if(event.phase=="ended" or event.phase=="cancelled")then
-		print("This is background.")
+		-- print("This is background.")
 		--
 		if(not moduleData.boolean_bgTouchNotCancel and bgcanCancel)then
 			--cancel menu
@@ -272,7 +272,7 @@ function moduleGroup.create(newModuleData)
 	moduleData.boolean_isNotShowBegin = moduleData.boolean_isNotShowBegin or defaultValue.boolean_isNotShowBegin
 	--check
 	if(buttonNumber==0)then
-		print("No button object")
+		-- print("No button object")
 		return
 	end
 	group_displayScreen = display.newGroup()
@@ -330,7 +330,7 @@ function moduleGroup.create(newModuleData)
 			group_buttonsField:insert(moduleData.obj[i])
 		else
 			moduleData.obj[i] = {}
-			print("object num "..i.." is wrong type, not text and image.")
+			-- print("object num "..i.." is wrong type, not text and image.")
 		end
 		
 	end

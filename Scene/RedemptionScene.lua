@@ -19,7 +19,7 @@ local LOCAL_SETTINGS = {
 ---------------------------------------------------------------
 local storyboard = require ( "storyboard" )
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local headerView = require( "ProjectObject.HeaderView" )
@@ -240,9 +240,6 @@ function scene:createScene( event )
 					local curCouponData = couponData[i]
 					local couponExpireTimeInSec = curCouponData.expire_time
 					local couponTimeRemain = couponExpireTimeInSec - systemTime
-		print("expire: ", couponExpireTimeInSec)
-		print("remain: ", couponTimeRemain)
-		print("system: ", systemTime)
 					if ((curCouponData ~= nil) and (couponTimeRemain > 0)) then
 						couponCount = couponCount + 1
 						local couponGroup = display.newGroup()

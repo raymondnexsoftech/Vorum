@@ -12,10 +12,10 @@
 -- Require Parts
 ---------------------------------------------------------------
 local widget = require ( "widget" )
-require ( "DebugUtility.Debug" )
+require ( "SystemUtility.Debug" )
 local projectObjectSetting = require( "Setting.ProjectObjectSetting" )
 local localization = require("Localization.Localization")
-local networkFunction = require("Network.NetworkFunction")
+-- local networkFunction = require("Network.NetworkFunction")
 local saveData = require( "SaveData.SaveData" )
 local json = require( "json" )
 local global = require( "GlobalVar.global" )
@@ -161,7 +161,7 @@ function deleteFnc(event)
 end
 
 local function shareToFacebookFncListener(event)
-	print(json.encode(event))
+	-- print(json.encode(event))
 	if(event.isError)then
 		native.showAlert(localization.getLocalization("facebookShareErrorTitle"),localization.getLocalization("facebookShareErrorDesc"),{localization.getLocalization("ok")})
 	elseif(event.didComplete)then
