@@ -22,7 +22,7 @@ application =
 		},
 		google =
 		{
-			projectNumber = "679562432507",
+			projectNumber = "1046322746315",
 		},
 	},
 }
