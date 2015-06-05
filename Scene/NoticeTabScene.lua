@@ -127,15 +127,18 @@ end
 
 
 local function noticCreation(noticData)
-
+	local isGoPost = false
 	local relatedUser
 
 	if (noticData.type == "post_voted") then
 		relatedUser = noticData.voter
+		isGoPost = true
 	elseif (noticData.type == "post_share") then
 		relatedUser = noticData.sharer
+		isGoPost = true
 	elseif (noticData.type == "post_expired")then
 		relatedUser = noticData
+		isGoPost = true
 	elseif (noticData.type == "friend_request") then
 		relatedUser = noticData.from
 	elseif (noticData.type == "friend_accept")then
@@ -244,13 +247,24 @@ local function noticCreation(noticData)
 		end
 	end
 
+	if(isGoPost)then
+		userIconFnc({path = "Image/Notification/postIcon.png", baseDir = system.ResourceDirectory})--temp image
+	else
+		userIconFnc({path = "Image/User/anonymous.png", baseDir = system.ResourceDirectory})--temp image
 
-	userIconFnc({path = "Image/User/anonymous.png", baseDir = system.ResourceDirectory})--temp image
-
-
-	local userIconInfo = newNetworkFunction.getVorumFile(relatedUser.profile_pic, user_icon_savePath, userIconListener)
-	if ((userIconInfo ~= nil) and (userIconInfo.request == nil)) then
-		userIconFnc(userIconInfo)
+		local userIconInfo = newNetworkFunction.getVorumFile(relatedUser.profile_pic, user_icon_savePath, userIconListener)
+		if ((userIconInfo ~= nil) and (userIconInfo.request == nil)) then
+			userIconFnc(userIconInfo)
+		end
+	end
+	if(isGoPost)then
+		user_icon_background:setFillColor(0,0,0,0.1)
+	elseif(string.upper(tostring(userGender))=="M")then
+		user_icon_background:setFillColor(unpack(global.maleColor))
+	elseif(string.upper(tostring(userGender))=="F")then
+		user_icon_background:setFillColor(unpack(global.femaleColor))
+	else
+		user_icon_background:setFillColor(unpack(global.noGenderColor))
 	end
 
 	local text_actionMessage = {
@@ -304,15 +318,6 @@ local function noticCreation(noticData)
 		--done
 		text_actionMessage.text = localization.getLocalization("notice_action_newCoupon")..relatedUser.name..localization.getLocalization("notice_action_newCoupon2")
 		thisGroupBg:addEventListener( "touch", goCouponScene )
-	end
-
-
-	if(string.upper(tostring(userGender))=="M")then
-		user_icon_background:setFillColor(unpack(global.maleColor))
-	elseif(string.upper(tostring(userGender))=="F")then
-		user_icon_background:setFillColor(unpack(global.femaleColor))
-	else
-		user_icon_background:setFillColor(unpack(global.noGenderColor))
 	end
 
 	--------------- post time
