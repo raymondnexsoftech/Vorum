@@ -31,6 +31,7 @@ local global = require( "GlobalVar.global" )
 local LEFTPADDING = 20
 local CONTENTWIDTH = display.contentWidth-LEFTPADDING*2
 local LINESPACE = 20
+
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
@@ -49,7 +50,6 @@ local emailText = "Founder@VorumApp.com"
 local emailLink = "founder@vorumapp.com"
 local websiteText = "http://www.vorumapp.com/"
 local websiteLink = "http://www.vorumapp.com/"
-
 
 local emailOptions =
 {
@@ -137,6 +137,33 @@ local function combineAboutString(aboutStringKey)
 	end
 end
 
+local function displayAboutString(aboutStringKey, parent, y)
+	local fontSize = 30
+	local curY = y
+	local strIdx = 1
+	local curStr = localization.getLocalization(aboutStringKey, strIdx)
+	while ((curStr ~= nil) and (curStr ~= "")) do
+		local aboutTextOption = {
+									text = curStr,
+									x = LEFTPADDING,
+									y = curY,
+									width = CONTENTWIDTH,
+									height = 0, 
+									font = "Helvetica",
+									fontSize = fontSize
+								}
+		local textObj = display.newText(aboutTextOption)
+		textObj:setFillColor(81/255, 81/255, 81/255 )
+		textObj.anchorX=0
+		textObj.anchorY=0
+		parent:insert(textObj)
+		strIdx = strIdx + 1
+		curStr = localization.getLocalization(aboutStringKey, strIdx)
+		curY = curY + textObj.contentHeight + fontSize
+	end
+	return curY
+end
+
 -- Create the scene
 function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
@@ -167,26 +194,28 @@ function scene:createScene( event )
 	}
 	sceneGroup:insert(scrollView)
 
-	local aboutText1Str = combineAboutString("aboutVorumDesc1")
-	local aboutText1Option = {
-								text = aboutText1Str,
-								x = LEFTPADDING,
-								y = 150,
-								width = CONTENTWIDTH,
-								height = 0, 
-								font = "Helvetica",
-								fontSize=30
-							}
-	local aboutText1 = display.newText(aboutText1Option);
-	aboutText1:setFillColor(81/255, 81/255, 81/255 )
-	aboutText1.anchorX=0
-	aboutText1.anchorY=0
-	scrollView:insert(aboutText1)
+	-- local aboutText1Str = combineAboutString("aboutVorumDesc1")
+	-- local aboutText1Option = {
+	-- 							text = aboutText1Str,
+	-- 							x = LEFTPADDING,
+	-- 							y = 150,
+	-- 							width = CONTENTWIDTH,
+	-- 							height = 0, 
+	-- 							font = "Helvetica",
+	-- 							fontSize=30
+	-- 						}
+	-- local aboutText1 = display.newText(aboutText1Option);
+	-- aboutText1:setFillColor(81/255, 81/255, 81/255 )
+	-- aboutText1.anchorX=0
+	-- aboutText1.anchorY=0
+	-- scrollView:insert(aboutText1)
+	local curY
+	curY = displayAboutString("aboutVorumDesc1", scrollView, 150)
 
 	local websiteDisplayTextOption = {
 									text = websiteText .. "\n",
 									x = LEFTPADDING,
-									y = aboutText1.y + aboutText1.contentHeight,
+									y = curY,
 									width = CONTENTWIDTH,
 									height = 0, 
 									font = "Helvetica",
@@ -198,27 +227,29 @@ function scene:createScene( event )
 	websiteDisplayText.anchorY=0
 	websiteDisplayText:addEventListener("touch",openWebsite)
 	scrollView:insert(websiteDisplayText)
+	curY = curY + websiteDisplayText.contentHeight + 30
 
-	local aboutText2Str = combineAboutString("aboutVorumDesc2")
-	local aboutText2Option = {
-								text = aboutText2Str,
-								x = LEFTPADDING,
-								y = websiteDisplayText.y + websiteDisplayText.contentHeight,
-								width = CONTENTWIDTH,
-								height = 0, 
-								font = "Helvetica",
-								fontSize=30
-							}
-	local aboutText2 = display.newText(aboutText2Option);
-	aboutText2:setFillColor(81/255, 81/255, 81/255 )
-	aboutText2.anchorX=0
-	aboutText2.anchorY=0
-	scrollView:insert(aboutText2)
+	-- local aboutText2Str = combineAboutString("aboutVorumDesc2")
+	-- local aboutText2Option = {
+	-- 							text = aboutText2Str,
+	-- 							x = LEFTPADDING,
+	-- 							y = websiteDisplayText.y + websiteDisplayText.contentHeight,
+	-- 							width = CONTENTWIDTH,
+	-- 							height = 0, 
+	-- 							font = "Helvetica",
+	-- 							fontSize=30
+	-- 						}
+	-- local aboutText2 = display.newText(aboutText2Option);
+	-- aboutText2:setFillColor(81/255, 81/255, 81/255 )
+	-- aboutText2.anchorX=0
+	-- aboutText2.anchorY=0
+	-- scrollView:insert(aboutText2)
+	curY = displayAboutString("aboutVorumDesc2", scrollView, curY)
 
 	local emailDisplayTextOption = {
 										text = emailText .. "\n",
 										x = LEFTPADDING,
-										y = aboutText2.y + aboutText2.contentHeight,
+										y = curY,
 										width = CONTENTWIDTH,
 										height = 0, 
 										font = "Helvetica",
