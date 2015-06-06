@@ -88,7 +88,6 @@ local RESULT_VOTE_GENDER_BG_HEIGHT = 30
 local RESULT_VOTE_MALE_COLOR = {88/255, 175/255, 231/255}
 local RESULT_VOTE_FEMALE_COLOR = {255/255, 167/255, 177/255}
 
-
 local POST_DETAIL_PIC_WIDTH = 512
 local POST_DETAIL_PIC_HEIGHT = 320
 local POST_DETAIL_TEXT_X = display.contentWidth * 0.1
@@ -100,6 +99,8 @@ local CHOICE_PIC_SELECTED_SCALE = 1.1
 
 local MAX_TIME_FOR_TOUCH_SPEED = 200
 local TOUCH_MIN_SPEED_TRIGGER = 0.5
+
+local CHOICE_GROUP_BG_BLUR_RATIO = 0.8
 
 local CHOICE_LETTER_TABLE = {"A", "B", "C", "D"}
 local CHOICE_PIC_SIZE_AND_POS = {
@@ -706,7 +707,7 @@ local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
 	local choiceBgCover
 	if (img) then
 		choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
-		choiceBgCover.alpha = 0.9
+		choiceBgCover.alpha = CHOICE_GROUP_BG_BLUR_RATIO
 		choiceBgCover:toBack()
 	else
 		img = display.newImage(LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
