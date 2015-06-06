@@ -184,6 +184,17 @@ local function scaleImageFillArea(img, width, height)
 	return img
 end
 
+local function scaleImageFittingArea(img, width, height)
+	local newScale = img.xScale
+	newScale = width / img.contentWidth
+	if ((height / img.contentHeight) < newScale) then
+		newScale = height / img.contentHeight
+	end
+	img.xScale = newScale
+	img.yScale = newScale
+	return img
+end
+
 local function insertCreatorImg(postGroup, fileInfo, touchListener)
 	if (postGroup.parent) then
 		local img = display.newImage(fileInfo.path, fileInfo.baseDir, true)
@@ -713,7 +724,7 @@ local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
 		img = display.newImage(LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
 	end
 	local imgOriginalScale = img.xScale
-	img = scaleImageFillArea(img, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2, 1)
+	img = scaleImageFittingArea(img, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
 	if (choicePosAndSize.height > CHOICE_PIC_HEIGHT + 1) then
 		img:setMask(twoChoiceMask)
 	else
@@ -728,7 +739,7 @@ local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
 	choiceGroup:insert(img)
 	img:toBack()
 	if ((origBg ~= nil) and (origBg.parent ~= nil)) then
-		origBg.alpha = 0.01
+		origBg:setFillColor(1)
 		origBg:toBack()
 	end
 	return img
