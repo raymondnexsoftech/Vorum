@@ -9,8 +9,8 @@
 
 -- Local Constant Setting
 local LOCAL_SETTINGS = {
-						NAME = "PostScene",			-- Scene name to show in console
-						RES_DIR = "",					-- Common resource directory for scene
+						NAME = "PostScene",				-- Scene name to show in console
+						RES_DIR = "Image/Post/",		-- Common resource directory for scene
 						DOC_DIR = "",					-- Common document directory for scene
 						}
 
@@ -48,6 +48,17 @@ choiceData[1] = { label="A",savePath=global.post2ChoiceAImage}
 choiceData[2] = { label="B",savePath=global.post2ChoiceBImage}
 choiceData[3] = { label="C",savePath=global.post2ChoiceCImage}
 choiceData[4] = { label="D",savePath=global.post2ChoiceDImage}
+
+local POST_INPUT_FIELD_TEXT_INFO =
+{
+	title = {x = 205, y = 269, width = 253, height = 65},
+	desc = {x = 205, y = 408, width = 388, height = 65},
+	link = {x = 205, y = 510, width = 388, height = 65},
+	choice = {x = 287, y = 0, width = 316, height = 65},			-- y will be set individually
+	couponTitle = {x = 158, y = 0, width = 300, height = 65},		-- y will be set individually
+}
+local POST_INPUT_FIELD_CORNER_RADIUS = 5
+
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
@@ -153,6 +164,54 @@ local function addPhotoFunction(event)
 		addPhotoFnc.addPhoto(event)
 	end
 	return true
+end
+
+local function createPostTextFieldBg(parent, detail, y)
+	if (y == nil) then
+		y = detail.y
+	end
+	-- local newTextFieldBg = display.newRoundedRect(detail.x, y, detail.width, detail.height, POST_INPUT_FIELD_CORNER_RADIUS)
+	-- newTextFieldBg:setFillColor(1)
+	-- newTextFieldBg:setStrokeColor(54/255 ,54/255 ,54/255)
+	-- newTextFieldBg.strokeWidth = 2
+	-- newTextFieldBg.anchorX=0
+	-- newTextFieldBg.anchorY=0
+	-- parent:insert(newTextFieldBg)
+	local textFieldBgLeft = display.newImage(LOCAL_SETTINGS.RES_DIR .. "textFieldBgLeft.png", true)
+	textFieldBgLeft.x = detail.x
+	textFieldBgLeft.y = y
+	textFieldBgLeft.anchorX=0
+	textFieldBgLeft.anchorY=0
+	parent:insert(textFieldBgLeft)
+	local textFieldBgMiddle = display.newImage(LOCAL_SETTINGS.RES_DIR .. "textFieldBgMiddle.png", true)
+	textFieldBgMiddle.x = detail.x + 20
+	textFieldBgMiddle.y = y
+	textFieldBgMiddle.xScale = (detail.width - 40) / 20
+	textFieldBgMiddle.anchorX=0
+	textFieldBgMiddle.anchorY=0
+	parent:insert(textFieldBgMiddle)
+	local textFieldBgRight = display.newImage(LOCAL_SETTINGS.RES_DIR .. "textFieldBgRight.png", true)
+	textFieldBgRight.x = detail.x + detail.width - 20
+	textFieldBgRight.y = y
+	textFieldBgRight.anchorX=0
+	textFieldBgRight.anchorY=0
+	parent:insert(textFieldBgRight)
+
+	return textFieldBgLeft
+end
+
+local function createPostTextField(parent, parentType, detail, y, userInputListener)
+	if (y == nil) then
+		y = detail.y
+	end
+	local newTextFieldBg = createPostTextFieldBg(parent, detail, y)
+	local newTextField = coronaTextField:new(detail.x + 10, y + 10, detail.width - 20, detail.height - 20, parent, parentType)
+	newTextField:setFont("Helvetica", 32)
+	newTextField:setTopPadding(200)
+	newTextField.hasBackground = false
+	newTextField:setUserInputListener(userInputListener)
+	parent:insert(newTextField)
+	return newTextField, newTextFieldBg
 end
 
 local function post1_textListener( event )
@@ -337,73 +396,78 @@ local function createScene1()
 	displayGroup:insert(text_linkToSite)
 	------------------------- text end
 	------------------------- textfield begin
-	local title_background_textField_width = 253
-	local title_background_textField_height = 65
-	local title_background_textField_x = 205
-	local title_background_textField_y = 269
+	-- local title_background_textField_width = 253
+	-- local title_background_textField_height = 65
+	-- local title_background_textField_x = 205
+	-- local title_background_textField_y = 269
 	
-	local title_background_textField = display.newRoundedRect( title_background_textField_x, title_background_textField_y, title_background_textField_width, title_background_textField_height, 3 )
-	title_background_textField:setFillColor( 1,1,1 )
-	title_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
-	title_background_textField.strokeWidth = 2
-	title_background_textField.anchorX=0
-	title_background_textField.anchorY=0
-	displayGroup:insert(title_background_textField)
+	-- local title_background_textField = display.newRoundedRect( title_background_textField_x, title_background_textField_y, title_background_textField_width, title_background_textField_height, 3 )
+	-- title_background_textField:setFillColor( 1,1,1 )
+	-- title_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
+	-- title_background_textField.strokeWidth = 1
+	-- title_background_textField.anchorX=0
+	-- title_background_textField.anchorY=0
+	-- displayGroup:insert(title_background_textField)
 	
-	post1_title_textField = coronaTextField:new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
-	post1_title_textField:setFont("Helvetica",32)
-	post1_title_textField:setTopPadding(200)
-	post1_title_textField.hasBackground = false
-	post1_title_textField:setUserInputListener( post1_textListener )
-	displayGroup:insert(post1_title_textField)
+	-- post1_title_textField = coronaTextField:new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
+	-- post1_title_textField:setFont("Helvetica",32)
+	-- post1_title_textField:setTopPadding(200)
+	-- post1_title_textField.hasBackground = false
+	-- post1_title_textField:setUserInputListener( post1_textListener )
+	-- displayGroup:insert(post1_title_textField)
+	local title_background_textField
+	post1_title_textField, title_background_textField = createPostTextField(displayGroup, "displayGroup", POST_INPUT_FIELD_TEXT_INFO.title, nil, post1_textListener)
 	---------------
-	local description_background_textField_width = 388
-	local description_background_textField_height = 65
-	local description_background_textField_x = 205
-	local description_background_textField_y = 408
+	-- local description_background_textField_width = 388
+	-- local description_background_textField_height = 65
+	-- local description_background_textField_x = 205
+	-- local description_background_textField_y = 408
 	
-	local description_background_textField = display.newRoundedRect( description_background_textField_x, description_background_textField_y, description_background_textField_width, description_background_textField_height, 3 )
-	description_background_textField:setFillColor( 1,1,1 )
-	description_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
-	description_background_textField.strokeWidth = 2
-	description_background_textField.anchorX=0
-	description_background_textField.anchorY=0
-
-	displayGroup:insert(description_background_textField)
+	-- local description_background_textField = display.newRoundedRect( description_background_textField_x, description_background_textField_y, description_background_textField_width, description_background_textField_height, 3 )
+	-- description_background_textField:setFillColor( 1,1,1 )
+	-- description_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
+	-- description_background_textField.strokeWidth = 2
+	-- description_background_textField.anchorX=0
+	-- description_background_textField.anchorY=0
+	-- displayGroup:insert(description_background_textField)
 	
-	post1_description_textField = coronaTextField:new( description_background_textField.x, description_background_textField.y, description_background_textField.width, description_background_textField.height,displayGroup,"displayGroup" )
-	post1_description_textField:setTopPadding(200)
-	post1_description_textField:setFont("Helvetica",32)
-	post1_description_textField.hasBackground = false
-	post1_description_textField:setUserInputListener( post1_textListener )
-	displayGroup:insert(post1_description_textField)
+	-- post1_description_textField = coronaTextField:new( description_background_textField.x, description_background_textField.y, description_background_textField.width, description_background_textField.height,displayGroup,"displayGroup" )
+	-- post1_description_textField:setTopPadding(200)
+	-- post1_description_textField:setFont("Helvetica",32)
+	-- post1_description_textField.hasBackground = false
+	-- post1_description_textField:setUserInputListener( post1_textListener )
+	-- displayGroup:insert(post1_description_textField)
+	local description_background_textField
+	post1_description_textField, description_background_textField = createPostTextField(displayGroup, "displayGroup", POST_INPUT_FIELD_TEXT_INFO.desc, nil, post1_textListener)
 	-----------------------
-	local linkToSite_background_textField_width = 388
-	local linkToSite_background_textField_height = 65
-	local linkToSite_background_textField_x = 205
-	local linkToSite_background_textField_y = 510
+	-- local linkToSite_background_textField_width = 388
+	-- local linkToSite_background_textField_height = 65
+	-- local linkToSite_background_textField_x = 205
+	-- local linkToSite_background_textField_y = 510
 	
-	local linkToSite_background_textField = display.newRoundedRect( linkToSite_background_textField_x, linkToSite_background_textField_y, linkToSite_background_textField_width, linkToSite_background_textField_height, 3 )
-	linkToSite_background_textField:setFillColor( 1,1,1 )
-	linkToSite_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
-	linkToSite_background_textField.strokeWidth = 2
-	linkToSite_background_textField.anchorX=0
-	linkToSite_background_textField.anchorY=0
-	displayGroup:insert(linkToSite_background_textField)
+	-- local linkToSite_background_textField = display.newRoundedRect( linkToSite_background_textField_x, linkToSite_background_textField_y, linkToSite_background_textField_width, linkToSite_background_textField_height, 3 )
+	-- linkToSite_background_textField:setFillColor( 1,1,1 )
+	-- linkToSite_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
+	-- linkToSite_background_textField.strokeWidth = 2
+	-- linkToSite_background_textField.anchorX=0
+	-- linkToSite_background_textField.anchorY=0
+	-- displayGroup:insert(linkToSite_background_textField)
 	
-	post1_linkToSite_textField = coronaTextField:new( linkToSite_background_textField.x, linkToSite_background_textField.y, linkToSite_background_textField.width, linkToSite_background_textField.height,displayGroup,"displayGroup" )
-	post1_linkToSite_textField:setFont("Helvetica",32)
-	post1_linkToSite_textField:setTopPadding(200)
-	post1_linkToSite_textField.hasBackground = false
-	post1_linkToSite_textField:setUserInputListener( post1_textListener )
-	displayGroup:insert(post1_linkToSite_textField)
+	-- post1_linkToSite_textField = coronaTextField:new( linkToSite_background_textField.x, linkToSite_background_textField.y, linkToSite_background_textField.width, linkToSite_background_textField.height,displayGroup,"displayGroup" )
+	-- post1_linkToSite_textField:setFont("Helvetica",32)
+	-- post1_linkToSite_textField:setTopPadding(200)
+	-- post1_linkToSite_textField.hasBackground = false
+	-- post1_linkToSite_textField:setUserInputListener( post1_textListener )
+	-- displayGroup:insert(post1_linkToSite_textField)
+	local linkToSite_background_textField
+	post1_linkToSite_textField, linkToSite_background_textField = createPostTextField(displayGroup, "displayGroup", POST_INPUT_FIELD_TEXT_INFO.link, nil, post1_textListener)
 	
 	local text_linkToSite_desc =
 	{
 		text = localization.getLocalization("post_linkToSite_desc"), 
-		x = linkToSite_background_textField.x,
-		y = linkToSite_background_textField.y+linkToSite_background_textField.height+22,
-		width = linkToSite_background_textField.width,
+		x = POST_INPUT_FIELD_TEXT_INFO.link.x,
+		y = POST_INPUT_FIELD_TEXT_INFO.link.y+POST_INPUT_FIELD_TEXT_INFO.link.height+22,
+		width = POST_INPUT_FIELD_TEXT_INFO.link.width,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=24
@@ -417,9 +481,9 @@ local function createScene1()
 	local text_title_desc =
 	{
 		text = localization.getLocalization("post_title_desc"), 
-		x = title_background_textField.x,
-		y = title_background_textField.y+title_background_textField.height+6,
-		width = title_background_textField.width,
+		x = POST_INPUT_FIELD_TEXT_INFO.title.x,
+		y = POST_INPUT_FIELD_TEXT_INFO.title.y+POST_INPUT_FIELD_TEXT_INFO.title.height+6,
+		width = POST_INPUT_FIELD_TEXT_INFO.title.width,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=24
@@ -477,8 +541,8 @@ local function createScene1()
 		overFile = "Image/RegisterPage/addPhoto.png",
 		onEvent = addPhotoFunction,
 	}
-	button_addPhoto.x = title_background_textField.x+title_background_textField.width+18
-	button_addPhoto.y = title_background_textField.y
+	button_addPhoto.x = POST_INPUT_FIELD_TEXT_INFO.title.x+POST_INPUT_FIELD_TEXT_INFO.title.width+18
+	button_addPhoto.y = POST_INPUT_FIELD_TEXT_INFO.title.y
 	button_addPhoto.anchorX = 0
 	button_addPhoto.anchorY = 0
 	button_addPhoto.savePath = global.post1TitleImage
@@ -684,24 +748,27 @@ local function createScene2()
 		button_addPhoto_y = button_addPhoto_y+ROW_HEIGHT
 		
 		------------------------- textfield begin
-		local background_textField = display.newRoundedRect( background_textField_x, background_textField_y, background_textField_width, background_textField_height, 3 )
-		background_textField:setFillColor( 1,1,1 )
-		background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
-		background_textField.strokeWidth = 2
-		background_textField.anchorX=0
-		background_textField.anchorY=0
-		displayGroup:insert(background_textField)	
+		-- local background_textField = display.newRoundedRect( background_textField_x, background_textField_y, background_textField_width, background_textField_height, 3 )
+		-- background_textField:setFillColor( 1,1,1 )
+		-- background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
+		-- background_textField.strokeWidth = 2
+		-- background_textField.anchorX=0
+		-- background_textField.anchorY=0
+		-- displayGroup:insert(background_textField)	
 		
-		choiceData[i].textField = coronaTextField:new( background_textField.x, background_textField.y, background_textField.width, background_textField.height,displayGroup,"displayGroup" )
-		choiceData[i].textField.anchorX=0
-		choiceData[i].textField.anchorY=0
-		choiceData[i].textField:setTopPadding(200)
+		-- choiceData[i].textField = coronaTextField:new( background_textField.x, background_textField.y, background_textField.width, background_textField.height,displayGroup,"displayGroup" )
+		-- choiceData[i].textField.anchorX=0
+		-- choiceData[i].textField.anchorY=0
+		-- choiceData[i].textField:setTopPadding(200)
+		-- choiceData[i].textField:setPlaceHolderText(localization.getLocalization("post2_textField_placeholder"))
+		-- choiceData[i].textField:setFont("Helvetica",32)
+		-- -- textField.isFontSizeScaled = true
+		-- choiceData[i].textField.hasBackground = false
+		-- choiceData[i].textField:setUserInputListener( post2_textListener )
+		-- displayGroup:insert(choiceData[i].textField)	
+		local background_textField
+		choiceData[i].textField, background_textField = createPostTextField(displayGroup, "displayGroup", POST_INPUT_FIELD_TEXT_INFO.choice, background_textField_y, post2_textListener)
 		choiceData[i].textField:setPlaceHolderText(localization.getLocalization("post2_textField_placeholder"))
-		choiceData[i].textField:setFont("Helvetica",32)
-		-- textField.isFontSizeScaled = true
-		choiceData[i].textField.hasBackground = false
-		choiceData[i].textField:setUserInputListener( post2_textListener )
-		displayGroup:insert(choiceData[i].textField)	
 		background_textField_y = background_textField_y+ROW_HEIGHT
 		------------------------- textfield end
 		
@@ -1176,16 +1243,20 @@ local function createScene3()
 	------------------------- line end
 	-------------------------
 
-	local tag_button_background = display.newRoundedRect(display.contentCenterX,text_tag.y+text_tag.height+45,390,50,8)
-	tag_button_background.strokeWidth = 2
-	tag_button_background:setFillColor( 1, 1, 1 )
-	tag_button_background:setStrokeColor( 54/255, 54/255, 54/255 )
-	tag_button_background.anchorX=0.5
-	tag_button_background.anchorY=0
+	-- local tag_button_background = display.newRoundedRect(display.contentCenterX,text_tag.y+text_tag.height+45,390,50,8)
+	-- tag_button_background.strokeWidth = 2
+	-- tag_button_background:setFillColor( 1, 1, 1 )
+	-- tag_button_background:setStrokeColor( 54/255, 54/255, 54/255 )
+	-- tag_button_background.anchorX=0.5
+	-- tag_button_background.anchorY=0
+	-- displayGroup:insert(tag_button_background)
+	local tagButtonBgDetail = {y = text_tag.y+text_tag.height+45, width = 390, height = 50}
+	tagButtonBgDetail.x = display.contentCenterX - (tagButtonBgDetail.width * 0.5)
+	local tag_button_background = createPostTextFieldBg(displayGroup, tagButtonBgDetail)
+	-- tag_button_background.anchorX=0.5
 
-	displayGroup:insert(tag_button_background)
-	
-	local tag_button_background_beginX = tag_button_background.x-tag_button_background.width*tag_button_background.anchorX
+	-- local tag_button_background_beginX = tag_button_background.x-tag_button_background.width*tag_button_background.anchorX
+	local tag_button_background_beginX = tag_button_background.x
 	local tag_button_background_centerY = tag_button_background.y+tag_button_background.height/2
 	
 	tag_button_text =
@@ -1193,7 +1264,7 @@ local function createScene3()
 		text = localization.getLocalization("post3_select_tag"), -- get data from server
 		x = display.contentCenterX,
 		y = tag_button_background_centerY,
-		width = tag_button_background.width,
+		width = tagButtonBgDetail.width,		-- tag_button_background.width,
 		height = 0, 
 		font = "Helvetica",
 		fontSize=30,
@@ -1257,26 +1328,29 @@ local function createScene3()
 		text_vip.anchorY=0
 		displayGroup:insert(text_vip)
 		
-		local title_background_textField_width = 300
-		local title_background_textField_height = 70
-		local title_background_textField_x = 158
+		-- local title_background_textField_width = 300
+		-- local title_background_textField_height = 70
+		-- local title_background_textField_x = 158
 		local title_background_textField_y = text_vip.y+text_vip.height+40
 		
-		local title_background_textField = display.newRoundedRect( title_background_textField_x, title_background_textField_y, title_background_textField_width, title_background_textField_height, 3 )
-		title_background_textField:setFillColor( 1,1,1 )
-		title_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
-		title_background_textField.strokeWidth = 2
-		title_background_textField.anchorX=0
-		title_background_textField.anchorY=0
-		displayGroup:insert(title_background_textField)
+		-- local title_background_textField = display.newRoundedRect( title_background_textField_x, title_background_textField_y, title_background_textField_width, title_background_textField_height, 3 )
+		-- title_background_textField:setFillColor( 1,1,1 )
+		-- title_background_textField:setStrokeColor(  54/255 ,54/255 ,54/255 )
+		-- title_background_textField.strokeWidth = 2
+		-- title_background_textField.anchorX=0
+		-- title_background_textField.anchorY=0
+		-- displayGroup:insert(title_background_textField)
 		
-		post3_title_textField = coronaTextField:new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
-		post3_title_textField:setTopPadding(200)
-		post3_title_textField:setFont("Helvetica",32)
+		-- post3_title_textField = coronaTextField:new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
+		-- post3_title_textField:setTopPadding(200)
+		-- post3_title_textField:setFont("Helvetica",32)
+		-- post3_title_textField:setPlaceHolderText(localization.getLocalization("post3_title"))
+		-- post3_title_textField.hasBackground = false
+		-- post3_title_textField:setUserInputListener( post3_textListener )
+		-- displayGroup:insert(post3_title_textField)
+		local title_background_textField
+		post3_title_textField, title_background_textField = createPostTextField(displayGroup, "displayGroup", POST_INPUT_FIELD_TEXT_INFO.couponTitle, title_background_textField_y, post3_textListener)
 		post3_title_textField:setPlaceHolderText(localization.getLocalization("post3_title"))
-		post3_title_textField.hasBackground = false
-		post3_title_textField:setUserInputListener( post3_textListener )
-		displayGroup:insert(post3_title_textField)
 		
 		local text_coupon =
 		{
@@ -1303,8 +1377,8 @@ local function createScene3()
 			onEvent = addPhotoFunction,
 		}
 
-		button_addPhoto.x = title_background_textField.x+title_background_textField.width+20
-		button_addPhoto.y = title_background_textField.y
+		button_addPhoto.x = POST_INPUT_FIELD_TEXT_INFO.couponTitle.x + POST_INPUT_FIELD_TEXT_INFO.couponTitle.width + 20 -- title_background_textField.x+title_background_textField.width+20
+		button_addPhoto.y = title_background_textField_y
 		button_addPhoto.anchorX = 0
 		button_addPhoto.anchorY = 0
 		button_addPhoto.savePath = global.post3CouponImage
