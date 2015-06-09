@@ -127,7 +127,7 @@ local function cancelAllLoad()
 end
 
 local function votingListener(postGroup, dataForVote)
-	local function votingListener(event)
+	local function votingFinishedListener(event)
 		if (event.isError) then
 			-- TODO: display Network Error
 		else
@@ -140,7 +140,7 @@ local function votingListener(postGroup, dataForVote)
 			end
 		end
 	end
-	newNetworkFunction.votePost(dataForVote,votingListener)
+	newNetworkFunction.votePost(dataForVote,votingFinishedListener)
 end
 local function pressedCreatorListener(creatorData)
 	navScene.go(sceneOptions,nil,creatorData,creatorData.id)
