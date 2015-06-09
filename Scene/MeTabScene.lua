@@ -135,6 +135,13 @@ local function votingListener(postGroup, dataForVote)
 				-- TODO: check what the error is
 			elseif (event.result) then
 				postGroup:updateResult(event.result, event.userVoted)
+			elseif (event.postNotExist) then
+				native.showAlert(localization.getLocalization("postDoesNotExist"),
+									localization.getLocalization("postDoesNotExist"),
+									{localization.getLocalization("ok")},
+									function(e)
+										scrollView:deletePost(postGroup.idx, 200)
+									end)
 			else
 				-- TODO: unknown error
 			end

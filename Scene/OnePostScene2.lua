@@ -112,11 +112,21 @@ end
 local function votingListener(postGroup, dataForVote)
 	local function votingFinishedListener(event)
 		if (event.isError) then
+			-- TODO: display Network Error
 		else
 			if (event.code) then
+				-- TODO: check what the error is
 			elseif (event.result) then
-				postGroup:updateResult(event.result)
+				postGroup:updateResult(event.result, event.userVoted)
+			elseif (event.postNotExist) then
+				native.showAlert(localization.getLocalization("postDoesNotExist"),
+									localization.getLocalization("postDoesNotExist"),
+									{localization.getLocalization("ok")},
+									function(e)
+										scrollView:deletePost(postGroup.idx, 200)
+									end)
 			else
+				-- TODO: unknown error
 			end
 		end
 	end
