@@ -875,16 +875,18 @@ local function convertPostData(postData)
 			userVotedChoiceId = postData.user_vote.choice_id
 		end
 		local choicesList = postData.choices
-		local choiceTotal = #choicesList
-		for i = 1, choiceTotal do
-			local choiceLetter = choicesList[i].letter
-			choicesList[i].letter = nil
-			renameKeyOfTable(choicesList[i], "pic", "choice_pic")
-			if (choicesList[i].id == userVotedChoiceId) then
-				postData.userVoted = choiceLetter
+		if (type(choicesList) == "table") then
+			local choiceTotal = #choicesList
+			for i = 1, choiceTotal do
+				local choiceLetter = choicesList[i].letter
+				choicesList[i].letter = nil
+				renameKeyOfTable(choicesList[i], "pic", "choice_pic")
+				if (choicesList[i].id == userVotedChoiceId) then
+					postData.userVoted = choiceLetter
+				end
+				choicesList[choiceLetter] = choicesList[i]
+				choicesList[i] = nil
 			end
-			choicesList[choiceLetter] = choicesList[i]
-			choicesList[i] = nil
 		end
 	end
 	return postData
