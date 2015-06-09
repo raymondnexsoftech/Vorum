@@ -865,25 +865,27 @@ local function renameKeyOfTable(table, origKey, newKey)
 end
 
 local function convertPostData(postData)
-	renameKeyOfTable(postData, "text", "description")
-	renameKeyOfTable(postData, "view", "views")
-	renameKeyOfTable(postData, "pic", "post_pic")
-	renameKeyOfTable(postData, "create_time", "createdAt")
-	local userVotedChoiceId
-	if (postData.user_vote) then
-		userVotedChoiceId = postData.user_vote.choice_id
-	end
-	local choicesList = postData.choices
-	local choiceTotal = #choicesList
-	for i = 1, choiceTotal do
-		local choiceLetter = choicesList[i].letter
-		choicesList[i].letter = nil
-		renameKeyOfTable(choicesList[i], "pic", "choice_pic")
-		if (choicesList[i].id == userVotedChoiceId) then
-			postData.userVoted = choiceLetter
+	if (type(postData) == "table") then
+		renameKeyOfTable(postData, "text", "description")
+		renameKeyOfTable(postData, "view", "views")
+		renameKeyOfTable(postData, "pic", "post_pic")
+		renameKeyOfTable(postData, "create_time", "createdAt")
+		local userVotedChoiceId
+		if (postData.user_vote) then
+			userVotedChoiceId = postData.user_vote.choice_id
 		end
-		choicesList[choiceLetter] = choicesList[i]
-		choicesList[i] = nil
+		local choicesList = postData.choices
+		local choiceTotal = #choicesList
+		for i = 1, choiceTotal do
+			local choiceLetter = choicesList[i].letter
+			choicesList[i].letter = nil
+			renameKeyOfTable(choicesList[i], "pic", "choice_pic")
+			if (choicesList[i].id == userVotedChoiceId) then
+				postData.userVoted = choiceLetter
+			end
+			choicesList[choiceLetter] = choicesList[i]
+			choicesList[i] = nil
+		end
 	end
 	return postData
 end
