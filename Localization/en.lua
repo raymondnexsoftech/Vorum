@@ -364,6 +364,7 @@ return {
 					post_femaleLetter = "F",
 					post_updatingResult = "Updating Result...",
 					post_deleting = "Deleting...",
+					postDoesNotExist = "The post does not exist.",
 
 					-- voting
 					alreadyVotePost = "You are already voted the post",

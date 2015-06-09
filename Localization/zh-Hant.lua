@@ -369,7 +369,8 @@ return {
 					post_femaleLetter = "女",
 					post_updatingResult = "正在更新結果⋯",
 					post_deleting = "刪除中⋯",
-					
+					postDoesNotExist = "此帖已不存在",
+
 					-- voting
 					alreadyVotePost = "你已對此帖投票",
 
