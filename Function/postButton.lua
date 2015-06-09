@@ -96,7 +96,22 @@ function pushListener(event)
 	elseif(event.isPushedToday)then
 		native.showAlert(localization.getLocalization("pushPostError_pushTitle"),localization.getLocalization("pushPostError_pushedAleady"),{localization.getLocalization("ok")})
 	else
-		native.showAlert(localization.getLocalization("pushPostSuccessTitle"),localization.getLocalization("pushPostSuccess"),{localization.getLocalization("ok")})
+
+		local response = json.decode(event[1].response)
+		local code = tonumber(response.code)
+
+		if(code==30)then
+			-- push more than one on a day
+			native.showAlert(localization.getLocalization("pushPostError_pushedAlreadyTitle"),localization.getLocalization("pushPostError_pushedAlreadyDesc"),{localization.getLocalization("ok")})
+		elseif(code==31)then
+			--success
+			native.showAlert(localization.getLocalization("pushPostSuccessTitle"),localization.getLocalization("pushPostSuccess"),{localization.getLocalization("ok")})
+		elseif(code==32)then
+			-- fail
+			native.showAlert(localization.getLocalization("pushPostFailedTitle"),localization.getLocalization("pushPostFailedDesc"),{localization.getLocalization("ok")})
+		else
+			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
+		end
 	end
 end
 
@@ -104,7 +119,18 @@ function reportListener(event)
 	if(event.isNetworkError)then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
-		native.showAlert(localization.getLocalization("reportPostSuccessTitle"),localization.getLocalization("reportPostSuccess"),{localization.getLocalization("ok")})
+
+		local response = json.decode(event[1].response)
+		local code = tonumber(response.code)
+		if(code==20)then
+			-- success
+			native.showAlert(localization.getLocalization("reportPostSuccessTitle"),localization.getLocalization("reportPostSuccess"),{localization.getLocalization("ok")})
+		elseif(code==21)then
+			-- report already
+			native.showAlert(localization.getLocalization("reportPostError_reportAlreadyTitle"),localization.getLocalization("reportPostError_reportAlreadyDesc"),{localization.getLocalization("ok")})
+		else
+			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
+		end
 	end
 end
 
@@ -114,7 +140,17 @@ function shareListener(event)
 	elseif(event.isUserShared)then
 		native.showAlert(localization.getLocalization("sharePostError_shareTitle"),localization.getLocalization("sharePostError_sharedAleady"),{localization.getLocalization("ok")})
 	else
-		native.showAlert(localization.getLocalization("sharePostSuccessTitle"),localization.getLocalization("sharePostSuccess"),{localization.getLocalization("ok")})
+
+		local response = json.decode(event[1].response)
+		local code = tonumber(response.code)
+		if(code==25)then
+			--fail
+		elseif(code==26)then
+			--success
+			native.showAlert(localization.getLocalization("sharePostSuccessTitle"),localization.getLocalization("sharePostSuccess"),{localization.getLocalization("ok")})
+		else
+			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
+		end
 	end
 end
 
@@ -122,8 +158,19 @@ function deleteListener(event)
 	if(event.isNetworkError)then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
-		-- native.showAlert(localization.getLocalization("deletePostSuccessTitle"),localization.getLocalization("deletePostSuccess"),{localization.getLocalization("ok")})
-		scrollView:deletePost(postObj.idx,400)
+
+		local response = json.decode(event[1].response)
+		local code = tonumber(response.code)
+		if(code==54)then
+			-- success
+			-- native.showAlert(localization.getLocalization("deletePostSuccessTitle"),localization.getLocalization("deletePostSuccess"),{localization.getLocalization("ok")})
+			scrollView:deletePost(postObj.idx,200)
+		elseif(code==55)then
+			-- fail
+		else
+			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
+		end
+		
 	end
 end
 

@@ -242,11 +242,12 @@ return {
 					--network error
 					networkError_errorTitle = "Network Error",
 					networkError_networkError = "Cannot connect network, please check the network.",
+					
 					--4 button(push,report,share,delete) error
-					pushPostError_pushTitle = "Push Error",
-					pushPostError_pushedAleady = "Today you already pushed this post.",
-					sharePostError_shareTitle = "Share Error",
-					sharePostError_sharedAleady = "Today you already shared this post.",
+					pushPostError_pushedAlreadyTitle = "Push Error",
+					pushPostError_pushedAlreadyDesc = "Today you already pushed this post.",
+					reportPostError_reportAlreadyTitle = "Report Error",
+					reportPostError_reportAlreadyDesc = "Today you already report this post.",
 					
 					--4 button(push,report,share,delete) success
 					pushPostSuccessTitle = "Push successfully",
@@ -397,6 +398,21 @@ return {
 					noticeNotWorkTitle = "Notification",
 					noticeNotWorkDesc = "Notification is not opened now.",
 
+
+					--4 button(push,report,share,delete) failed
+					pushPostFailedTitle = "Push failed",
+					reportPostFailedTitle = "report failed",
+					sharePostFailedTitle = "share failed",
+					deletePostFailedTitle = "delete failed",
+					
+					pushPostFailedDesc = "Push post failed.",
+					reportPostFailedDesc = "Report post failed.",
+					sharePostFailedDesc = "Share post failed.",
+					deletePostFailedDesc = "Delete post failed.",
+
+					--
+					unknownErrorTitle = "Unknown error",
+					unknownErrorDesc = "Unknown error",
 
 					-- Tag
 					Appraisal = "Appraisal",

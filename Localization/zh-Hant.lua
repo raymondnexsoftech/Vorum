@@ -218,7 +218,7 @@ return {
 					addPhoto_cancel = "取消",
 					--postButton
 					postButton_push = "推",
-					postButton_report = "報告",
+					postButton_report = "舉報",
 					postButton_share = "分享",
 					postButton_shareToWhatsapp = "分享到whatsapp",
 					postButton_shareToFacebook = "分享到面書",
@@ -248,20 +248,21 @@ return {
 					--network error
 					networkError_errorTitle = "網絡錯誤",
 					networkError_networkError = "無法連接網絡，請檢查網絡。",
+
 					--4 button(push,report,share,delete) error
-					pushPostError_pushTitle = "推帖子錯誤",
-					pushPostError_pushedAleady = "今天你已經推過這帖子。",
-					sharePostError_shareTitle = "分享錯誤",
-					sharePostError_sharedAleady = "今天你已經分享過這帖子。",
+					pushPostError_pushedAlreadyTitle = "推帖子失敗",
+					pushPostError_pushedAlreadyDesc = "你今天已經推過帖子了。",
+					reportPostError_reportAlreadyTitle = "舉報帖子失敗",
+					reportPostError_reportAlreadyDesc = "你已經舉報過這帖子了。",
 					
 					--4 button(push,report,share,delete) success
 					pushPostSuccessTitle = "推帖子成功",
-					reportPostSuccessTitle = "報告成功",
+					reportPostSuccessTitle = "舉報成功",
 					sharePostSuccessTitle = "分享成功",
 					deletePostSuccessTitle = "刪除成功",
 					
 					pushPostSuccess = "推帖子成功。",
-					reportPostSuccess = "報告成功。",
+					reportPostSuccess = "舉報成功。",
 					sharePostSuccess = "分享成功。",
 					deletePostSuccess = "刪除成功。",
 					--create post and new coupon success
@@ -404,6 +405,21 @@ return {
 					--notice is not work
 					noticeNotWorkTitle = "通知",
 					noticeNotWorkDesc = "通知頁面尚未開放。",
+
+					--4 button(push,report,share,delete) failed
+					pushPostFailedTitle = "推帖子失敗",
+					reportPostFailedTitle = "舉報帖子失敗",
+					sharePostFailedTitle = "分享帖子失敗",
+					deletePostFailedTitle = "刪除帖子失敗",
+					
+					pushPostFailedDesc = "推帖子失敗。",
+					reportPostFailedDesc = "舉報帖子失敗。",
+					sharePostFailedDesc = "分享帖子失敗。",
+					deletePostFailedDesc = "刪除帖子失敗。",
+
+					--
+					unknownErrorTitle = "未知錯誤",
+					unknownErrorDesc = "未知錯誤。",
 
 					-- Tag
 					Appraisal = "評核",
