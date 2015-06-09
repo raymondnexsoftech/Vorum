@@ -1226,6 +1226,20 @@ function networkFunction.pushPost(postId, listener)
 	return performNetworkFunction(pushPost, dataToSend, listener)
 end
 
+-- Delete Post
+local function deletePost(params, listener)
+	local apiParams = createParamsForApiNumber(1)
+	apiParams[1].params = {
+								headers = createVorumNetworkHeader(sessionToken),
+							}
+	apiParams[1].url = API_POST_BASE .. "/" .. tostring(params.id)
+	apiParams[1].method = "DELETE"
+	return networkHandler.requestNetwork(apiParams, listener, "deletePost")
+end
+function networkFunction.deletePost(postId, listener)
+	local dataToSend = {id = postId}
+	return performNetworkFunction(pushPost, dataToSend, listener)
+end
 
 
 
