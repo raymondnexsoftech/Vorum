@@ -242,7 +242,7 @@ return {
 					--network error
 					networkError_errorTitle = "Network Error",
 					networkError_networkError = "Cannot connect network, please check the network.",
-					
+
 					--4 button(push,report,share,delete) error
 					pushPostError_pushedAlreadyTitle = "Push Error",
 					pushPostError_pushedAlreadyDesc = "Today you already pushed this post.",
@@ -410,6 +410,8 @@ return {
 					sharePostFailedDesc = "Share post failed.",
 					deletePostFailedDesc = "Delete post failed.",
 
+					deletePostConfirmTitle = "Do you want to delete post?",
+					deletePostConfirmDesc = "If yes, your post will terminate permanently.",
 					--
 					unknownErrorTitle = "Unknown error",
 					unknownErrorDesc = "Unknown error",

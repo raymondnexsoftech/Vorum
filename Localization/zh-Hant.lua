@@ -417,6 +417,8 @@ return {
 					sharePostFailedDesc = "分享帖子失敗。",
 					deletePostFailedDesc = "刪除帖子失敗。",
 
+					deletePostConfirmTitle = "你真的想刪除這帖子嗎？",
+					deletePostConfirmDesc = "如果是，這個帖子將會永久刪除，不能復原。",
 					--
 					unknownErrorTitle = "未知錯誤",
 					unknownErrorDesc = "未知錯誤。",

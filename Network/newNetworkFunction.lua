@@ -1246,7 +1246,7 @@ local function deletePost(params, listener)
 end
 function networkFunction.deletePost(postId, listener)
 	local dataToSend = {id = postId}
-	return performNetworkFunction(pushPost, dataToSend, listener)
+	return performNetworkFunction(deletePost, dataToSend, listener)
 end
 
 

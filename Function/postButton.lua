@@ -161,12 +161,14 @@ function deleteListener(event)
 
 		local response = json.decode(event[1].response)
 		local code = tonumber(response.code)
+		print(json.encode(response))
 		if(code==54)then
 			-- success
 			-- native.showAlert(localization.getLocalization("deletePostSuccessTitle"),localization.getLocalization("deletePostSuccess"),{localization.getLocalization("ok")})
 			scrollView:deletePost(postObj.idx,200)
 		elseif(code==55)then
 			-- fail
+			native.showAlert(localization.getLocalization("deletePostFailedTitle"),localization.getLocalization("deletePostFailedDesc"),{localization.getLocalization("ok")})
 		else
 			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
 		end
@@ -199,10 +201,21 @@ function shareFnc(event)
 	return true
 end
 
+local function deleteAlertConfirmListener(event)
+	 if event.action == "clicked" then
+        local i = event.index
+        if i == 1 then
+            newNetworkFunction.deletePost(postData.id, deleteListener)
+        elseif i == 2 then
+          
+        end
+    end
+end
+
 function deleteFnc(event)
 	if(event.phase == "ended" or event.phase == "cancelled")then
 		functionalOption.hide()
-		newNetworkFunction.deletePost(postData.id, deleteListener)
+		native.showAlert(localization.getLocalization("deletePostConfirmTitle"),localization.getLocalization("deletePostConfirmDesc"),{localization.getLocalization("yes"),localization.getLocalization("no")},deleteAlertConfirmListener)
 	end
 	return true
 end
