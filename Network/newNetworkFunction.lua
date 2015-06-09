@@ -1147,8 +1147,12 @@ function networkFunction.votePost(params, listener)
 			listener(event)
 			return true
 		else
-			event.result = event.postData.choices
-			event.userVoted = event.postData.userVoted
+			if (event.postData) then
+				event.result = event.postData.choices
+				event.userVoted = event.postData.userVoted
+			else
+				event.postNotExist = true
+			end
 			listener(event)
 		end
 	end
