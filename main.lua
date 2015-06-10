@@ -73,7 +73,7 @@ local function updateNoticeBadge(customBadgeNum)
 	noticeBadge.setBadge(tabbar, badgeNum)
 end
 
-local function notificationListener( event )
+local function notificationListener( event, isRestartApp )
 	if ( event.type == "remote" ) then
 		if (system.getInfo("platformName") == "Android") then
 			local badgeNum
@@ -89,10 +89,14 @@ local function notificationListener( event )
 			updateNoticeBadge()
 		end
 		if (event.applicationState == "inactive") then
-			local loadingDataOption = {}
-			loadingDataOption.params = {}
-			loadingDataOption.params.isNotic = true
-			storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
+			if (isRestartApp) then
+				local loadingDataOption = {}
+				loadingDataOption.params = {}
+				loadingDataOption.params.isNotic = true
+				storyboard.gotoScene("Scene.LoadingScene",loadingDataOption)
+			else
+				storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
+			end
 		end
 		-- for k, v in pairs(event) do
 		-- 	if (k == "custom") then
@@ -134,7 +138,7 @@ Runtime:addEventListener( "system", onSystemEventCheckBadge )
 
 if ( launchArgs and launchArgs.notification ) then
 
-	notificationListener( launchArgs.notification )
+	notificationListener( launchArgs.notification, true )
 	
 end
 
