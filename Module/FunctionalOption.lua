@@ -53,8 +53,8 @@ local defaultValue =
 	choiceObj_fontFamily = "Helvetica",
 	choiceObj_textColor = {30/255, 144/255, 255/255},
 	choiceObj_align = "center",
-	displayTransTime = 300,
-	hideTransTime = 300,
+	displayTransTime = 200,
+	hideTransTime = 200,
 	boolean_isNotShowBegin = false,
 }
 function moduleGroup.noFncTouch(event)
@@ -130,9 +130,9 @@ function moduleGroup.display()
 	
 	boolean_isDisplay=true
 	group_displayScreen.alpha = 1
-	
-	transition.to( background, { time=moduleData.displayTransTime, alpha=1})
-	transition.to( group_buttonsField, { time=moduleData.displayTransTime, y=displayTransPos,onComplete = function(event)
+	moduleData.bgObj.alpha = 0
+	transition.to( moduleData.bgObj, { time=moduleData.displayTransTime,transition=easing.outSine, alpha=moduleData.bgAlpha})
+	transition.to( group_buttonsField, { time=moduleData.displayTransTime,transition=easing.outSine, y=displayTransPos,onComplete = function(event)
 		--set up object function
 		for i = 1, #moduleData.choiceFnc do
 			moduleData.obj[i]:addEventListener(moduleData.choiceFncType[i],moduleData.choiceFnc[i])
@@ -160,8 +160,8 @@ function moduleGroup.hide()
 		buttonTrans = nil
 	end
 	
-	bgTrans = transition.to( background, { time=moduleData.hideTransTime, alpha=0})
-	buttonTrans = transition.to( group_buttonsField, { time=moduleData.hideTransTime, y=hideTransPos,onComplete = function(event)
+	bgTrans = transition.to( moduleData.bgObj, { time=moduleData.hideTransTime,transition=easing.inSine, alpha=0})
+	buttonTrans = transition.to( group_buttonsField, { time=moduleData.hideTransTime,transition=easing.inSine, y=hideTransPos,onComplete = function(event)
 		group_displayScreen.alpha = 0
 		boolean_isDisplay = false
 		if(moduleData.haveKeyEvent)then
