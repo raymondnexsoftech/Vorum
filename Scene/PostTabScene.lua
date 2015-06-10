@@ -473,7 +473,7 @@ local function createScene1()
 		fontSize=24
 	}
 	text_linkToSite_desc = display.newText(text_linkToSite_desc)
-	text_linkToSite_desc:setFillColor( 215/255, 215/255, 215/255)
+	text_linkToSite_desc:setFillColor( 159/255, 159/255, 159/255)
 	text_linkToSite_desc.anchorX=0
 	text_linkToSite_desc.anchorY=0
 	displayGroup:insert(text_linkToSite_desc)
