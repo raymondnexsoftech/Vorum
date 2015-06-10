@@ -146,6 +146,7 @@ return {
 					------ setting scene > redemption scene
 					redemption_headerTitle = "換領",
 					redemption_noCoupon = "沒有優惠劵",
+					redemption_getCouponByVoting = "你可投票有\"獎賞\"標記的帖子獲得優惠劵",
 					redemption_MoreThan1Day = "多於一日",
 					redemption_Invalid = "失效",
 					redemption_Remain = "尚餘 ",

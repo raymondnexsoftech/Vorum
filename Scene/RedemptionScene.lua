@@ -344,8 +344,21 @@ function scene:createScene( event )
 			end
 			if (couponCount == 0) then
 				local couponGroup = display.newGroup()
-				local noCouponText = display.newText(couponGroup, localization.getLocalization("redemption_noCoupon"), display.contentWidth * 0.5, display.contentHeight * 0.5 - header.headerHeight, "Helvetica", 72)
+				local noCouponText = display.newText(couponGroup, localization.getLocalization("redemption_noCoupon"), display.contentWidth * 0.5, display.contentHeight * 0.5 - header.headerHeight - 100, "Helvetica", 72)
 				noCouponText:setFillColor(0)
+				local getCouponTextOption = {
+												parent = couponGroup,
+												text = localization.getLocalization("redemption_getCouponByVoting"),
+												x = display.contentWidth * 0.5,
+												y = noCouponText.y + noCouponText.contentHeight,
+												width = display.contentWidth * 0.9,
+												font = "Helvetica",
+												fontSize = 48,
+												align = "center",
+											}
+				local getCouponText = display.newText(getCouponTextOption)
+				getCouponText.anchorY = 0
+				getCouponText:setFillColor(0)
 				scrollView:addNewPost(couponGroup, 200)
 				scrollViewGroup._bottomPadding = 0
 				scrollView:setIsLocked(true)

@@ -143,6 +143,7 @@ return {
 					------ setting scene > redemption scene
 					redemption_headerTitle = "Redemption",
 					redemption_noCoupon = "No Coupon",
+					redemption_getCouponByVoting = "You can get coupons by voting the post with \"Rewards\" icon.",
 					redemption_MoreThan1Day = "More than 1 day",
 					redemption_Invalid = "Invalid",
 					redemption_Remain = "Remain ",
