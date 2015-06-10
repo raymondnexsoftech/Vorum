@@ -236,6 +236,8 @@ return {
 					registerFail_registerTitle = "Register Fail",
 					registerFail_invalidEmail = "Invalid email address",
 					registerFail_emailAlreadyRegistered = "Email address had already registered.",
+					registerFail_ErrorOccurred = "Error Code: %s, Message: %s",
+
 					--update userData success
 					updateUserDataSuccess_updateTitle = "Update success",
 					updateUserDataSuccess_update = "Update user Data success",

@@ -242,6 +242,7 @@ return {
 					registerFail_registerTitle = "註冊失敗",
 					registerFail_invalidEmail = "電郵地址無效。",
 					registerFail_emailAlreadyRegistered = "電郵地址已經被註冊。",
+					registerFail_ErrorOccurred = "錯誤碼: %s, 訊息: %s",
 					--update userData success
 					updateUserDataSuccess_updateTitle = "更新成功",
 					updateUserDataSuccess_update = "更新個人資料成功。",

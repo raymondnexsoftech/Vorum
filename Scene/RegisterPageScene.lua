@@ -222,6 +222,11 @@ local function registerUserListener(event)
 			-- print(tostring(response.code).." "..tostring(response.message))
 			if(response.code==2)then
 				native.showAlert(localization.getLocalization("registerFail_registerTitle"),localization.getLocalization("registerFail_emailAlreadyRegistered"),{localization.getLocalization("ok")})
+			else
+				local registerFailedCode = response.code or ""
+				local registerFailedMsg = response.message or ""
+				local registerFailedWholeMsg = string.format(localization.getLocalization("registerFail_ErrorOccurred"), registerFailedCode, registerFailedMsg)
+				native.showAlert(localization.getLocalization("registerFail_registerTitle"),registerFailedWholeMsg,{localization.getLocalization("ok")})
 			end
 		else
 			--register success
