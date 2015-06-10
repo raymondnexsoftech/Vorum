@@ -100,7 +100,8 @@ local CHOICE_PIC_SELECTED_SCALE = 1.1
 local MAX_TIME_FOR_TOUCH_SPEED = 200
 local TOUCH_MIN_SPEED_TRIGGER = 0.5
 
-local CHOICE_GROUP_BG_BLUR_RATIO = 0.8
+local CHOICE_GROUP_BG_BLUR_RATIO = 0
+local CHOICE_GROUP_BG_ORIG_BLUR_RATIO = 0.8
 
 local CHOICE_LETTER_TABLE = {"A", "B", "C", "D"}
 local CHOICE_PIC_SIZE_AND_POS = {
@@ -710,21 +711,35 @@ local function horScrollViewXToRegionIndex(scrollView, scrollViewScrollWidth, of
 	return math.floor(-(scrollViewX - offsetX) /  (CHOICE_PIC_OBJECT_WIDTH + CHOICE_PIC_OBJECT_SPACE)) + 1
 end
 
-local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img)
+local function insertBgToChoiceGroup(choiceGroup, choicePosAndSize, origBg, img, text)
 	local imgX, imgY = CHOICE_PIC_WIDTH - choicePosAndSize.x, CHOICE_PIC_HEIGHT - choicePosAndSize.y
 	-- if ((origBg ~= nil) and (origBg.parent ~= nil)) then
 	-- 	origBg.alpha = 0
 	-- end
-	local choiceBgCover
 	if (img) then
-		choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
-		choiceBgCover.alpha = CHOICE_GROUP_BG_BLUR_RATIO
-		choiceBgCover:toBack()
+		local choiceBgCoverAlpha
+		if (global.isOriginalDesign) then
+			choiceBgCoverAlpha = CHOICE_GROUP_BG_ORIG_BLUR_RATIO
+		else
+			choiceBgCoverAlpha = CHOICE_GROUP_BG_BLUR_RATIO
+			if (text) then
+				display.remove(text)
+			end
+		end
+		if (choiceBgCoverAlpha ~= 0) then
+			local choiceBgCover = display.newRect(choiceGroup, 0, 0, choicePosAndSize.width, choicePosAndSize.height)
+			choiceBgCover.alpha = choiceBgCoverAlpha
+			choiceBgCover:toBack()
+		end
 	else
 		img = display.newImage(LOCAL_SETTINGS.RES_DIR .. "choiceSelectGroupBg.png", true)
 	end
 	local imgOriginalScale = img.xScale
-	img = scaleImageFittingArea(img, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
+	if (global.isOriginalDesign) then
+		img = scaleImageFillArea(img, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
+	else		
+		img = scaleImageFittingArea(img, CHOICE_PIC_WIDTH * 2, CHOICE_PIC_HEIGHT * 2)
+	end
 	if (choicePosAndSize.height > CHOICE_PIC_HEIGHT + 1) then
 		img:setMask(twoChoiceMask)
 	else
@@ -1021,38 +1036,42 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 			picPlaceHolderBg.isHitTestable = true
 			picPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
 			picPlaceHolderBg.height = choiceDisplayHeight
+			local choiceText
+			local choiceBg
 			if ((postData.post_pic ~= nil) and (postData.post_pic ~= "")) then
 				local postPicPath = "post/" .. tostring(postData.id) .. "/img"
 				local function choiceBgListener(event)
 					if (event.isError) then
 						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)
 					elseif (event.phase == "ended") then
-						choiceBg = display.newImage(event.path, event.baseDir, true)
-						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg, choiceBg)
+						local choiceBg = display.newImage(event.path, event.baseDir, true)
+						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg, choiceBg, choiceText)
 					end
 				end
 				local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, choiceBgListener)
 				if (postDetailPicInfo ~= nil) then
 					if (postDetailPicInfo.request == nil) then
 						choiceBg = display.newImage(postDetailPicInfo.path, postDetailPicInfo.baseDir, true)
-						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg, choiceBg)
+						insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg, choiceBg, choiceText)
 					end
 				end
 			else
 				insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)
 			end
 			if (curChoice.text) then
-				local textOption = {
-										parent = curChoiceGroup,
-										text = curChoice.text,
-										y = -10,
-										width = CHOICE_PIC_WIDTH - 10,
-										font = POST_VIEW_COMMON_FONT,
-										fontSize = CHOICE_LARGE_TEXT_FONTSIZE,
-										align = "center",
-									}
-				local choiceText = display.newText(textOption)
-				choiceText:setFillColor(0)
+				if ((global.isOriginalDesign == true) or (choiceBg == nil)) then
+					local textOption = {
+											parent = curChoiceGroup,
+											text = curChoice.text,
+											y = -10,
+											width = CHOICE_PIC_WIDTH - 10,
+											font = POST_VIEW_COMMON_FONT,
+											fontSize = CHOICE_LARGE_TEXT_FONTSIZE,
+											align = "center",
+										}
+					choiceText = display.newText(textOption)
+					choiceText:setFillColor(0)
+				end
 			end
 		else
 			picPlaceHolderBg = insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)

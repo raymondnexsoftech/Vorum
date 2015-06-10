@@ -60,5 +60,8 @@ global.maleColor = {88/255,175/255,231/255}
 global.femaleColor = {255/255,167/255,177/255}
 global.noGenderColor = {170/255,170/255,170/255}
 
+-- others setting
+global.isOriginalDesign = false
+
 						
 return global
