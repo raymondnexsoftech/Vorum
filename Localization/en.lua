@@ -257,7 +257,7 @@ return {
 					sharePostSuccessTitle = "share successfully",
 					deletePostSuccessTitle = "delete successfully",
 					
-					pushPostSuccess = "Push post successfully.",
+					pushPostSuccess = "Push post successfully. The post now become the top post in \"Latest\" category.",
 					reportPostSuccess = "Report post successfully.",
 					sharePostSuccess = "Share post successfully.",
 					deletePostSuccess = "Delete post successfully.",

@@ -257,7 +257,7 @@ return {
 					reportPostError_reportAlreadyDesc = "你已經舉報過這帖子了。",
 					
 					--4 button(push,report,share,delete) success
-					pushPostSuccessTitle = "推帖子成功",
+					pushPostSuccessTitle = "推帖成功。現在帖子己排在\"最新\"的頂部",
 					reportPostSuccessTitle = "舉報成功",
 					sharePostSuccessTitle = "分享成功",
 					deletePostSuccessTitle = "刪除成功",
