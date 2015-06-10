@@ -105,7 +105,7 @@ local function getUserDataListener(event)
 			saveData.save(global.userDataPath,responseInfo)
 
 			if(boolean_isNotice)then --stop to go vorum scene if this is notification
-				
+				storyboard.gotoScene( "Scene.NoticeTabScene" )
 			else
 				local passData={params=responseInfo}
 				storyboard.gotoScene( "Scene.VorumTabScene",passData )
@@ -245,7 +245,7 @@ local function facebookLogin_getUserDataListener(event)
 			saveData.save(global.userDataPath,responseInfo)
 			
 			if(boolean_isNotice)then --stop to go vorum scene if this is notification
-
+				storyboard.gotoScene( "Scene.NoticeTabScene" )
 			else
 				local passData={params=responseInfo}
 				storyboard.gotoScene( "Scene.VorumTabScene",passData )

@@ -89,7 +89,10 @@ local function notificationListener( event )
 			updateNoticeBadge()
 		end
 		if (event.applicationState == "inactive") then
-			storyboard.gotoScene("Scene.NoticeTabScene")
+			local loadingDataOption = {}
+			loadingDataOption.params = {}
+			loadingDataOption.params.isNotic = true
+			storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 		end
 		-- for k, v in pairs(event) do
 		-- 	if (k == "custom") then

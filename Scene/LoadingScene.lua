@@ -44,6 +44,8 @@ local enteringAppOption = {
 	effect="fade",
 	time=300,
 }
+
+local isGoToNotice = false
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -69,13 +71,13 @@ local function animationFinishFnc()
 
 			if(savedUserData.password)then
 
-				loginFnc.login(savedUserData,false,false)
+				loginFnc.login(savedUserData,isGoToNotice,false)
 
 				return true
 
 			elseif(environment ~= "simulator" and savedUserData.fb_id and savedUserData.fbToken)then
 			
-				loginFnc.updateFBData(savedUserData,false,false)
+				loginFnc.updateFBData(savedUserData, isGoToNotice,false)
 
 				return true
 			end
@@ -89,6 +91,12 @@ end
 -- Create the scene
 function scene:createScene( event )
 	--var
+	if(type(event.params)=="table")then
+		isGoToNotice = event.params.isNotic or false
+	else
+		isGoToNotice = false
+	end
+
 	SceneGroup = self.view
 	local image_earth
 	local image_o
