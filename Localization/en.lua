@@ -378,7 +378,7 @@ return {
 					--register>termAndConitions
 					termsAndConitions_title = "Terms and conditions",
 
-					sharePostSentence1 = "Vorum has a new post!",
+					sharePostSentence1 = "Have a say on the following topic?",
 					sharePostSentence2 = "Click the link to download the app and Vote!",
 
 					-- friend request

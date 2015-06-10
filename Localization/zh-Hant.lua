@@ -382,7 +382,7 @@ return {
 					--register>termAndConitions
 					termsAndConitions_title = "服務條款和私隱政策",
 					
-					sharePostSentence1 = "Vorum 有新帖！",
+					sharePostSentence1 = "對以下標題有意見？",
 					sharePostSentence2 = "按下鏈結下載 Vorum 投票！",
 					
 					-- friend request
