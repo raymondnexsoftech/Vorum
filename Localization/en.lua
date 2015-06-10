@@ -418,7 +418,7 @@ return {
 					unknownErrorTitle = "Unknown error",
 					unknownErrorDesc = "Unknown error",
 
-					forgetPassword_popupInput = "Please input your email.",
+					forgetPassword_popupInput = "Please enter your email:",
 
 					-- Contact Email
 					contactEmailSubject = "Vorum App Contact us",

@@ -424,7 +424,7 @@ return {
 					unknownErrorTitle = "未知錯誤",
 					unknownErrorDesc = "未知錯誤。",
 
-					forgetPassword_popupInput = "請輸入你的電郵地址。",
+					forgetPassword_popupInput = "請輸入你的電郵地址：",
 
 					-- Contact Email
 					contactEmailSubject = "Vorum App 聯絡我們",
