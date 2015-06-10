@@ -149,8 +149,8 @@ end
 function moduleGroup.hideAnimation_scale()
 	removeObjFnc()
 
-	transition_background = transition.to(background,{time=moduleData.hideAnimationTime,alpha=0})
-	transition_popupGroup = transition.scaleTo(popupGroup,{time=moduleData.hideAnimationTime,xScale=0,yScale=0,onComplete=function(event)
+	transition_background = transition.to(background,{time=moduleData.hideAnimationTime,alpha=0,transition=easing.inSine})
+	transition_popupGroup = transition.scaleTo(popupGroup,{time=moduleData.hideAnimationTime,xScale=0.3,yScale=0.3,alpha=0,transition=easing.inSine,onComplete=function(event)
 		clear()
 		transition_popupGroup = nil
 		if ( type(moduleData.hideListener)=="function") then
@@ -162,11 +162,12 @@ end
 
 function moduleGroup.displayAnimation_scale()
 	
-	popupGroup:scale(0,0)
+	popupGroup:scale(0.3,0.3)
 
 	background.alpha = 0
-	transition_background = transition.to(background,{time=moduleData.displayAnimationTime,alpha=moduleData.bgAlpha})
-	transition_popupGroup = transition.scaleTo(popupGroup,{time=moduleData.displayAnimationTime,xScale=1,yScale=1,onComplete=function(event)
+	popupGroup.alpha = 0
+	transition_background = transition.to(background,{time=moduleData.displayAnimationTime,alpha=moduleData.bgAlpha,transition=easing.outSine})
+	transition_popupGroup = transition.scaleTo(popupGroup,{time=moduleData.displayAnimationTime,xScale=1,yScale=1,alpha=1,transition=easing.outSine,onComplete=function(event)
 		addObjFnc()
 		transition_popupGroup = nil
 		if ( type(moduleData.displayListener)=="function") then
