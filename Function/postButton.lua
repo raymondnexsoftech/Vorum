@@ -161,7 +161,7 @@ function deleteListener(event)
 
 		local response = json.decode(event[1].response)
 		local code = tonumber(response.code)
-		print(json.encode(response))
+		-- print(json.encode(response))
 		if(code==54)then
 			-- success
 			-- native.showAlert(localization.getLocalization("deletePostSuccessTitle"),localization.getLocalization("deletePostSuccess"),{localization.getLocalization("ok")})
