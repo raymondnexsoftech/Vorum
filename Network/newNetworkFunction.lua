@@ -624,6 +624,7 @@ function networkFunction.logout()
 	native.setActivityIndicator(false)
 	saveData.delete(global.userDataPath)--delete user data
 	saveData.delete(global.addFriendListSavePath)--delete addFriendList
+	saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
 	local header = headTabFnc.getHeader()
 	if (header) then
 		header:toBack()

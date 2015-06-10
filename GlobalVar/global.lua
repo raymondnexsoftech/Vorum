@@ -27,6 +27,8 @@ global.tutorialSavePath = "user/tutorial.sav"
 
 global.addFriendListSavePath = "user/addFriendList.sav"
 
+global.isOrigDesignPath = "user/isOrigDesign.sav"
+
 global.TEMPBASEDIR = system.TemporaryDirectory
 
 global.currentSceneNumber = 3

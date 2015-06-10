@@ -39,6 +39,10 @@ display.setStatusBar( display.TranslucentStatusBar )
 
 --setting language
 local langSetting = saveData.load(global.languageDataPath)
+local isOriginalDesign = saveData.load(global.isOrigDesignPath)
+if ((isOriginalDesign ~= nil) and (isOriginalDesign.isOriginalDesign ~= nil)) then
+	global.isOriginalDesign = isOriginalDesign.isOriginalDesign
+end
 
 if(langSetting)then
 	if(langSetting.locale)then

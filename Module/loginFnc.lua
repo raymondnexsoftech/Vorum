@@ -88,6 +88,7 @@ local function getUserDataListener(event)
 			storyboard.gotoScene( "Scene.LoginPageScene")
 		else
 			saveData.delete(global.addFriendListSavePath)--delete addFriendList
+			saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
 
 			responseInfo.password = password
 
@@ -217,6 +218,7 @@ local function facebookLogin_getUserDataListener(event)
 			storyboard.gotoScene( "Scene.LoginPageScene")
 		else
 			saveData.delete(global.addFriendListSavePath)--delete addFriendList
+			saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
 
 			newNetworkFunction.updateFbLoginData(facebookLoginData)
 

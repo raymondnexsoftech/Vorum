@@ -61,6 +61,9 @@ local tabName = {"me","post",nil,"notice","setting"}
 
 local temp_changeHeaderOption
 local backSceneHeaderOption
+
+local checkActivateOriginalDesignTimer
+local checkActivateOriginalDesignCount
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -181,12 +184,45 @@ local function nexsoftTouchListener(event)
 	return true
 end
 
+local function clearCheckActivateOriginalDesignCount()
+	if (checkActivateOriginalDesignTimer) then
+		timer.cancel(checkActivateOriginalDesignTimer)
+		checkActivateOriginalDesignTimer = nil
+	end
+	checkActivateOriginalDesignCount = nil
+end
+
+local function deleteObj(obj)
+	if (obj) then
+		display.remove(obj)
+	end
+end
+
+local function checkActivateOriginalDesign()
+	if (checkActivateOriginalDesignTimer == nil) then
+		checkActivateOriginalDesignTimer = timer.performWithDelay(2000, clearCheckActivateOriginalDesignCount, 1)
+	end
+	if (checkActivateOriginalDesignCount == nil) then
+		checkActivateOriginalDesignCount = 0
+	end
+	checkActivateOriginalDesignCount = checkActivateOriginalDesignCount + 1
+	if (checkActivateOriginalDesignCount >= 10) then
+		clearCheckActivateOriginalDesignCount()
+		global.isOriginalDesign = not(global.isOriginalDesign)
+		saveData.save(global.isOrigDesignPath, {isOriginalDesign = global.isOriginalDesign})
+		local blinkHeader = display.newRect(0, 0, display.contentWidth, header.height)
+		blinkHeader.anchorX = 0
+		blinkHeader.anchorY = 0
+		transition.to(blinkHeader, {alpha = 0, time = 400, transition = easing.outSine, onComplete = deleteObj})
+	end
+end
+
 local function changeHeaderFnc(newChangeHeaderOption)
 	temp_changeHeaderOption = newChangeHeaderOption or global.newSceneHeaderOption
 	
 	headerObjects = headerView.createVorumHeaderObjects("setting")
 	
-	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption)
+	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption,checkActivateOriginalDesign)
 	
 	backSceneHeaderOption = nil
 end
@@ -549,6 +585,7 @@ function scene:exitScene()
 	Runtime:removeEventListener( "key", onKeyEvent )
 	-- Place the code below
 	newNetworkFunction.cancelAllConnection()
+	clearCheckActivateOriginalDesignCount()
 end
 
 -- Called prior to the removal of scene's "view" (display group)
