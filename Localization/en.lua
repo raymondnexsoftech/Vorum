@@ -418,6 +418,7 @@ return {
 					unknownErrorTitle = "Unknown error",
 					unknownErrorDesc = "Unknown error",
 
+					forgetPassword_popupInput = "Please input your email.",
 					-- Tag
 					Appraisal = "Appraisal",
 					Anonymous = "Anonymous",

@@ -149,7 +149,20 @@ forgetPasswordPopupFnc = function ()
 	
 	forgetPassword_popupGroup = popup.getPopupGroup()
 	
-	forgetPassword_popup_textField_username = coronaTextField:new(  -250, -80, 500, 80,forgetPassword_popupGroup, "displayGroup")
+	local forgetPasswordText = display.newText{
+		text = localization.getLocalization("forgetPassword_popupInput"),
+		x = -250,
+		y = -120,
+		width = 0,
+		height = 0, 
+		font = "Helvetica",
+		fontSize=36,
+	}
+	forgetPasswordText.anchorX = 0
+	forgetPasswordText.anchorY = 0
+	forgetPasswordText:setFillColor( 0,0,0 )
+
+	forgetPassword_popup_textField_username = coronaTextField:new(  -250, forgetPasswordText.y+forgetPasswordText.height+40, 500, 80,forgetPassword_popupGroup, "displayGroup")
 	forgetPassword_popup_textField_username.hasBackground = false
 	forgetPassword_popup_textField_username:setFont("Helvetica",32)
 	forgetPassword_popup_textField_username:setTopPadding(200)
@@ -161,7 +174,7 @@ forgetPasswordPopupFnc = function ()
 	forgetPassword_popupVaule = 
 	{
 		--necessary
-		popupObj = {forgetPassword_popup_textField_username},
+		popupObj = {forgetPasswordText,forgetPassword_popup_textField_username},
 		popupObjFncType = {},
 		popupObjFnc = {},
 		popupBgImagePath = "Image/Popup/forgetPasswordPrompt.png",

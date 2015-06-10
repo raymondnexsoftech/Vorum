@@ -424,6 +424,7 @@ return {
 					unknownErrorTitle = "未知錯誤",
 					unknownErrorDesc = "未知錯誤。",
 
+					forgetPassword_popupInput = "請輸入你的電郵地址。",
 					-- Tag
 					Appraisal = "評核",
 					Anonymous = "匿名",
