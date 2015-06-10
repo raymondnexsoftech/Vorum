@@ -210,7 +210,7 @@ local function checkActivateOriginalDesign()
 		clearCheckActivateOriginalDesignCount()
 		global.isOriginalDesign = not(global.isOriginalDesign)
 		saveData.save(global.isOrigDesignPath, {isOriginalDesign = global.isOriginalDesign})
-		local blinkHeader = display.newRect(0, 0, display.contentWidth, header.height)
+		local blinkHeader = display.newRect(0, 0, display.contentWidth, header.headerHeight)
 		blinkHeader.anchorX = 0
 		blinkHeader.anchorY = 0
 		transition.to(blinkHeader, {alpha = 0, time = 400, transition = easing.outSine, onComplete = deleteObj})
