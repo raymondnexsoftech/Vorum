@@ -419,6 +419,11 @@ return {
 					unknownErrorDesc = "Unknown error",
 
 					forgetPassword_popupInput = "Please input your email.",
+
+					-- Contact Email
+					contactEmailSubject = "Vorum App Contact us",
+					contactEmailBody = "Hi Vorum Team, I am contacting Vorum Team because:",
+
 					-- Tag
 					Appraisal = "Appraisal",
 					Anonymous = "Anonymous",

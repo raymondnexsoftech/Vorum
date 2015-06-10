@@ -42,8 +42,8 @@ local email = "founder@vorumapp.com"
 local emailOptions =
 {
 	to = email,
-	-- subject = "My High Score",
-	-- body = "I scored over 9000!!! Can you do better?",
+	subject = localization.getLocalization("contactEmailSubject"),
+	body = localization.getLocalization("contactEmailBody"),
 	-- attachment = { baseDir=system.DocumentsDirectory,
 	-- filename="Screenshot.png", type="image" },
 }
