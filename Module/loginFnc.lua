@@ -89,6 +89,7 @@ local function getUserDataListener(event)
 		else
 			saveData.delete(global.addFriendListSavePath)--delete addFriendList
 			saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
+			global.isOriginalDesign = false
 
 			responseInfo.password = password
 
@@ -219,6 +220,7 @@ local function facebookLogin_getUserDataListener(event)
 		else
 			saveData.delete(global.addFriendListSavePath)--delete addFriendList
 			saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
+			global.isOriginalDesign = false
 
 			newNetworkFunction.updateFbLoginData(facebookLoginData)
 
