@@ -112,8 +112,8 @@ return {
 					------- notice scene
 					notice_headerTitle = "通知",
 					
-					notice_action_postVoted = "有人投了你的帖子\"",
-					notice_action_postVoted2 = "\"。",
+					notice_action_postVoted = "你的帖子\"",
+					notice_action_postVoted2 = "\"被投票了。",
 					notice_action_postShare = " 分享你的帖子。",
 					notice_action_postExpired = "你的帖子\"",
 					notice_action_postExpired2 = "\"已經停止投票。",
@@ -257,14 +257,14 @@ return {
 					reportPostError_reportAlreadyDesc = "你已經舉報過這帖子了。",
 					
 					--4 button(push,report,share,delete) success
-					pushPostSuccessTitle = "推帖成功。現在帖子己排在\"最新\"的頂部",
+					pushPostSuccessTitle = "推帖成功。",
 					reportPostSuccessTitle = "舉報成功",
 					sharePostSuccessTitle = "分享成功",
 					deletePostSuccessTitle = "刪除成功",
-					
-					pushPostSuccess = "推帖子成功。",
-					reportPostSuccess = "舉報成功。",
-					sharePostSuccess = "分享成功。",
+
+					pushPostSuccess = "現在帖子己排在\"最新\"的頂部。",
+					reportPostSuccess = "多謝你的意見，我們會盡快檢查此帖。",
+					sharePostSuccess = "此帖已分享到你的牆上。",
 					deletePostSuccess = "刪除成功。",
 					--create post and new coupon success
 					newPostSuccessTitle = "創建帖子成功",

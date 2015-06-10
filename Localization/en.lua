@@ -110,7 +110,7 @@ return {
 					notice_headerTitle = "Notification",
 
 					notice_action_postVoted = "Your post \"",
-					notice_action_postVoted2 = "\" was voted.",
+					notice_action_postVoted2 = "\" has been voted.",
 					notice_action_postShare = " shared your post.",
 					notice_action_postExpired = "Your post \"",
 					notice_action_postExpired2 = "\" expired.",
@@ -252,14 +252,14 @@ return {
 					reportPostError_reportAlreadyDesc = "Today you already report this post.",
 					
 					--4 button(push,report,share,delete) success
-					pushPostSuccessTitle = "Push successfully",
-					reportPostSuccessTitle = "report successfully",
-					sharePostSuccessTitle = "share successfully",
+					pushPostSuccessTitle = "successfully Pushed",
+					reportPostSuccessTitle = "Successfully Reported",
+					sharePostSuccessTitle = "Successfully Shared",
 					deletePostSuccessTitle = "delete successfully",
 					
-					pushPostSuccess = "Push post successfully. The post now become the top post in \"Latest\" category.",
-					reportPostSuccess = "Report post successfully.",
-					sharePostSuccess = "Share post successfully.",
+					pushPostSuccess = "The post now become the top post in \"Latest\" category.",
+					reportPostSuccess = "Thanks for the feedback. Our team will review your report shortly.",
+					sharePostSuccess = "The post has been shared to your own wall.",
 					deletePostSuccess = "Delete post successfully.",
 					--create post and new coupon success
 					newPostSuccessTitle = "Create a new post successfully",
