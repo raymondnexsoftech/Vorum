@@ -385,8 +385,8 @@ return {
 					--forgetPassword
 					forgetPasswordErrorTitle_noEmail = "Wrong email",
 					forgetPasswordErrorDesc_noEmail = "This email is still not registered. Please check your email spelling.",
-					forgetPasswordSuccessTitle = "Reset password email sent",
-					forgetPasswordSuccessDesc = "Please check you email to reset password.",
+					forgetPasswordSuccessTitle = "Reset password email has been sent",
+					forgetPasswordSuccessDesc = "An email has been sent to %s. Please check you email to reset password.",
 					--
 					noPost = "No post",
 					noNotic = "No notification",

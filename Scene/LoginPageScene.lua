@@ -105,13 +105,25 @@ end
 
 local function forgetPasswordListener(event)
 	native.setActivityIndicator( false )
-	local response = json.decode(event[1].response)
-	if(response.code)then
-		response.code = tonumber( response.code )
-		if(response.code==9)then
-			native.showAlert( localization.getLocalization("forgetPasswordSuccessTitle"), localization.getLocalization("forgetPasswordSuccessDesc") ,{localization.getLocalization("ok") })
-		elseif(response.code==10)then
-			native.showAlert( localization.getLocalization("forgetPasswordErrorTitle_noEmail"), localization.getLocalization("forgetPasswordErrorDesc_noEmail") ,{localization.getLocalization("ok"),localization.getLocalization("cancel") },forgetPasswordNoEmailListener)
+	if (event.isError) then
+		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")}, forgetPasswordNoEmailListener)
+	else
+		local response = json.decode(event[1].response)
+		if(response.code)then
+			response.code = tonumber( response.code )
+			if(response.code==9)then
+				local forgetPaswordSuccessDescStr = string.format(localization.getLocalization("forgetPasswordSuccessDesc"), forgetPassword_popup_textField_username_tempValue)
+				native.showAlert( localization.getLocalization("forgetPasswordSuccessTitle"), forgetPaswordSuccessDescStr,{localization.getLocalization("ok") })
+			elseif(response.code==10)then
+				native.showAlert( localization.getLocalization("forgetPasswordErrorTitle_noEmail"), localization.getLocalization("forgetPasswordErrorDesc_noEmail") ,{localization.getLocalization("ok"),localization.getLocalization("cancel") },forgetPasswordNoEmailListener)
+			else
+				local registerFailedCode = response.code or ""
+				local registerFailedMsg = response.message or ""
+				local registerFailedWholeMsg = string.format(localization.getLocalization("registerFail_ErrorOccurred"), registerFailedCode, registerFailedMsg)
+				native.showAlert(localization.getLocalization("registerFail_registerTitle"),registerFailedWholeMsg,{localization.getLocalization("ok")}, forgetPasswordNoEmailListener)
+			end
+		else
+			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
 		end
 	end
 end

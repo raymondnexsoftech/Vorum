@@ -390,8 +390,7 @@ return {
 					forgetPasswordErrorTitle_noEmail = "錯誤的電郵地址",
 					forgetPasswordErrorDesc_noEmail = "請檢查你的電子郵件來是否正確。",
 					forgetPasswordSuccessTitle = "重設密碼的電子郵件已送出",
-					forgetPasswordSuccessDesc = "請檢查你的電子郵件來重設密碼。",
-					
+					forgetPasswordSuccessDesc = "己送出電子郵件至 %s。請檢查你的電子郵件來重設密碼。",
 
 					--facebook share
 					facebookShareSuccessTitle = "分享成功",
