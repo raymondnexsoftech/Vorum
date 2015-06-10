@@ -69,13 +69,13 @@ local function animationFinishFnc()
 
 			if(savedUserData.password)then
 
-				loginFnc.login(savedUserData,false)
+				loginFnc.login(savedUserData,false,false)
 
 				return true
 
 			elseif(environment ~= "simulator" and savedUserData.fb_id and savedUserData.fbToken)then
 			
-				loginFnc.updateFBData(savedUserData, false)
+				loginFnc.updateFBData(savedUserData,false,false)
 
 				return true
 			end

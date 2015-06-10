@@ -44,6 +44,8 @@ local popup_tempLastTryAccountName = nil
 local facebookLogin_responseInfo
 local facebookLoginData
 
+local isFromLoginPage
+
 local goToRegSceneOption =
 {
     effect = "fade",
@@ -87,9 +89,12 @@ local function getUserDataListener(event)
 			responseCodeAlertBox(tonumber(responseInfo.code))
 			storyboard.gotoScene( "Scene.LoginPageScene")
 		else
-			saveData.delete(global.addFriendListSavePath)--delete addFriendList
-			saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
-			global.isOriginalDesign = false
+			if (isFromLoginPage) then
+				saveData.delete(global.addFriendListSavePath)--delete addFriendList
+				saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
+				global.isOriginalDesign = false
+				isFromLoginPage = false
+			end
 
 			responseInfo.password = password
 
@@ -112,11 +117,13 @@ local function getUserDataListener(event)
 end
 
 
-function returnGroup.login(userData,input_boolean_isNotice)
+function returnGroup.login(userData,input_boolean_isNotice,isComeFromLoginPage)
 
 	native.setActivityIndicator( true )
 
 	boolean_isNotice = input_boolean_isNotice or false
+
+	isFromLoginPage = isComeFromLoginPage or false
 	
 	password = userData.password
 
@@ -218,9 +225,12 @@ local function facebookLogin_getUserDataListener(event)
 			responseCodeAlertBox(tonumber(responseInfo.code))
 			storyboard.gotoScene( "Scene.LoginPageScene")
 		else
-			saveData.delete(global.addFriendListSavePath)--delete addFriendList
-			saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
-			global.isOriginalDesign = false
+			if (isFromLoginPage) then
+				saveData.delete(global.addFriendListSavePath)--delete addFriendList
+				saveData.delete(global.isOrigDesignPath)--delete isOrigDesignPath
+				global.isOriginalDesign = false
+				isFromLoginPage = false
+			end
 
 			newNetworkFunction.updateFbLoginData(facebookLoginData)
 
@@ -320,17 +330,20 @@ local function facebookLoginListener(event)
 	
 end
 
-function returnGroup.FBlogin(input_boolean_isNotice)
+function returnGroup.FBlogin(input_boolean_isNotice,isComeFromLoginPage)
 	boolean_isNotice = input_boolean_isNotice or false
+	isFromLoginPage = isComeFromLoginPage or false
 	facebookLogin.login(facebookLoginListener)
 end
 
-function returnGroup.updateFBData(fbData,input_boolean_isNotice)
+function returnGroup.updateFBData(fbData,input_boolean_isNotice,isComeFromLoginPage)
 
 	native.setActivityIndicator( true )
 
 	boolean_isNotice = input_boolean_isNotice or false
 	
+	isFromLoginPage = isComeFromLoginPage or false
+
 	newNetworkFunction.updateFbLoginData(fbData)
 
 	facebookLoginData = fbData

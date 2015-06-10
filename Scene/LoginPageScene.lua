@@ -87,7 +87,7 @@ local function loginFacebook(event)
             scrollView:takeFocus( event )
         end
     elseif ( phase == "ended" or phase == "cancelled" ) then
-		loginFnc.FBlogin(false)
+		loginFnc.FBlogin(false,true)
 	end
     return true
 end
@@ -233,7 +233,7 @@ local function signIn(event)
 		loginData.username = string.lower(textField_username.text)
 		loginData.password = textField_password.text
 		
-		loginFnc.login(loginData)
+		loginFnc.login(loginData,false,true)
 	    
 	end
     return true
