@@ -308,7 +308,8 @@ local function facebookLoginListener(event)
 			goToRegSceneOpt.effect = goToRegSceneOption.effect
 			goToRegSceneOpt.time = goToRegSceneOption.time
 			goToRegSceneOpt.params = {
-										fb = {id = event.facebookId, token = event.facebookToken}
+										fb = {id = event.facebookId, token = event.facebookToken},
+										userDetail = event.userDetail,
 									}
 			storyboard.gotoScene( "Scene.RegisterPageScene" ,goToRegSceneOpt)
 		elseif (event.isLinkAccount) then
@@ -316,6 +317,7 @@ local function facebookLoginListener(event)
 			-- print("link acc")
 			linkListener = event.linkAccountListener
 			-- print("-----------")
+			popup_tempLastTryAccountName = event.email
 			popupLinkTextField()
 		elseif (event.linkError) then
 			-- print("-----------")

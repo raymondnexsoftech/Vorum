@@ -323,6 +323,8 @@ return {
 					fb_inputLoginDataToLink = "Please input the login data below",
 					fb_noFbAcc = "Cannot find account",
 					fb_noFbAcc_Create = "Cannot find an account linked with Facebook. Create new account or Link the existing account?",
+					fb_foundAcc = "Account found",
+					fb_linkWithThisEmail = "Account with email %s found. Link facebook with this account?",
 					create = "Create",
 					link = "Link",
 					fb_createAcc = "Create account",

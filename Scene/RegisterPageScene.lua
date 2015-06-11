@@ -825,8 +825,26 @@ function scene:enterScene( event )
 
 	-- Place the code below
 	facebookData = nil
-	if ((event.params ~= nil) and (event.params.fb ~= nil)) then
-		facebookData = event.params.fb
+	if (event.params ~= nil) then
+		if (event.params.fb ~= nil) then
+			facebookData = event.params.fb
+		end
+		if (event.params.userDetail) then
+			local userDetail = event.params.userDetail
+			if (userDetail.email) then
+				email_textField.text = userDetail.email
+			end
+			if (userDetail.name) then
+				profile_textField_name.text = userDetail.name
+			end
+			if (userDetail.gender) then
+				if (userDetail.gender == "male") then
+					genderOption:setDefault(1, true)
+				elseif (userDetail.gender == "female") then
+					genderOption:setDefault(2, true)
+				end
+			end
+		end
 	end
 end
 

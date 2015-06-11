@@ -1262,7 +1262,8 @@ end
 --   offset
 --   limit
 --   searchStr
-local function searchUser(params, listener)
+function networkFunction.searchUser(params, listener)
+-- local function searchUser(params, listener)
 	local apiParams = createParamsForApiNumber(1)
 	apiParams[1].params = {
 								headers = createVorumNetworkHeader(sessionToken),
@@ -1274,17 +1275,18 @@ local function searchUser(params, listener)
 	apiParams[1].method = "GET"
 	return networkHandler.requestNetwork(apiParams, listener, "searchUser")
 end
-function networkFunction.searchUser(params, listener)
-	local dataToSend = deepCopyTable(params)
-	return performNetworkFunction(searchUser, dataToSend, listener)
-end
+-- function networkFunction.searchUser(params, listener)
+-- 	local dataToSend = deepCopyTable(params)
+-- 	return performNetworkFunction(searchUser, dataToSend, listener)
+-- end
 
 -- Search Post
 -- format of params:
 --   offset
 --   limit
 --   searchStr
-local function searchPost(params, listener)
+function networkFunction.searchPost(params, listener)
+-- local function searchPost(params, listener)
 	local apiParams = createParamsForApiNumber(1)
 	apiParams[1].params = {
 								headers = createVorumNetworkHeader(sessionToken),
@@ -1296,10 +1298,10 @@ local function searchPost(params, listener)
 	apiParams[1].method = "GET"
 	return networkHandler.requestNetwork(apiParams, listener, "searchPost")
 end
-function networkFunction.searchPost(params, listener)
-	local dataToSend = deepCopyTable(params)
-	return performNetworkFunction(searchPost, dataToSend, listener)
-end
+-- function networkFunction.searchPost(params, listener)
+-- 	local dataToSend = deepCopyTable(params)
+-- 	return performNetworkFunction(searchPost, dataToSend, listener)
+-- end
 
 
 

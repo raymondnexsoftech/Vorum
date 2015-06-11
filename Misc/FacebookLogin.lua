@@ -21,10 +21,12 @@ local facebookModule = require("Module.FacebookModule")
 local json = require("json")
 local localization = require("Localization.Localization")
 local networkFunction = require("Network.newNetworkFunction")
+local lfs = require("lfs")
 
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
+local FACEBOOK_PIC_LOC = "createUser/pic"
 
 ---------------------------------------------------------------
 -- Variables
@@ -44,6 +46,8 @@ function facebookLogin.login(listener)
 	local facebookId, facebookToken = facebookModule.getUserInfo()
 	local userId, sessionToken
 	local emailLoginListener
+	local userDetail
+	local tempEventData
 
 	local function linkFacebookListener(event)
 		native.setActivityIndicator(false)
@@ -120,38 +124,147 @@ function facebookLogin.login(listener)
 		end
 	end
 
-	local function fbLoginlistener(event)
+	local function facebookLoginReturnCreateAcc(picLoc)
+		if (picLoc) then
+			userDetail.profilePic = picLoc
+		end
+		tempEventData.isCreateNewAcc = true
+		tempEventData.facebookId = facebookId
+		tempEventData.facebookToken = facebookToken
+		tempEventData.userDetail = userDetail
+		listener(tempEventData)
+		tempEventData = nil
+	end
+
+	local function downloadUserFacebookPicComplete(event)
+		native.setActivityIndicator(false)
+		if (event.isError) then
+			facebookLoginReturnCreateAcc()
+			return
+		end
+		facebookLoginReturnCreateAcc(FACEBOOK_PIC_LOC)
+	end
+
+	local function getUserFacebookPicListener(event)
+		if (event.isError) then
+			native.setActivityIndicator(false)
+			facebookLoginReturnCreateAcc()
+			return
+		end
+		if (event.response) then
+			local response = json.decode(event.response)
+			if ((type(response.data) == "table")
+				and (response.data.is_silhouette == false)
+				and (response.data.url ~= nil) and (response.data.url ~= "")) then
+				networkFile.getDownloadFile(response.data.url, FACEBOOK_PIC_LOC, downloadUserFacebookPicComplete)
+				return
+			end
+		end
+		native.setActivityIndicator(false)
+		facebookLoginReturnCreateAcc()
+	end
+
+	local function showNoFacebookAccInServer()
+		-- no Faceboook account in server
+		native.showAlert(localization.getLocalization("fb_noFbAcc"),
+							localization.getLocalization("fb_noFbAcc_Create"),
+							{localization.getLocalization("create"), localization.getLocalization("link"), localization.getLocalization("cancel")},
+							function(e)
+								if (e.index == 1) then
+									native.setActivityIndicator(true)
+									local filePath = system.pathForFile(FACEBOOK_PIC_LOC, system.TemporaryDirectory)
+									for file in lfs.dir(filePath) do
+										if (string.find(file, "^%.") == nil) then
+											local actualPath = filePath .. "/" .. file
+											if (lfs.attributes(actualPath,"mode") == "file") then
+												os.remove(actualPath)
+											end
+										end
+									end
+									facebookModule.request("me/picture", getUserFacebookPicListener)
+									return
+								elseif (e.index == 2) then
+									tempEventData.linkAccountListener = linkAccountListener
+									tempEventData.isLinkAccount = true
+									listener(tempEventData)
+									tempEventData = nil
+								else
+									return
+								end
+							end)
+	end
+
+	local function checkUserEmailListener(event)
 		native.setActivityIndicator(false)
 		if (event.isError) then
 			listener(event)
 			return
 		end
 		local response = json.decode(event[1].response)
+		local isUserFound = false
+		if (response) then
+			for i = 1, #response do
+				if (response[i].email == userDetail.email) then
+					isUserFound = true
+					break
+				end
+			end
+		end
+		if (isUserFound) then
+			local alertMsg = string.format(localization.getLocalization("fb_linkWithThisEmail"), userDetail.email)
+			native.showAlert(localization.getLocalization("fb_foundAcc"),
+								alertMsg,
+								{localization.getLocalization("yes"), localization.getLocalization("no")},
+								function(e)
+									if (e.index == 1) then
+										event.email = userDetail.email
+										event.linkAccountListener = linkAccountListener
+										event.isLinkAccount = true
+										listener(event)
+										tempEventData = nil
+										return
+									else
+										showNoFacebookAccInServer()
+										return
+									end
+								end)
+		else
+			showNoFacebookAccInServer()
+		end
+	end
+
+	local function getUserFacebookDetailListener(event)
+		if (event.isError) then
+			native.setActivityIndicator(false)
+			listener(event)
+			return
+		end
+		if (event.response) then
+			userDetail = json.decode(event.response)
+		end
+		if (userDetail.email) then
+			networkFunction.searchUser({searchStr = userDetail.email}, checkUserEmailListener)
+			return
+		end
+		native.setActivityIndicator(false)
+		showNoFacebookAccInServer()
+	end
+
+	local function fbLoginlistener(event)
+		if (event.isError) then
+			native.setActivityIndicator(false)
+			listener(event)
+			return
+		end
+		local response = json.decode(event[1].response)
 		if (response.code) then
 			if (response.code == 7) then
-				-- no Faceboook account in server
-				native.showAlert(localization.getLocalization("fb_noFbAcc"),
-									localization.getLocalization("fb_noFbAcc_Create"),
-									{localization.getLocalization("create"), localization.getLocalization("link"), localization.getLocalization("cancel")},
-									function(e)
-										if (e.index == 1) then
-											event.isCreateNewAcc = true
-											event.facebookId = facebookId
-											event.facebookToken = facebookToken
-											listener(event)
-											return
-										elseif (e.index == 2) then
-											event.linkAccountListener = linkAccountListener
-											event.isLinkAccount = true
-											listener(event)
-										else
-											return
-										end
-									end)
+				tempEventData = event
+				facebookModule.request("me", getUserFacebookDetailListener)
+				return
 			else
 				-- other error
 				listener(event)
-				return
  			end
 		else
 			event.isLoginSuccess = true
@@ -159,8 +272,8 @@ function facebookLogin.login(listener)
 			event.sessionToken = response.session
 			event.fbToken = facebookToken
 			listener(event)
-			return
 		end
+		native.setActivityIndicator(false)
 	end
 
 	local function loginListener(event)
@@ -179,7 +292,7 @@ function facebookLogin.login(listener)
 	end
 
 	native.setActivityIndicator(true)
-	facebookModule.login(true, loginListener)
+	facebookModule.login({"email"}, true, loginListener)
 end
 
 return facebookLogin

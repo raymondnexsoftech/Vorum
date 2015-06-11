@@ -328,6 +328,8 @@ return {
 					fb_inputLoginDataToLink = "請在下方輸入帳戶資料",
 					fb_noFbAcc = "無法找到 Facebook 帳戶",
 					fb_noFbAcc_Create = "無法找到與 Facebook 連結的帳戶。建立新帳戶，或連結現有帳戶？",
+					fb_foundAcc = "找到帳戶",
+					fb_linkWithThisEmail = "找到使用 %s 的帳戶. 與此帳戶連結？",
 					create = "建立",
 					link = "連結",
 					fb_createAcc = "建立帳戶",
