@@ -825,6 +825,7 @@ function scene:enterScene( event )
 
 	-- Place the code below
 	facebookData = nil
+	userData = {}
 	if (event.params ~= nil) then
 		if (event.params.fb ~= nil) then
 			facebookData = event.params.fb
