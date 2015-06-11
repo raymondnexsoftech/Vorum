@@ -63,6 +63,7 @@ local booldean_birthHadSelected = false
 local month_array = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }
 --textField
 -- local textField_username
+local profile_button_addPhoto
 local email_textField
 local textField_password
 local textField_confirmPassword
@@ -615,9 +616,8 @@ function scene:createScene( event )
 	--------------------------------
 
 	
-	local profile_button_addPhoto = widget.newButton
+	profile_button_addPhoto = widget.newButton
 	{
-		id = "addPhoto_button",
 		defaultFile = "Image/RegisterPage/addPhoto.png",
 		overFile = "Image/RegisterPage/addPhoto.png",
 		onEvent = addPhoto,
