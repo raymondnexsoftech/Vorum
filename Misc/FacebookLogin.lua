@@ -168,34 +168,36 @@ function facebookLogin.login(listener)
 
 	local function showNoFacebookAccInServer()
 		-- no Faceboook account in server
-		native.showAlert(localization.getLocalization("fb_noFbAcc"),
-							localization.getLocalization("fb_noFbAcc_Create"),
-							{localization.getLocalization("create"), localization.getLocalization("link"), localization.getLocalization("cancel")},
-							function(e)
-								if (e.index == 1) then
-									native.setActivityIndicator(true)
-									local filePath = system.pathForFile(FACEBOOK_PIC_LOC, system.TemporaryDirectory)
-									if (lfs.chdir(filePath)) then
-										for file in lfs.dir(filePath) do
-											if (string.find(file, "^%.") == nil) then
-												local actualPath = filePath .. "/" .. file
-												if (lfs.attributes(actualPath,"mode") == "file") then
-													os.remove(actualPath)
-												end
-											end
-										end
-									end
-									facebookModule.request("me/picture?redirect=false", getUserFacebookPicListener)
-									return
-								elseif (e.index == 2) then
-									local event = {}
-									event.linkAccountListener = linkAccountListener
-									event.isLinkAccount = true
-									listener(event)
-								else
-									return
-								end
-							end)
+		timer.performWithDelay(1, function()
+										native.showAlert(localization.getLocalization("fb_noFbAcc"),
+															localization.getLocalization("fb_noFbAcc_Create"),
+															{localization.getLocalization("create"), localization.getLocalization("link"), localization.getLocalization("cancel")},
+															function(e)
+																if (e.index == 1) then
+																	native.setActivityIndicator(true)
+																	local filePath = system.pathForFile(FACEBOOK_PIC_LOC, system.TemporaryDirectory)
+																	if (lfs.chdir(filePath)) then
+																		for file in lfs.dir(filePath) do
+																			if (string.find(file, "^%.") == nil) then
+																				local actualPath = filePath .. "/" .. file
+																				if (lfs.attributes(actualPath,"mode") == "file") then
+																					os.remove(actualPath)
+																				end
+																			end
+																		end
+																	end
+																	facebookModule.request("me/picture", "GET", {redirect="false"}, getUserFacebookPicListener)
+																	return
+																elseif (e.index == 2) then
+																	local event = {}
+																	event.linkAccountListener = linkAccountListener
+																	event.isLinkAccount = true
+																	listener(event)
+																else
+																	return
+																end
+															end)
+									end, 1)
 	end
 
 	local function checkUserEmailListener(event)
