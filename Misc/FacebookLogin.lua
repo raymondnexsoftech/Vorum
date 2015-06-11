@@ -21,6 +21,7 @@ local facebookModule = require("Module.FacebookModule")
 local json = require("json")
 local localization = require("Localization.Localization")
 local networkFunction = require("Network.newNetworkFunction")
+local networkFile = require("Network.NetworkFile")
 local lfs = require("lfs")
 
 ---------------------------------------------------------------
@@ -47,7 +48,6 @@ function facebookLogin.login(listener)
 	local userId, sessionToken
 	local emailLoginListener
 	local userDetail
-	local tempEventData
 
 	local function linkFacebookListener(event)
 		native.setActivityIndicator(false)
@@ -128,21 +128,23 @@ function facebookLogin.login(listener)
 		if (picLoc) then
 			userDetail.profilePic = picLoc
 		end
-		tempEventData.isCreateNewAcc = true
-		tempEventData.facebookId = facebookId
-		tempEventData.facebookToken = facebookToken
-		tempEventData.userDetail = userDetail
-		listener(tempEventData)
-		tempEventData = nil
+		local event = {}
+		event.isCreateNewAcc = true
+		event.facebookId = facebookId
+		event.facebookToken = facebookToken
+		event.userDetail = userDetail
+		listener(event)
 	end
 
 	local function downloadUserFacebookPicComplete(event)
-		native.setActivityIndicator(false)
-		if (event.isError) then
-			facebookLoginReturnCreateAcc()
-			return
+		if (event.phase == "ended") then
+			native.setActivityIndicator(false)
+			if (event.isError) then
+				facebookLoginReturnCreateAcc()
+				return
+			end
+			facebookLoginReturnCreateAcc(event.path)
 		end
-		facebookLoginReturnCreateAcc(FACEBOOK_PIC_LOC)
 	end
 
 	local function getUserFacebookPicListener(event)
@@ -156,8 +158,8 @@ function facebookLogin.login(listener)
 			if ((type(response.data) == "table")
 				and (response.data.is_silhouette == false)
 				and (response.data.url ~= nil) and (response.data.url ~= "")) then
-				networkFile.getDownloadFile(response.data.url, FACEBOOK_PIC_LOC, downloadUserFacebookPicComplete)
-				return
+					networkFile.getDownloadFile(response.data.url, FACEBOOK_PIC_LOC, downloadUserFacebookPicComplete)
+					return
 			end
 		end
 		native.setActivityIndicator(false)
@@ -173,21 +175,23 @@ function facebookLogin.login(listener)
 								if (e.index == 1) then
 									native.setActivityIndicator(true)
 									local filePath = system.pathForFile(FACEBOOK_PIC_LOC, system.TemporaryDirectory)
-									for file in lfs.dir(filePath) do
-										if (string.find(file, "^%.") == nil) then
-											local actualPath = filePath .. "/" .. file
-											if (lfs.attributes(actualPath,"mode") == "file") then
-												os.remove(actualPath)
+									if (lfs.chdir(filePath)) then
+										for file in lfs.dir(filePath) do
+											if (string.find(file, "^%.") == nil) then
+												local actualPath = filePath .. "/" .. file
+												if (lfs.attributes(actualPath,"mode") == "file") then
+													os.remove(actualPath)
+												end
 											end
 										end
 									end
-									facebookModule.request("me/picture", getUserFacebookPicListener)
+									facebookModule.request("me/picture?redirect=false", getUserFacebookPicListener)
 									return
 								elseif (e.index == 2) then
-									tempEventData.linkAccountListener = linkAccountListener
-									tempEventData.isLinkAccount = true
-									listener(tempEventData)
-									tempEventData = nil
+									local event = {}
+									event.linkAccountListener = linkAccountListener
+									event.isLinkAccount = true
+									listener(event)
 								else
 									return
 								end
@@ -221,7 +225,6 @@ function facebookLogin.login(listener)
 										event.linkAccountListener = linkAccountListener
 										event.isLinkAccount = true
 										listener(event)
-										tempEventData = nil
 										return
 									else
 										showNoFacebookAccInServer()
@@ -259,7 +262,6 @@ function facebookLogin.login(listener)
 		local response = json.decode(event[1].response)
 		if (response.code) then
 			if (response.code == 7) then
-				tempEventData = event
 				facebookModule.request("me", getUserFacebookDetailListener)
 				return
 			else

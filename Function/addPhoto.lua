@@ -366,7 +366,7 @@ end
 
 function returnGroup.loadPhoto(button_addPhoto,path)
 	DESTINATION.filename = path
-	if(not DESTINATION.filename)then
+	if(DESTINATION.filename)then
 		button_addPhoto.photo = display.newImage(DESTINATION.filename,DESTINATION.baseDir)
 		imageProcess(button_addPhoto)
 	end

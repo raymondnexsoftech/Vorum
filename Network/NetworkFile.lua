@@ -81,7 +81,7 @@ function networkFile.getDownloadFile(...)
 	local url, path = arg[1], arg[2]
 	if ((url == nil) or (url == "")) then
 		if (displayDebugInfo) then
-			-- print("URL Error: " .. path)
+			print("URL Error: " .. path)
 		end
 		return nil
 	end
@@ -105,7 +105,7 @@ function networkFile.getDownloadFile(...)
 	end
 	if (checkDir(path, baseDir) ~= true) then
 		if (displayDebugInfo) then
-			-- print("Get File Path Error: " .. path)
+			print("Get File Path Error: " .. path)
 		end
 		return nil
 	end
@@ -113,7 +113,7 @@ function networkFile.getDownloadFile(...)
 	local filePath = path .. "/" .. fileHash
 	if (checkFileInDir(path, baseDir, fileHash)) then
 		if (displayDebugInfo) then
-			-- print("File \"" .. path .. "\" exist, no need to download again")
+			print("File \"" .. path .. "\" exist, no need to download again")
 		end
 		return {
 					path = filePath,
@@ -126,8 +126,8 @@ function networkFile.getDownloadFile(...)
 		local function fileListener(event)
 			if (event.cancelled) then
 				if (displayDebugInfo) then
-					-- print("Cancelled download file to path:")
-					-- print("    " .. path)
+					print("Cancelled download file to path:")
+					print("    " .. path)
 				end
 				-- in case need to do something on cancel
 				downloadFileList[path] = nil
@@ -139,7 +139,12 @@ function networkFile.getDownloadFile(...)
 						if (event.retryTimes < 3) then
 							return false
 						end
-						-- print("error on downloading pic " .. path)
+						if (displayDebugInfo) then
+							print("error on downloading pic " .. path)
+						end
+						for i = 1, listenerArraySize do
+							listenerArray[i](event)
+						end
 					else
 						for i = 1, listenerArraySize do
 							local eventForListener = {}
@@ -179,8 +184,8 @@ function networkFile.getDownloadFile(...)
 		downloadFileListTable.baseDir = baseDir
 		downloadFileList[path] = downloadFileListTable
 		if (displayDebugInfo) then
-			-- print("Downloading file to path:")
-			-- print("    " .. path)
+			print("Downloading file to path:")
+			print("    " .. path)
 		end
 	end
 	if (type(listener) == "function") then
