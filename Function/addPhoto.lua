@@ -248,6 +248,7 @@ local deletePhoto = function(event)
 	end
 	return true
 end
+
 local function tunePhotoCallBackFnc(event)
 	newNetworkFunction.resizePic(resizedFileName,resizedFileName,DESTINATION.baseDir)
 	removeDisplayPhoto()
@@ -343,12 +344,14 @@ function returnGroup.getImageRealPath(savePath)
 	end
 	return curResizeImagePath
 end
+
 function returnGroup.deleteTempImage(savePath)
 	local fakeObject = {}
 	fakeObject.savePath = savePath
 	getFilePath(fakeObject,nil)
 	removeDataPhoto("delete")
 end
+
 function returnGroup.loadPerviousPhoto(button_addPhoto)
 	-- print("Load Pervious Photo")
 	DESTINATION.filename = getFilePath(button_addPhoto,"get")
@@ -358,6 +361,14 @@ function returnGroup.loadPerviousPhoto(button_addPhoto)
 		button_addPhoto.photo = display.newImage(DESTINATION.filename,DESTINATION.baseDir)
 		imageProcess(button_addPhoto)
 		-- print("Load Pervious Photo Success")
+	end
+end
+
+function returnGroup.loadPhoto(button_addPhoto,path)
+	DESTINATION.filename = path
+	if(not DESTINATION.filename)then
+		button_addPhoto.photo = display.newImage(DESTINATION.filename,DESTINATION.baseDir)
+		imageProcess(button_addPhoto)
 	end
 end
 

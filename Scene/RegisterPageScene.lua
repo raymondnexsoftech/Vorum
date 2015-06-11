@@ -844,6 +844,9 @@ function scene:enterScene( event )
 					genderOption:setDefault(2, true)
 				end
 			end
+			if(userDetail.profilePic)then
+				addPhotoFnc.loadPhoto(profile_button_addPhoto,userDetail.profilePic)
+			end
 		end
 	end
 end
