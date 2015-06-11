@@ -219,6 +219,7 @@ onBackButtonPressed = function()
 end
 
 local function createResult(resultData)
+	print("abc",json.encode(resultData))
 
 	local function goToNewScene(event)
 		scrollView:checkFocusToScrollView(event)
@@ -239,6 +240,7 @@ local function createResult(resultData)
 
 	local temp_userIconUrl = nil
 	local temp_comment = ""
+	local temp_creatorName
 	
 	local userId = "unknownUser"
 	
@@ -285,12 +287,9 @@ local function createResult(resultData)
 		if(resultData)then
 			if(resultData.userId)then
 				userId = resultData.userId
-				-- print(userId,"userId")
 			end
 			if(resultData.profile_pic)then
-				if(resultData.profile_pic.url)then
-					temp_userIconUrl = resultData.profile_pic.url
-				end
+				temp_userIconUrl = resultData.profile_pic
 			end
 		end
 	
@@ -310,14 +309,15 @@ local function createResult(resultData)
 			postSearchDescDisplay()
 		end
 		
-		if(resultData.user)then
-			if(resultData.user.userId)then
-					userId = resultData.user.userId
+		if(type(resultData.user)=="table" and resultData.user.userId)then
+			userId = resultData.user.userId
+		end
+		if(type(resultData.creator)=="table" )then
+			if(resultData.creator.profile_pic)then
+				temp_userIconUrl = resultData.creator.profile_pic
 			end
-			if(resultData.user.profile_pic)then
-				if(resultData.user.profile_pic.url)then
-					temp_userIconUrl = resultData.user.profile_pic.url
-				end
+			if(resultData.creator.name)then
+				temp_creatorName = resultData.creator.name
 			end
 		end
 	end
@@ -393,7 +393,7 @@ local function createResult(resultData)
 	
 	local function userIconListener(event)
 		if (event.isError) then
-		else
+		elseif (event.phase == "ended") then
 			userIconFnc({path = event.path, baseDir = event.baseDir})
 		end
 	end
@@ -425,6 +425,25 @@ local function createResult(resultData)
 	text_comment:addEventListener("touch",goToNewScene)
 	group_thisResult:insert( text_comment )
 	
+	if(searchType=="post")then
+		-- local createdBy = display.newText{
+		-- 	text = localization.getLocalization("searchScreen_by")..tostring(temp_creatorName), 
+		-- 	x = display.contentWidth-10,
+		-- 	y = line_bottom.y-6,
+		-- 	width = 420,
+		-- 	height = 0	, 
+		-- 	font = "Helvetica",
+		-- 	fontSize=22
+		-- }
+		-- createdBy = display.newText(createdBy);
+		-- createdBy:setFillColor( 104/255, 104/255, 104/255 )
+		-- createdBy.anchorX=1
+		-- createdBy.anchorY=1
+		-- createdBy:addEventListener("touch",goToNewScene)
+		-- group_thisResult:insert( createdBy )
+
+	end
+
 	return group_thisResult
 	
 end
@@ -487,7 +506,6 @@ end
 local function searchFnc()
 	-- print("searchString",searchString)
 	cancelAllLoad()
-
 	scrollView:deleteAllPost()
 	-- searchString = "c"--test
 	if(searchString~="")then

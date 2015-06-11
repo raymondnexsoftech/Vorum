@@ -268,19 +268,19 @@ local function noticCreation(noticData)
 		end
 	end
 
-	if(isGoPost)then
-		userIconFnc({path = "Image/Notification/postIcon.png", baseDir = system.ResourceDirectory})--temp image
-	else
-		userIconFnc({path = "Image/User/anonymous.png", baseDir = system.ResourceDirectory})--temp image
+	-- if(isGoPost)then
+	-- 	userIconFnc({path = "Image/Notification/postIcon.png", baseDir = system.ResourceDirectory})--temp image
+	-- else
+	userIconFnc({path = "Image/User/anonymous.png", baseDir = system.ResourceDirectory})--temp image
 
-		local userIconInfo = newNetworkFunction.getVorumFile(relatedUser.profile_pic, user_icon_savePath, userIconListener)
-		if ((userIconInfo ~= nil) and (userIconInfo.request == nil)) then
-			userIconFnc(userIconInfo)
-		end
+	local userIconInfo = newNetworkFunction.getVorumFile(relatedUser.profile_pic, user_icon_savePath, userIconListener)
+	if ((userIconInfo ~= nil) and (userIconInfo.request == nil)) then
+		userIconFnc(userIconInfo)
 	end
-	if(isGoPost)then
-		user_icon_background:setFillColor(0,0,0,0.1)
-	elseif(string.upper(tostring(userGender))=="M")then
+	-- end
+	-- if(isGoPost)then
+	-- 	user_icon_background:setFillColor(0,0,0,0.1)
+	if(string.upper(tostring(userGender))=="M")then
 		user_icon_background:setFillColor(unpack(global.maleColor))
 	elseif(string.upper(tostring(userGender))=="F")then
 		user_icon_background:setFillColor(unpack(global.femaleColor))

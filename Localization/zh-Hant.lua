@@ -432,6 +432,8 @@ return {
 					contactEmailSubject = "Vorum App 聯絡我們",
 					contactEmailBody = "Vorum 團隊，你們好，我們聯絡 Vorum 團隊是因為：",
 
+					searchScreen_by = "自 ",
+
 					-- Tag
 					Appraisal = "評核",
 					Anonymous = "匿名",

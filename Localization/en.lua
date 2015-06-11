@@ -427,6 +427,8 @@ return {
 					contactEmailSubject = "Vorum App Contact us",
 					contactEmailBody = "Hi Vorum Team, I am contacting Vorum Team because:",
 
+					searchScreen_by = "by ",
+
 					-- Tag
 					Appraisal = "Appraisal",
 					Anonymous = "Anonymous",
