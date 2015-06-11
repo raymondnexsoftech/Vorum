@@ -573,7 +573,7 @@ function scene:createScene( event )
 	local profile_background_textField_endX = profile_background_textField_beginX+profile_background_textField.width
 	local profile_background_textField_centerY = (profile_background_textField.y+profile_background_textField.height/2)
 	
-	local profile_background_underline = display.newLine(profile_background_textField_beginX,profile_background_textField_centerY,profile_background_textField_endX,profile_background_textField_centerY)
+	local profile_background_underline = display.newLine(profile_background_textField_beginX+121,profile_background_textField_centerY,profile_background_textField_endX,profile_background_textField_centerY)
 	profile_background_underline:setStrokeColor( 204/255, 204/255, 204/255 )
 	profile_background_underline.strokeWidth = 2
 	displayGroup:insert(profile_background_underline)
@@ -582,7 +582,7 @@ function scene:createScene( event )
 	local profile_textField_width = profile_background_textField_width-121-1
 	local profile_textField_height = profile_background_textField_height/2-1
 	--already create
-	profile_textField_name = coronaTextField:new( profile_textField_x, profile_background_textField.y, profile_textField_width, profile_textField_height,displayGroup,"displayGroup" )
+	profile_textField_name = coronaTextField:new( profile_textField_x, profile_background_textField.y + 5, profile_textField_width - 10, profile_textField_height - 10,displayGroup,"displayGroup" )
 	profile_textField_name.anchorX=0
 	profile_textField_name.anchorY=0
 	profile_textField_name:setTopPadding(200)

@@ -408,7 +408,7 @@ function scene:createScene( event )
 	local textField_width = background_textField_width-100-3
 	local textField_height = background_textField_height/2-1
 	
-	textField_username = coronaTextField:new( textField_x, background_textField.y+1, textField_width, textField_height,group_login, "displayGroup" )
+	textField_username = coronaTextField:new( textField_x, background_textField.y+1, textField_width - 10, textField_height,group_login, "displayGroup" )
 	textField_username:setFont("Helvetica",32)
 	textField_username.anchorX=0
 	textField_username.anchorY=0
@@ -419,7 +419,7 @@ function scene:createScene( event )
 	group_login:insert(textField_username)
 	
 	local textField_username_total_height = textField_username.y+textField_username.height
-	textField_password = coronaTextField:new( textField_x, textField_username_total_height, textField_width, textField_height,group_login, "displayGroup" )
+	textField_password = coronaTextField:new( textField_x, textField_username_total_height, textField_width - 10, textField_height,group_login, "displayGroup" )
 	textField_password:setFont("Helvetica",32)
 	textField_password.anchorX=0
 	textField_password.anchorY=0
