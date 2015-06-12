@@ -54,6 +54,7 @@ local goToRegSceneOption =
 
 
 local function responseCodeAlertBox(code)
+	newNetworkFunction.stopShowingSessionExpiredAlert()
 	if(code==14)then -- email still not verified
 		-- print("Not Verified")
 		native.showAlert(localization.getLocalization("loginError_errorTitle"),

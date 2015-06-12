@@ -69,6 +69,8 @@ local goToLoginSceneOption =
     time = 400,
 }
 
+local showSessionExpiredTimer
+
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -215,11 +217,26 @@ local function loginListenerForTokenExpired(event)
 		if (response.code) then
 			loginErrorForAwaitingRequest(event)
 			networkFunction.logout()
-			native.showAlert(localization.getLocalization("login_loginExpiredlogin_loginExpired"), localization.getLocalization("login_loginExpiredPleaseLoginAgain"), {localization.getLocalization("ok")})
+			if (showSessionExpiredTimer) then
+				timer.cancel(showSessionExpiredTimer)
+			end
+			showSessionExpiredTimer = timer.performWithDelay(1, function()
+																	native.showAlert(localization.getLocalization("login_loginExpiredlogin_loginExpired"),
+																		localization.getLocalization("login_loginExpiredPleaseLoginAgain"),
+																		{localization.getLocalization("ok")});
+																	showSessionExpiredTimer = nil
+																end, 1)
 		else
 			sessionToken = response.session
 			runAwaitingRequest()
 		end
+	end
+end
+
+function networkFunction.stopShowingSessionExpiredAlert()
+	if (showSessionExpiredTimer) then
+		timer.cancel(showSessionExpiredTimer)
+		showSessionExpiredTimer = nil
 	end
 end
 
