@@ -393,6 +393,15 @@ local function getNotificationListListener(event)
 			end
 		end
 	end
+	local bottomPadding = display.contentHeight - (scrollView:getPostTotal() * ROW_HEIGHT + header.headerHeight)
+	if(bottomPadding > tabbar.height) then
+		bottomPadding = 0
+	elseif (bottomPadding <= 0) then
+		bottomPadding = tabbar.height
+	else
+		bottomPadding = tabbar.height - bottomPadding
+	end
+	scrollView:getView()._bottomPadding = bottomPadding
 end
 
 local function requestOldPost()
@@ -438,6 +447,7 @@ function scene:createScene( event )
 													width = display.contentWidth,
 													height = display.contentHeight-header.height,
 													topPadding = 0,
+													bottomPadding = 0,
 													refreshHeader = {
 														height = 0,
 														textToPull="",
