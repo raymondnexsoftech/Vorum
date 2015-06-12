@@ -220,7 +220,7 @@ local function noPostShowFnc()
 		parent = noPostGroup,
 		text = localization.getLocalization("noPost"),     
 		x = display.contentCenterX,
-		y = display.contentCenterY-filterOption.height-header.height,
+		y = display.contentCenterY-header.height,
 		width = 0, 
 		height = 0,
 		font = "Helvetica",   
@@ -319,7 +319,27 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headerObjects.title = display.newImage("Image/Header/vorum.png", true)
 	headerObjects.leftButton = headerView.categoryButtonCreation()
 	headerObjects.rightButton = headerView.searchButtonCreation(sceneOptions,nil,headerCreateFnc)
-	
+
+	filterOption = {
+		choices = {localization.getLocalization("vorum_global"),localization.getLocalization("vorum_myCountry")},
+		choicesId = {"global","myCountry"},
+		leftImagePath_isSelected = "Image/Filter/leftSelect.png",
+		leftImagePath_isNotSelected = "Image/Filter/leftNotSelect.png",
+		rightImagePath_isSelected = "Image/Filter/rightSelect.png",
+		rightImagePath_isNotSelected ="Image/Filter/rightNotSelect.png",
+		choicesListener = {touch_changeFilterChoiceFnc,touch_changeFilterChoiceFnc},
+		y = 20,
+		font = "Helvetica",
+		fontSize = 28.06,
+		textColor = { 1, 1, 1},
+		choiceOffset = 2,
+		haveBackground = true,
+		-- default = filterChoice,
+		-- defaultListener = setDefaultFilterFnc,
+	}
+	filterOption = optionModule.new(filterOption)
+	headerObjects.subHeader = filterOption
+
 	header = headTabFnc.getHeader()
 	header.alpha = 1
 	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption, scrollViewToTop)
@@ -364,7 +384,7 @@ function scene:createScene( event )
 													top = 0,
 													width = display.contentWidth,
 													height = display.contentHeight,
-													topPadding = header.headerHeight,
+													topPadding = header.headerHeight + 80,
 													refreshHeader = {
 													height = 0,
 													textToPull="",
@@ -389,24 +409,26 @@ function scene:createScene( event )
 		end
 	end
 	
-	filterOption = {
-		choices = {localization.getLocalization("vorum_global"),localization.getLocalization("vorum_myCountry")},
-		choicesId = {"global","myCountry"},
-		leftImagePath_isSelected = "Image/Filter/leftSelect.png",
-		leftImagePath_isNotSelected = "Image/Filter/leftNotSelect.png",
-		rightImagePath_isSelected = "Image/Filter/rightSelect.png",
-		rightImagePath_isNotSelected ="Image/Filter/rightNotSelect.png",
-		choicesListener = {touch_changeFilterChoiceFnc,touch_changeFilterChoiceFnc},
-		y = 20,
-		font = "Helvetica",
-		fontSize = 28.06,
-		textColor = { 1, 1, 1},
-		choiceOffset = 2,
-		-- default = filterChoice,
-		-- defaultListener = setDefaultFilterFnc,
-	}
-	filterOption = optionModule.new(filterOption)
-	scrollView:setScrollViewHead(filterOption, 100)
+	-- filterOption = {
+	-- 	choices = {localization.getLocalization("vorum_global"),localization.getLocalization("vorum_myCountry")},
+	-- 	choicesId = {"global","myCountry"},
+	-- 	leftImagePath_isSelected = "Image/Filter/leftSelect.png",
+	-- 	leftImagePath_isNotSelected = "Image/Filter/leftNotSelect.png",
+	-- 	rightImagePath_isSelected = "Image/Filter/rightSelect.png",
+	-- 	rightImagePath_isNotSelected ="Image/Filter/rightNotSelect.png",
+	-- 	choicesListener = {touch_changeFilterChoiceFnc,touch_changeFilterChoiceFnc},
+	-- 	y = 20,
+	-- 	font = "Helvetica",
+	-- 	fontSize = 28.06,
+	-- 	textColor = { 1, 1, 1},
+	-- 	choiceOffset = 2,
+	-- 	-- default = filterChoice,
+	-- 	-- defaultListener = setDefaultFilterFnc,
+	-- }
+	-- filterOption = optionModule.new(filterOption)
+	-- scrollView:setScrollViewHead(filterOption, 100)
+	-- filterOption:setDefault(filterChoice,setDefaultFilterFnc)
+
 	filterOption:setDefault(filterChoice,setDefaultFilterFnc)
 
 	sceneGroup:insert(scrollView)

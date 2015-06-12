@@ -188,7 +188,7 @@ local function noPostShowFnc()
 		parent = noPostGroup,
 		text = localization.getLocalization("noPost"),     
 		x = display.contentCenterX,
-		y = display.contentCenterY-filterOption.height-header.height,
+		y = display.contentCenterY-header.height,
 		width = 0, 
 		height = 0,
 		font = "Helvetica",   
@@ -363,6 +363,29 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headerObjects.title:setFillColor( 78/255, 184/255, 229/255)
 	headerObjects.leftButton = nil
 	headerObjects.rightButton = headerView.searchButtonCreation(sceneOptions,nil,headerCreateFnc) 
+
+	filterOption = {
+		choices = {localization.getLocalization("meTab_voted"),localization.getLocalization("meTab_myPost"),localization.getLocalization("meTab_friends")},
+		choicesId = {"voted","myPost","friends"},
+		leftImagePath_isSelected = "Image/Filter/left.png",
+		leftImagePath_isNotSelected = "Image/Filter/background_left.png",
+		rightImagePath_isSelected = "Image/Filter/right.png",
+		rightImagePath_isNotSelected ="Image/Filter/background_right.png",
+		centerImagePath_isSelected = "Image/Filter/center.png",
+		centerImagePath_isNotSelected = "Image/Filter/background_center.png",
+		choicesListener = touch_type_selection,
+		y = 20,
+		font = "Helvetica",
+		fontSize = 28.06,
+		textColor = { 1, 1, 1},
+		choiceOffset = 2,
+		haveBackground = true,
+		-- default = post_filter,
+		-- defaultListener = default_type_selection,
+	}
+	filterOption = optionModule.new(filterOption)
+	headerObjects.subHeader = filterOption
+
 	header = headTabFnc.changeHeaderView(headerObjects,temp_changeHeaderOption,scrollViewToTop)
 	tabbar = headTabFnc.getTabbar()
 	if (tabbar == nil) then
@@ -403,7 +426,7 @@ function scene:createScene( event )
 													top = 0,
 													width = display.contentWidth,
 													height = display.contentHeight,
-													topPadding = header.headerHeight,
+													topPadding = header.headerHeight + 80,
 													refreshHeader = {
 													height = 0,
 													textToPull="",
@@ -428,27 +451,28 @@ function scene:createScene( event )
 		end
 	end
 	
-	filterOption = {
-		choices = {localization.getLocalization("meTab_voted"),localization.getLocalization("meTab_myPost"),localization.getLocalization("meTab_friends")},
-		choicesId = {"voted","myPost","friends"},
-		leftImagePath_isSelected = "Image/Filter/left.png",
-		leftImagePath_isNotSelected = "Image/Filter/background_left.png",
-		rightImagePath_isSelected = "Image/Filter/right.png",
-		rightImagePath_isNotSelected ="Image/Filter/background_right.png",
-		centerImagePath_isSelected = "Image/Filter/center.png",
-		centerImagePath_isNotSelected = "Image/Filter/background_center.png",
-		choicesListener = touch_type_selection,
-		y = 20,
-		font = "Helvetica",
-		fontSize = 28.06,
-		textColor = { 1, 1, 1},
-		choiceOffset = 2,
-		default = post_filter,
-		defaultListener = default_type_selection,
-	}
-	filterOption = optionModule.new(filterOption)
-	scrollView:setScrollViewHead(filterOption, 100)
-	
+	-- filterOption = {
+	-- 	choices = {localization.getLocalization("meTab_voted"),localization.getLocalization("meTab_myPost"),localization.getLocalization("meTab_friends")},
+	-- 	choicesId = {"voted","myPost","friends"},
+	-- 	leftImagePath_isSelected = "Image/Filter/left.png",
+	-- 	leftImagePath_isNotSelected = "Image/Filter/background_left.png",
+	-- 	rightImagePath_isSelected = "Image/Filter/right.png",
+	-- 	rightImagePath_isNotSelected ="Image/Filter/background_right.png",
+	-- 	centerImagePath_isSelected = "Image/Filter/center.png",
+	-- 	centerImagePath_isNotSelected = "Image/Filter/background_center.png",
+	-- 	choicesListener = touch_type_selection,
+	-- 	y = 20,
+	-- 	font = "Helvetica",
+	-- 	fontSize = 28.06,
+	-- 	textColor = { 1, 1, 1},
+	-- 	choiceOffset = 2,
+	-- 	default = post_filter,
+	-- 	defaultListener = default_type_selection,
+	-- }
+	-- filterOption = optionModule.new(filterOption)
+	-- scrollView:setScrollViewHead(filterOption, 100)
+
+	filterOption:setDefault(post_filter,default_type_selection)	
 
 	sceneGroup:insert(scrollView)
 end

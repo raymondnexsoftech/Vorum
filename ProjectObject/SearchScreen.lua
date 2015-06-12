@@ -157,7 +157,7 @@ local function noResultShowFnc()
 		parent = noResultGroup,
 		text = noResultString,     
 		x = display.contentCenterX,
-		y = display.contentCenterY-filterOption.height-header.height,
+		y = display.contentCenterY-header.height,
 		width = 0, 
 		height = 0,
 		font = "Helvetica",   
@@ -672,6 +672,25 @@ function returnGroup.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
 									time = TRANSITION_TIME,
 									transition = easing.outQuad,
 								}
+
+	filterOption = {
+		choices = {localization.getLocalization("search_post"),localization.getLocalization("search_people")},
+		choicesId = {"post","people"},
+		leftImagePath_isSelected = "Image/Filter/leftSelect.png",
+		leftImagePath_isNotSelected = "Image/Filter/leftNotSelect.png",
+		rightImagePath_isSelected = "Image/Filter/rightSelect.png",
+		rightImagePath_isNotSelected = "Image/Filter/rightNotSelect.png",
+		choicesListener = {touch_searchType,touch_searchType},
+		y = 20,
+		font = "Helvetica",
+		fontSize = 28.06,
+		textColor = { 1, 1, 1},
+		choiceOffset = 2,
+		haveBackground = true,
+	}
+	filterOption = optionModule.new(filterOption)
+	headerObjects.subHeader = filterOption
+	
 	header = headTabFnc.changeHeaderView(headerObjects, changeHeaderOption)
 	header:toFront()
 	--
@@ -683,7 +702,7 @@ function returnGroup.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
 													top = 0,
 													width = display.contentWidth,
 													height = display.contentHeight,
-													topPadding = header.headerHeight,
+													topPadding = header.headerHeight + 80,
 													refreshHeader = {
 													height = 0,
 													textToPull="",
@@ -712,23 +731,25 @@ function returnGroup.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
 
 	
 	
-	filterOption = {
-		choices = {localization.getLocalization("search_post"),localization.getLocalization("search_people")},
-		choicesId = {"post","people"},
-		leftImagePath_isSelected = "Image/Filter/leftSelect.png",
-		leftImagePath_isNotSelected = "Image/Filter/leftNotSelect.png",
-		rightImagePath_isSelected = "Image/Filter/rightSelect.png",
-		rightImagePath_isNotSelected = "Image/Filter/rightNotSelect.png",
-		choicesListener = {touch_searchType,touch_searchType},
-		y = 20,
-		font = "Helvetica",
-		fontSize = 28.06,
-		textColor = { 1, 1, 1},
-		choiceOffset = 2,
-	}
-	filterOption = optionModule.new(filterOption)
+	-- filterOption = {
+	-- 	choices = {localization.getLocalization("search_post"),localization.getLocalization("search_people")},
+	-- 	choicesId = {"post","people"},
+	-- 	leftImagePath_isSelected = "Image/Filter/leftSelect.png",
+	-- 	leftImagePath_isNotSelected = "Image/Filter/leftNotSelect.png",
+	-- 	rightImagePath_isSelected = "Image/Filter/rightSelect.png",
+	-- 	rightImagePath_isNotSelected = "Image/Filter/rightNotSelect.png",
+	-- 	choicesListener = {touch_searchType,touch_searchType},
+	-- 	y = 20,
+	-- 	font = "Helvetica",
+	-- 	fontSize = 28.06,
+	-- 	textColor = { 1, 1, 1},
+	-- 	choiceOffset = 2,
+	-- }
+	-- filterOption = optionModule.new(filterOption)
 	
-	scrollView:setScrollViewHead(filterOption, 100)
+	-- scrollView:setScrollViewHead(filterOption, 100)
+	local scrollViewPadding = display.newRect(0, 0, display.contentWidth, 20)
+	scrollView:setScrollViewHead(scrollViewPadding, 20)
 	--------------- search type (post and people) end
 	screenGroup:insert(scrollView)
 	------ set default search type	
