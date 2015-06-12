@@ -131,7 +131,7 @@ return {
 					relationship_addFriend_button = "Add Friend",
 					relationship_unfriend_button = "Unfriend",
 					relationship_pending_button = "Pending",
-					relationship_approval_button = "Approval",
+					relationship_approval_button = "Approve",
 					relationship_reject_button = "Reject",
 					------ setting scene > contact scene
 					contact_headerTitle = "Contact",
@@ -384,6 +384,16 @@ return {
 					-- friend request
 					friendRequest_alreadyRequest = "You are already requested as friend.",
 					friendRequest_alreadyRequest_cancel = "You are already requested as friend. Cancel?",
+					friendRequest_requestSent = "request sent",
+					friendRequest_requestSent_Body = "Your request to \"%s\" has been sent.",
+					friendRequest_requestCancelled = "request cancelled",
+					friendRequest_requestCancelled_Body = "The friend request to \"%s\" has been cancelled.",
+					friendRequest_confirmUnfriend = "Confirm Unfriend",
+					friendRequest_confirmUnfriend_Body = "Do you really want to unfriend with \"%s\"?",
+					friendRequest_confirmReject = "Confirm Reject",
+					friendRequest_confirmReject_Body = "Do you really want to reject the request from \"%s\"?",
+					friendRequest_nowFriend = "You are now friend",
+					friendRequest_nowFriend_Body = "You are now friend with \"%s\".",
 
 					--forgetPassword
 					forgetPasswordErrorTitle_noEmail = "Wrong email",

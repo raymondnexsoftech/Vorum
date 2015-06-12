@@ -388,7 +388,17 @@ return {
 					-- friend request
 					friendRequest_alreadyRequest = "你已經請求成為朋友。",
 					friendRequest_alreadyRequest_cancel = "你已經請求成為朋友。取消？",
-					
+					friendRequest_requestSent = "請求已送出",
+					friendRequest_requestSent_Body = "你向\"%s\"的朋友請求已送出。",
+					friendRequest_requestCancelled = "請求已取消",
+					friendRequest_requestCancelled_Body = "已取消你向\"%s\"的朋友請求。",
+					friendRequest_confirmUnfriend = "確認移除好友",
+					friendRequest_confirmUnfriend_Body = "確認要將\"%s\"移除好友？",
+					friendRequest_confirmReject = "確認拒絕成為朋友",
+					friendRequest_confirmReject_Body = "確認要拒絕\"%s\"的朋友請求？",
+					friendRequest_nowFriend = "已成為朋友",
+					friendRequest_nowFriend_Body = "你與\"%s\"已成為朋友。",
+
 					--forgetPassword
 					forgetPasswordErrorTitle_noEmail = "錯誤的電郵地址",
 					forgetPasswordErrorDesc_noEmail = "請檢查你的電子郵件來是否正確。",

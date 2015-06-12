@@ -219,7 +219,6 @@ onBackButtonPressed = function()
 end
 
 local function createResult(resultData)
-	print("abc",json.encode(resultData))
 
 	local function goToNewScene(event)
 		scrollView:checkFocusToScrollView(event)

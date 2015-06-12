@@ -101,8 +101,20 @@ local function noFnc(event)
 	return true
 end
 
+local function saveRequestStatus(personId, isRequest)
+	local addFriendList = saveData.load(global.addFriendListSavePath)
+
+	if(type(addFriendList)~="table")then
+		addFriendList = {}
+	end
+
+	addFriendList[personId] = isRequest
+
+	saveData.save(global.addFriendListSavePath,addFriendList)
+end
+
 local function changeRelationshiplistener(event)
-	
+
 	if (event.isError) then
 		native.showAlert(localization.getLocalization("networkError_errorTitle"),localization.getLocalization("networkError_networkError"),{localization.getLocalization("ok")})
 	else
@@ -113,49 +125,48 @@ local function changeRelationshiplistener(event)
 
 			response.code = tonumber( response.code )
 
-			if(response.code==37 or response.code==35)then --35 sent, 37 already send
+			if(response.code==37 or response.code==35)then --37 sent, 35 already send
 				-- print("sent request")
-
-				local addFriendList = saveData.load(global.addFriendListSavePath)
-
-				if(type(addFriendList)~="table")then
-					addFriendList = {}
-				end
-
-				addFriendList[personId] = true
-
-				saveData.save(global.addFriendListSavePath,addFriendList)
-
+				saveRequestStatus(personId, true)
 				relationship = "pending"
-			elseif(response.code==50)then
+			elseif((response.code==50) or (response.code==51)) then
+				-- print("unfriend/not friend")
+				saveRequestStatus(personId, false)
 				relationship = "noRelation"
 			elseif(response.code==48 or response.code==40)then
 				-- print("cancel request")
-
-				local addFriendList = saveData.load(global.addFriendListSavePath)
-
-				if(type(addFriendList)~="table")then
-					addFriendList = {}
-				end
-
-				addFriendList[personId] = false
-
-				saveData.save(global.addFriendListSavePath,addFriendList)
-
+				saveRequestStatus(personId, false)
 				relationship = "noRelation"
 
 			elseif(response.code==36)then
-				-- print("addFriedn each other")
+				-- print("addFriend each other")
+				saveRequestStatus(personId, false)
 				relationship = "friend"
 			elseif(response.code==39)then
 				-- print("accept")
+				saveRequestStatus(personId, false)
 				relationship = "friend"
 			elseif(response.code==46)then
 				-- print("reject")
+				saveRequestStatus(personId, false)
 				relationship = "noRelation"
 			end
 			-- print("relationship",relationship)
 			relationshipButtonGeneration()
+			if (response.code == 37) then
+				local msgBody = string.format(localization.getLocalization("friendRequest_requestSent_Body"), text_username.text)
+				native.showAlert(localization.getLocalization("friendRequest_requestSent"),msgBody,{localization.getLocalization("ok")})
+			elseif (response.code == 48) then
+				local msgBody = string.format(localization.getLocalization("friendRequest_requestCancelled_Body"), text_username.text)
+				native.showAlert(localization.getLocalization("friendRequest_requestCancelled"),msgBody,{localization.getLocalization("ok")})
+			-- elseif (response.code == 46) then
+			-- 	-- TODO: rejected
+			elseif ((response.code == 39) or (response.code == 36)) then
+				local msgBody = string.format(localization.getLocalization("friendRequest_nowFriend_Body"), text_username.text)
+				native.showAlert(localization.getLocalization("friendRequest_nowFriend"),msgBody,{localization.getLocalization("ok")})
+			-- elseif (response.code == 50) then
+			-- 	-- TODO: unfriend
+			end
 		end
 	end
 end
@@ -190,7 +201,15 @@ local function unfriendFnc(event)
 			end
 		end
 	elseif ( phase == "ended" or phase == "cancelled" ) then
-		newNetworkFunction.unfriend(requestParams, changeRelationshiplistener)
+		local msgBody = string.format(localization.getLocalization("friendRequest_confirmUnfriend_Body"), text_username.text)
+		native.showAlert(localization.getLocalization("friendRequest_confirmUnfriend"),
+							msgBody,
+							{localization.getLocalization("yes"), localization.getLocalization("no")},
+							function(e)
+								if (e.index == 1) then
+									newNetworkFunction.unfriend(requestParams, changeRelationshiplistener)
+								end
+							end)
 	end
 	return true
 end
@@ -224,7 +243,15 @@ local function rejectFnc(event)
 			end
 		end
 	elseif ( phase == "ended" or phase == "cancelled" ) then
-		newNetworkFunction.rejectFriendRequest(requestParams, changeRelationshiplistener)
+		local msgBody = string.format(localization.getLocalization("friendRequest_confirmReject_Body"), text_username.text)
+		native.showAlert(localization.getLocalization("friendRequest_confirmReject"),
+							msgBody,
+							{localization.getLocalization("yes"), localization.getLocalization("no")},
+							function(e)
+								if (e.index == 1) then
+									newNetworkFunction.rejectFriendRequest(requestParams, changeRelationshiplistener)
+								end
+							end)
 	end
 	return true
 end

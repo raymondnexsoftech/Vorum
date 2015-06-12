@@ -1624,10 +1624,10 @@ function networkFunction.friendRequestAction(params, listener)
 				listener(event)
 			end
 		else
+			local isRunListener = true
 			if (event[1].response) then
 				event[1].response = removeAPNSString(event[1].response)
 			end
-			listener(event)
 			local response = json.decode(event[1].response)
 			if (response) then
 				local code = response.code
@@ -1636,12 +1636,17 @@ function networkFunction.friendRequestAction(params, listener)
 				elseif (code == 36) then		-- "You are friends now"
 					event.isFriend = true
 				elseif (code == 35) then		-- "Friend request already sent"
+					isRunListener = false
 					native.showAlert(localization.getLocalization("friendRequest_alreadyRequest"),
 										localization.getLocalization("friendRequest_alreadyRequest_cancel"),
 										{localization.getLocalization("yes"), localization.getLocalization("no")},
 										function(e)
 											if (e.index == 1) then
 												networkFunction.cancelFriendRequest(params, cancelRequestListener)
+											else
+												if (type(listener) == "function") then
+													listener(event)
+												end
 											end
 										end)
 					return
@@ -1653,7 +1658,7 @@ function networkFunction.friendRequestAction(params, listener)
 			else
 				event.isError = true
 			end
-			if (type(listener) == "function") then
+			if ((type(listener) == "function") and (isRunListener == true)) then
 				listener(event)
 			end
 		end
