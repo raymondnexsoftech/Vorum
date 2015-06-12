@@ -252,7 +252,7 @@ local function create(choiceData)
 	end
 
 	if (choiceData.haveBackground) then
-		local bg = display.newRect(0, displayObjArray.imageIsNotSelected[1].contentHeight * 0.5, display.contentWidth, 100)
+		local bg = display.newRect(0, displayObjArray.imageIsNotSelected[1].contentHeight * 0.5, display.contentWidth, 110)
 		bg.alpha = 0.8
 		bg.anchorX = 0
 		displayReturnGroup:insert(bg)

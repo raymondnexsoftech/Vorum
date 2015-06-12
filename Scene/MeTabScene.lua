@@ -426,7 +426,7 @@ function scene:createScene( event )
 													top = 0,
 													width = display.contentWidth,
 													height = display.contentHeight,
-													topPadding = header.headerHeight + 80,
+													topPadding = header.headerHeight + 85,
 													refreshHeader = {
 													height = 0,
 													textToPull="",
