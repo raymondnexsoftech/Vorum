@@ -195,7 +195,7 @@ local function create(choiceData)
 	displayObjArray.imageIsNotSelected = {}
 	displayObjArray.imageIsSelected = {}
 	displayObjArray.text = {}
-	
+
 	for i = 1, totalChoiceNum do
 		displayObjArray.imageIsNotSelected[i] =  display.newImage( displayObjArray.notSelectedImagePath[i] )
 		displayObjArray.imageIsNotSelected[i].x = displayObjArray.imageX[i]
@@ -250,7 +250,15 @@ local function create(choiceData)
 		displayReturnGroup:insert(displayObjArray.imageIsSelected[i])
 		displayReturnGroup:insert(displayObjArray.text[i])
 	end
-	
+
+	if (choiceData.haveBackground) then
+		local bg = display.newRect(0, displayObjArray.imageIsNotSelected[1].contentHeight * 0.5, display.contentWidth, 100)
+		bg.alpha = 0.8
+		bg.anchorX = 0
+		displayReturnGroup:insert(bg)
+		bg:toBack()
+	end
+
 	displayObjArray.selectedImagePath = nil
 	displayObjArray.notSelectedImagePath = nil
 	displayObjArray.imageX = nil
