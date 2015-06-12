@@ -439,6 +439,11 @@ return {
 
 					searchScreen_by = "by ",
 
+					-- refresh bar
+					textToPull = "Pull to refresh",
+					textToRelease = "Release to reload",
+					loadingText = "Reloading...",
+
 					-- Tag
 					Appraisal = "Appraisal",
 					Anonymous = "Anonymous",

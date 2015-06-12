@@ -444,6 +444,11 @@ return {
 
 					searchScreen_by = "自 ",
 
+					-- refresh bar
+					textToPull = "向下拉準備重新載入",
+					textToRelease = "放手重新載入",
+					loadingText = "重新載入中⋯",
+
 					-- Tag
 					Appraisal = "評核",
 					Anonymous = "匿名",
