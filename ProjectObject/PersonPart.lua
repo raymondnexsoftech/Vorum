@@ -333,29 +333,29 @@ function returnGroup.updateUserData(userProfileData)
 	if(userProfileData.name)then
 		local temp_displayName = userProfileData.name
 		
-		if(string.len(temp_displayName)>10)then
+		-- if(string.len(temp_displayName)>10)then
 		
-			temp_displayName = string.sub(temp_displayName,1,10)
-			local lastSpacePos = nil
-			local temp_lastSpacePos = 0
+		-- 	temp_displayName = string.sub(temp_displayName,1,10)
+		-- 	local lastSpacePos = nil
+		-- 	local temp_lastSpacePos = 0
 			
-			while(not lastSpacePos and temp_lastSpacePos and lastSpacePos==temp_lastSpacePos)do
-				temp_lastSpacePos = string.find(temp_displayName," ",temp_lastSpacePos+1)
+		-- 	while(not lastSpacePos and temp_lastSpacePos and lastSpacePos==temp_lastSpacePos)do
+		-- 		temp_lastSpacePos = string.find(temp_displayName," ",temp_lastSpacePos+1)
 				
-				if(temp_lastSpacePos)then
-					lastSpacePos = temp_lastSpacePos
-				else 
+		-- 		if(temp_lastSpacePos)then
+		-- 			lastSpacePos = temp_lastSpacePos
+		-- 		else 
 					
-					if(not lastSpacePos)then
-						lastSpacePos = 10
-					end
-					break
-				end
+		-- 			if(not lastSpacePos)then
+		-- 				lastSpacePos = 10
+		-- 			end
+		-- 			break
+		-- 		end
 				
-			end
+		-- 	end
 			
-			temp_displayName = string.sub(temp_displayName,1,lastSpacePos)
-		end
+		-- 	temp_displayName = string.sub(temp_displayName,1,lastSpacePos)
+		-- end
 		text_username.text = temp_displayName
 	end
 	if(userProfileData.country)then
@@ -666,8 +666,8 @@ function returnGroup.create(input_personData,input_scrollView)
 		text = "...", -- get data from server
 		x = 158,
 		y = 155,
-		width = 0,
-		height = 0, 
+		width = 130,
+		height = 33, 
 		font = "Helvetica",
 		fontSize=30
 	}
