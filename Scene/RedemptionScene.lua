@@ -334,11 +334,13 @@ function scene:createScene( event )
 						scrollView:addNewPost(couponGroup, postHeight)
 					end
 				end
-				local bottomPadding = (couponTotal * postHeight) - (display.contentHeight - tabbar.height)
-				if(bottomPadding <= 0) then
+				local bottomPadding = display.contentHeight - (couponTotal * postHeight + header.headerHeight)
+				if(bottomPadding > tabbar.height) then
 					bottomPadding = 0
-				elseif (bottomPadding > header.headerHeight) then
-					bottomPadding = header.headerHeight
+				elseif (bottomPadding <= 0) then
+					bottomPadding = tabbar.height
+				else
+					bottomPadding = tabbar.height - bottomPadding
 				end
 				scrollViewGroup._bottomPadding = bottomPadding
 			end
