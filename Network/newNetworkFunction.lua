@@ -602,6 +602,10 @@ function networkFunction.updateFbLoginData(params)
 	end
 end
 
+function networkFunction.clearFbLoginData()
+	userFbLoginData = nil
+end
+
 -- Facebook Login
 function networkFunction.fbLogin(fbToken, listener)
 	if (awaitingRequest) then

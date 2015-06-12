@@ -129,7 +129,8 @@ function returnGroup.login(userData,input_boolean_isNotice,isComeFromLoginPage)
 	password = userData.password
 
 	newNetworkFunction.updateLoginData(userData)
-	
+	newNetworkFunction.clearFbLoginData()
+
 	newNetworkFunction.getUserData(getUserDataListener)
 
 end
