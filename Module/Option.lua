@@ -252,11 +252,16 @@ local function create(choiceData)
 	end
 
 	if (choiceData.haveBackground) then
-		local bg = display.newRect(0, displayObjArray.imageIsNotSelected[1].contentHeight * 0.5, display.contentWidth, 110)
-		bg.alpha = 0.8
+		local groupHeight = displayObjArray.imageIsNotSelected[1].contentHeight
+		local bg = display.newRect(0, groupHeight * 0.5, display.contentWidth, groupHeight + choiceData.y * 2)
 		bg.anchorX = 0
 		displayReturnGroup:insert(bg)
 		bg:toBack()
+		local shadow = display.newImage("Image/filter/filterShadow.png", true)
+		shadow.anchorX = 0
+		shadow.anchorY = 0
+		shadow.y = bg.y + bg.contentHeight * 0.5
+		displayReturnGroup:insert(shadow)
 	end
 
 	displayObjArray.selectedImagePath = nil
