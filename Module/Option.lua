@@ -257,7 +257,7 @@ local function create(choiceData)
 		bg.anchorX = 0
 		displayReturnGroup:insert(bg)
 		bg:toBack()
-		local shadow = display.newImage("Image/filter/filterShadow.png", true)
+		local shadow = display.newImage("Image/Filter/filterShadow.png", true)
 		shadow.anchorX = 0
 		shadow.anchorY = 0
 		shadow.y = bg.y + bg.contentHeight * 0.5
