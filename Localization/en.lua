@@ -292,7 +292,7 @@ return {
 					inputCheck_agreeCheckBox = "Yuu must agree the terms and conditions.",
 					inputQuestion_limited = "Question input limited to 30 characters.",
 					inputDesc_limited = "Description input limited to 100 characters.",
-					inputPost2Desc_limited = "Description input limited to 30 characters.",
+					inputPost2Desc_limited = "Description input %s limited to 30 characters.",
 					inputCouponTitle_limited = "Coupon description input limited to 200 characters.",
 
 					post3CouponDataNotEnoughTitle = "Coupon data is not enough",

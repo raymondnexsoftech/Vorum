@@ -223,19 +223,19 @@ local function post1_textListener( event )
 		
     elseif ( event.phase == "editing" ) then
 	
-		textLen = string.len(post1_title_textField.text)
-		if(textLen>30)then
-			limitedText = string.sub(post1_title_textField.text,1,30)
-			post1_title_textField.text = limitedText
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputQuestion_limited"),{localization.getLocalization("ok")})
-		end
-		textLen = string.len(post1_description_textField.text)
-		if(textLen>100)then
-			limitedText = string.sub(post1_description_textField.text,1,100)
-			event.text = limitedText
-			post1_description_textField.text = limitedText                                  
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputDesc_limited"),{localization.getLocalization("ok")})
-		end
+		-- textLen = string.len(post1_title_textField.text)
+		-- if(textLen>30)then
+		-- 	limitedText = string.sub(post1_title_textField.text,1,30)
+		-- 	post1_title_textField.text = limitedText
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputQuestion_limited"),{localization.getLocalization("ok")})
+		-- end
+		-- textLen = string.len(post1_description_textField.text)
+		-- if(textLen>100)then
+		-- 	limitedText = string.sub(post1_description_textField.text,1,100)
+		-- 	event.text = limitedText
+		-- 	post1_description_textField.text = limitedText                                  
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputDesc_limited"),{localization.getLocalization("ok")})
+		-- end
 		local emojiTrimmedString, isEmojiDetected = stringUtility.trimEmoji(event.target.text)
 		if (isEmojiDetected) then
 			event.target.text = emojiTrimmedString
@@ -246,8 +246,17 @@ end
 
 local function goToPost2Fnc(event)
 	if(event.phase=="ended"or event.phase=="cancelled")then
-		if(string.len(post1_title_textField.text)==0)then
+		local post1TitleStrLen = string.len(post1_title_textField.text)
+		if (post1TitleStrLen == 0)then
 			native.showAlert(localization.getLocalization("necessaryInput_title"),localization.getLocalization("necessaryInput_post1Title"),{localization.getLocalization("ok")})
+			return false
+		elseif (post1TitleStrLen > 30) then
+			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputQuestion_limited"),{localization.getLocalization("ok")})
+			return false
+		end
+		post1DescStrLen = string.len(post1_description_textField.text)
+		if(post1DescStrLen > 100)then
+			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputDesc_limited"),{localization.getLocalization("ok")})
 			return false
 		end
 		curSceneNum = scrollViewForMultiScene.go(goNextSceneOption)
@@ -567,32 +576,32 @@ local function post2_textListener( event )
 		
     elseif ( event.phase == "editing" ) then
 		local emojiTrimmedString, isEmojiDetected = stringUtility.trimEmoji(event.target.text)
-		local textALen = string.len(choiceData[1].textField.text)
-		local textBLen = string.len(choiceData[2].textField.text)
-		local textCLen = string.len(choiceData[3].textField.text)
-		local textDLen = string.len(choiceData[4].textField.text)
+		-- local textALen = string.len(choiceData[1].textField.text)
+		-- local textBLen = string.len(choiceData[2].textField.text)
+		-- local textCLen = string.len(choiceData[3].textField.text)
+		-- local textDLen = string.len(choiceData[4].textField.text)
 		
-		if(textALen>30)then
-			limitedText = string.sub(choiceData[1].textField.text,1,30)
-			event.text = limitedText
-			choiceData[1].textField.text = limitedText                                  
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
-		elseif(textBLen>30)then
-			limitedText = string.sub(choiceData[2].textField.text,1,30)
-			event.text = limitedText
-			choiceData[2].textField.text = limitedText                                  
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
-		elseif(textCLen>30)then
-			limitedText = string.sub(choiceData[3].textField.text,1,30)
-			event.text = limitedText
-			choiceData[3].textField.text = limitedText                                  
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
-		elseif(textDLen>30)then
-			limitedText = string.sub(choiceData[4].textField.text,1,30)
-			event.text = limitedText
-			choiceData[4].textField.text = limitedText                                  
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
-		end
+		-- if(textALen>30)then
+		-- 	limitedText = string.sub(choiceData[1].textField.text,1,30)
+		-- 	event.text = limitedText
+		-- 	choiceData[1].textField.text = limitedText                                  
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
+		-- elseif(textBLen>30)then
+		-- 	limitedText = string.sub(choiceData[2].textField.text,1,30)
+		-- 	event.text = limitedText
+		-- 	choiceData[2].textField.text = limitedText                                  
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
+		-- elseif(textCLen>30)then
+		-- 	limitedText = string.sub(choiceData[3].textField.text,1,30)
+		-- 	event.text = limitedText
+		-- 	choiceData[3].textField.text = limitedText                                  
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
+		-- elseif(textDLen>30)then
+		-- 	limitedText = string.sub(choiceData[4].textField.text,1,30)
+		-- 	event.text = limitedText
+		-- 	choiceData[4].textField.text = limitedText                                  
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputPost2Desc_limited"),{localization.getLocalization("ok")})
+		-- end
 		
 		if (isEmojiDetected) then
 			event.target.text = emojiTrimmedString
@@ -613,6 +622,27 @@ local function goToPost3Fnc(event)
 		local choiceCDesc = choiceData[3].textField.text
 		local choiceDDesc = choiceData[4].textField.text
 		
+		local choiceLenErrorStr = ""
+		if (string.len(choiceADesc) > 30) then
+			choiceLenErrorStr = choiceLenErrorStr .. ", A"
+		end
+		if (string.len(choiceBDesc) > 30) then
+			choiceLenErrorStr = choiceLenErrorStr .. ", B"
+		end
+		if (string.len(choiceCDesc) > 30) then
+			choiceLenErrorStr = choiceLenErrorStr .. ", C"
+		end
+		if (string.len(choiceDDesc) > 30) then
+			choiceLenErrorStr = choiceLenErrorStr .. ", D"
+		end
+		choiceLenErrorStr = string.gsub(choiceLenErrorStr, "^(, )", "")
+
+		if (choiceLenErrorStr ~= "") then
+			local alertMsg = string.format(localization.getLocalization("inputPost2Desc_limited"), choiceLenErrorStr)
+			native.showAlert(localization.getLocalization("inputCheck_title"), alertMsg, {localization.getLocalization("ok")})
+			return false
+		end
+
 		if(not choiceAImagePath and string.len(choiceADesc)==0)then
 			native.showAlert(localization.getLocalization("necessaryInput_title"),localization.getLocalization("necessaryInput_post2ChoiceA"),{localization.getLocalization("ok")})
 			return false
@@ -887,6 +917,12 @@ local function newPostFnc(event)
 		if ((post3_title_textField ~= nil) and (string.len(post3_title_textField.text) > 0)) then
 			isCouponTextExist = true
 		end
+
+		if(string.len(post3_title_textField.text)>200)then
+			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputCouponTitle_limited"),{localization.getLocalization("ok")})
+			return false
+		end
+
 		if (addPhotoFnc.getImageRealPath(global.post3CouponImage)) then
 			if (not(isCouponTextExist)) then
 				native.showAlert(localization.getLocalization("post3CouponDataNotEnoughTitle"),localization.getLocalization("post3CouponDataNotEnough"),{localization.getLocalization("ok")})	
@@ -1074,11 +1110,11 @@ local function post3_textListener( event )
 		post3_title_textField.text = stringUtility.trimStringSpace(post3_title_textField.text)
     elseif ( event.phase == "editing" ) then
 
-		if(string.len(post3_title_textField.text)>200)then
-			local limitedText = string.sub(post3_title_textField.text,1,200)
-			post3_title_textField.text = limitedText
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputCouponTitle_limited"),{localization.getLocalization("ok")})
-		end
+		-- if(string.len(post3_title_textField.text)>200)then
+		-- 	local limitedText = string.sub(post3_title_textField.text,1,200)
+		-- 	post3_title_textField.text = limitedText
+		-- 	native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputCouponTitle_limited"),{localization.getLocalization("ok")})
+		-- end
 
 		local emojiTrimmedString, isEmojiDetected = stringUtility.trimEmoji(event.target.text)
 		if (isEmojiDetected) then

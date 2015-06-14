@@ -297,7 +297,7 @@ return {
 					inputCheck_agreeCheckBox = "你必須同意服務條款和私隱政策。",
 					inputQuestion_limited = "問題描述不能超過30個字符。",
 					inputDesc_limited = "描述不能超過100個字符。",
-					inputPost2Desc_limited = "選項描述不能超過30個字符。",
+					inputPost2Desc_limited = "選項描述 %s 不能超過30個字符。",
 					inputCouponTitle_limited = "優惠劵描述不能超過200個字符。",
 					post3CouponDataNotEnoughTitle = "優惠劵資料不足",
 					post3CouponDataNotEnough = "優惠劵資料需同時要有描述與圖片。",
