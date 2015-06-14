@@ -130,21 +130,48 @@ function scene:createScene( event )
 	scrollViewBorder.strokeWidth = 4
 	sceneGroup:insert(scrollViewBorder)
 	
-	content = {
-		text = CONTENT_TEXT, 
-		x = 0,
-		y = 10,
-		width = scrollView.width,
-		height = 0, 
-		font = "Helvetica",
-		fontSize= 30,
-	}
-	content = display.newText(content)
-	content.anchorX=0
-	content.anchorY=0
-	content:setFillColor(0,0,0)
-	scrollView:insert(content)
+	-- content = {
+	-- 	text = CONTENT_TEXT, 
+	-- 	x = 0,
+	-- 	y = 10,
+	-- 	width = scrollView.width,
+	-- 	height = 0, 
+	-- 	font = "Helvetica",
+	-- 	fontSize= 30,
+	-- }
+	-- content = display.newText(content)
+	-- content.anchorX=0
+	-- content.anchorY=0
+	-- content:setFillColor(0,0,0)
+	-- scrollView:insert(content)
 	
+	local lastTextObj
+	local tcSideOffset = 10
+	local fontSize = 30
+	local curY = 10
+	local strIdx = 1
+	local curStr = localization.getLocalization("TermsAndCondition", strIdx)
+	while ((curStr ~= nil) and (curStr ~= "")) do
+		local aboutTextOption = {
+									text = curStr,
+									x = tcSideOffset,
+									y = curY,
+									width = scrollView.width - (tcSideOffset * 2),
+									height = 0, 
+									font = "Helvetica",
+									fontSize = fontSize
+								}
+		lastTextObj = display.newText(aboutTextOption)
+		lastTextObj:setFillColor(0)
+		lastTextObj.anchorX=0
+		lastTextObj.anchorY=0
+		scrollView:insert(lastTextObj)
+		strIdx = strIdx + 1
+		curStr = localization.getLocalization("TermsAndCondition", strIdx)
+		curY = curY + lastTextObj.contentHeight + fontSize
+	end
+	scrollView:setScrollHeight(lastTextObj.y + lastTextObj.contentHeight)
+
 	confirmButton = widget.newButton
 	{
 		label = localization.getLocalization("register_confirm"),
