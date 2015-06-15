@@ -142,6 +142,7 @@ if ( launchArgs and launchArgs.notification ) then
 	
 end
 
-
+local pick = require("ProjectObject.DayPickerWheel")
+pick.show(100, 200, 300, 300)
 
 storyboard.gotoScene("Scene.LoadingScene")
