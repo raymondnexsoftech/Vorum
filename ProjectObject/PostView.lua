@@ -1895,7 +1895,7 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 				end
 			end
 			-- local postDetailPicInfo = networkFile.getDownloadFile(postData.post_pic, postPicPath, postPicListener)
-			local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, nil)
+			local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, postPicListener)
 			if (postDetailPicInfo ~= nil) then
 				if (postDetailPicInfo.request) then
 					postDetailPicPlaceHolderBg = display.newRect(detailsGroup, display.contentWidth * 0.5, postDetailPicPosY, POST_DETAIL_PIC_WIDTH, POST_DETAIL_PIC_HEIGHT)
