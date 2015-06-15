@@ -32,6 +32,7 @@ local saveData = require( "SaveData.SaveData" )
 local networkFunction = require("Network.newNetworkFunction")
 local stringUtility = require("SystemUtility.StringUtility")
 local networkFile = require("Network.NetworkFile")
+local customSpinner = require("ProjectObject.CustomSpinner")
 
 ---------------------------------------------------------------
 -- Constants
@@ -252,7 +253,8 @@ function scene:createScene( event )
 						local couponPlaceHolderBg = display.newRect(couponGroup, COUPON_X, COUPON_Y, COUPON_WIDTH, COUPON_HEIGHT)
 						couponPlaceHolderBg:setFillColor(0.7)
 						if ((type(curCouponData.pic) == "string") and (curCouponData.pic ~= "")) then
-							local couponPlaceHolderPic = display.newImage(couponGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", true)
+							local couponPlaceHolderPic = customSpinner.new(300)
+							couponGroup:insert(couponPlaceHolderPic)
 							couponPlaceHolderPic.xScale = 100 / couponPlaceHolderPic.width
 							couponPlaceHolderPic.yScale = 100 / couponPlaceHolderPic.height
 							couponPlaceHolderPic.x = COUPON_X

@@ -26,6 +26,7 @@ local networkFunction = require("Network.newNetworkFunction")
 local localization = require("Localization.Localization")
 local global = require( "GlobalVar.global" )
 local networkFile = require("Network.NetworkFile")
+local customSpinner = require("ProjectObject.CustomSpinner")
 
 ---------------------------------------------------------------
 -- Constants
@@ -164,7 +165,9 @@ function scene:createScene( event )
 			local couponPlaceHolderY = couponPlaceHolderHeight * 0.5 + 10
 			local couponPlaceHolderBg = display.newRect(couponPicGroup, couponPlaceHolderX, couponPlaceHolderY, couponPlaceHolderWidth, couponPlaceHolderHeight)
 			couponPlaceHolderBg:setFillColor(0.7)
-			local couponPlaceHolderPic = display.newImage(couponPicGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", true)
+			-- local couponPlaceHolderPic = display.newImage(couponPicGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", true)
+			local couponPlaceHolderPic = customSpinner.new(300)
+			couponPicGroup:insert(couponPlaceHolderPic)
 			couponPlaceHolderPic.x = couponPlaceHolderX
 			couponPlaceHolderPic.y = couponPlaceHolderY
 			local function insertCouponPic(fileInfo)
