@@ -26,6 +26,7 @@ local imageViewer = require("Module.ImageViewer")
 local pieChart = require("ProjectObject.PieChart")
 local fncForLocalization = require("Misc.FncForLocalization")
 local global = require("GlobalVar.global")
+local customSpinner = require("ProjectObject.CustomSpinner")
 
 ---------------------------------------------------------------
 -- Constants
@@ -1077,7 +1078,9 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 			picPlaceHolderBg = insertBgToChoiceGroup(curChoiceGroup, choicePicSizeAndPos, picPlaceHolderBg)
 			-- picPlaceHolderBg = display.newRect(curChoiceGroup, 0, 0, CHOICE_PIC_WIDTH, choiceDisplayHeight)
 			-- picPlaceHolderBg:setFillColor(187/255, 235/255, 255/255)
-			local picPlaceHolderFg = display.newImageRect(curChoiceGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 100, 100)
+			local picPlaceHolderFg = customSpinner.new(100)
+			curChoiceGroup:insert(picPlaceHolderFg)
+			-- local picPlaceHolderFg = display.newImageRect(curChoiceGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 100, 100)
 			local function insertChoicePic(fileInfo)
 				if (curChoiceGroup.parent) then
 					choicePic = display.newImage(fileInfo.path, fileInfo.baseDir, true)
@@ -1254,7 +1257,8 @@ local function createPostChoiceScrollView(parentScrollView, postData, userId, is
 		local largePicX = display.contentWidth * 0.5 + (CHOICE_PIC_OBJECT_WIDTH + CHOICE_PIC_OBJECT_SPACE) * i
 		local largePicY = HOR_SCROLL_HEIGHT * 0.5
 		local largePicPlaceHolderBg = display.newRect(largePicX, largePicY, CHOICE_PIC_OBJECT_WIDTH, CHOICE_PIC_LARGE_HEIGHT)
-		local largePicPlaceHolderFg = display.newImageRect(LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 250, 250)
+		local largePicPlaceHolderFg = customSpinner.new(250)
+		-- local largePicPlaceHolderFg = display.newImageRect(LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 250, 250)
 		largePicPlaceHolderFg.x = largePicX
 		largePicPlaceHolderFg.y = largePicY
 		largePicPlaceHolderBg:addEventListener("touch", largePicTouchListener)
@@ -1891,15 +1895,16 @@ function postView.newPost(parentScrollView, userId, postData, ...)
 				end
 			end
 			-- local postDetailPicInfo = networkFile.getDownloadFile(postData.post_pic, postPicPath, postPicListener)
-			local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, postPicListener)
+			local postDetailPicInfo = networkFunction.getVorumFile(postData.post_pic, postPicPath, nil)
 			if (postDetailPicInfo ~= nil) then
 				if (postDetailPicInfo.request) then
 					postDetailPicPlaceHolderBg = display.newRect(detailsGroup, display.contentWidth * 0.5, postDetailPicPosY, POST_DETAIL_PIC_WIDTH, POST_DETAIL_PIC_HEIGHT)
 					postDetailPicPlaceHolderBg.anchorY = 0
-					postDetailPicPlaceHolderFg = display.newImageRect(detailsGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 200, 200)
+					postDetailPicPlaceHolderFg = customSpinner.new(200)
+					detailsGroup:insert(postDetailPicPlaceHolderFg)
+					-- postDetailPicPlaceHolderFg = display.newImageRect(detailsGroup, LOCAL_SETTINGS.RES_DIR .. "placeholder.png", 200, 200)
 					postDetailPicPlaceHolderFg.x = display.contentWidth * 0.5
-					postDetailPicPlaceHolderFg.y = detailObjectY + (postDetailPicPlaceHolderBg.contentHeight - postDetailPicPlaceHolderFg.contentHeight) * 0.5 + 20
-					postDetailPicPlaceHolderFg.anchorY = 0
+					postDetailPicPlaceHolderFg.y = detailObjectY + (postDetailPicPlaceHolderBg.contentHeight) * 0.5 + 20
 					postDetailPicPlaceHolderBg:addEventListener("touch", postDetailPicTouchListener)
 				else
 					detailPic = insertPostDetailPic(detailsGroup, postDetailPicInfo, postDetailPicPosY, postDetailPicPlaceHolderBg, postDetailPicPlaceHolderFg, postDetailPicTouchListener)
