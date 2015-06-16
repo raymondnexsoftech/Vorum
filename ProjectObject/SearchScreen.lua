@@ -248,17 +248,17 @@ local function createResult(resultData)
 		searchStringLen = string.len(resultData.text)
 		searchStringPosBegin,searchStringPosEnd = string.find(string.lower(resultData.text),string.lower(searchString))
 		if(searchStringPosBegin)then
-			if(searchStringLen>COMMENT_DISPLAYLENGTH)then
-				if((searchStringPosEnd-searchStringPosBegin)>=COMMENT_DISPLAYLENGTH)then
-					temp_comment = string.sub(resultData.text,searchStringPosBegin,searchStringPosEnd)
-				else
-					local searchStringLengthOffset = COMMENT_DISPLAYLENGTH-searchStringLen
-					local searchStringLengthOffsetOver2 = math.floor(searchStringLengthOffset/2)
-					temp_comment = string.sub(resultData.text,searchStringPosBegin-searchStringLengthOffsetOver2,searchStringPosEnd+searchStringLengthOffsetOver2)
-				end
-			else
+			-- if(searchStringLen>COMMENT_DISPLAYLENGTH)then
+			-- 	if((searchStringPosEnd-searchStringPosBegin)>=COMMENT_DISPLAYLENGTH)then
+			-- 		temp_comment = string.sub(resultData.text,searchStringPosBegin,searchStringPosEnd)
+			-- 	else
+			-- 		local searchStringLengthOffset = COMMENT_DISPLAYLENGTH-searchStringLen
+			-- 		local searchStringLengthOffsetOver2 = math.floor(searchStringLengthOffset/2)
+			-- 		temp_comment = string.sub(resultData.text,searchStringPosBegin-searchStringLengthOffsetOver2,searchStringPosEnd+searchStringLengthOffsetOver2)
+			-- 	end
+			-- else
 				temp_comment = resultData.text
-			end
+			-- end
 		end
 	end
 	
