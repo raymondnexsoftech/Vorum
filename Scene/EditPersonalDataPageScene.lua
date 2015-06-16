@@ -147,8 +147,12 @@ local function birthdaySelection(event)
 		local date = {
 			startDate = {day = 1, month = 1, year = 1900},
 			endDate = {day = tonumber(currentTime.day), month = tonumber(currentTime.month), year = tonumber(currentTime.year)},
-			default = {day = day, month = month, year = year},
 		}
+		if ((year ~= nil) and (month ~= nil) and (day ~= nil)) then
+			date.default = {day = day, month = month, year = year}
+		else
+			date.default = {day = tonumber(currentTime.day), month = tonumber(currentTime.month), year = tonumber(currentTime.year)}
+		end
 		dayPickerWheel.show(0, display.contentHeight-300, display.contentWidth, 300, date, changedListener)
 	end
 	return true
@@ -854,11 +858,15 @@ function scene:createScene( event )
 		if(userData.name)then
 			profile_textField_name.text = userData.name
 		end
+		year, month, day = nil, nil, nil
 		if(userData.dateOfBirth)then
-			year = tonumber(string.sub(userData.dateOfBirth,1,4))
-			month = tonumber(string.sub(userData.dateOfBirth,6,7))
-			day = tonumber(string.sub(userData.dateOfBirth,9,10))
-			text_birthday.text = day.."/"..tostring(MONTH_ARRAY[month]).."/"..year
+			local tempYear = tonumber(string.sub(userData.dateOfBirth,1,4))
+			local tempMonth = tonumber(string.sub(userData.dateOfBirth,6,7))
+			local tempDay = tonumber(string.sub(userData.dateOfBirth,9,10))
+			if ((tempYear > 0) and (tempMonth > 0) and (tempDay > 0)) then
+				year, month, day = tempYear, tempMonth, tempDay
+				text_birthday.text = day.."/"..tostring(MONTH_ARRAY[month]).."/"..year
+			end
 		end
 	end
 	
