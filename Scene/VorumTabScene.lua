@@ -356,7 +356,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 	backSceneHeaderOption = nil
 
 	if (scrollView) then
-		filterOption:setDefault(filterChoice,setDefaultFilterFnc)
+		filterOption:setDefault(filterChoice)
 	end
 end
 -- Create the scene

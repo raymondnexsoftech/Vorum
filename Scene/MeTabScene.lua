@@ -399,7 +399,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 	backSceneHeaderOption = nil
 
 	if (scrollView) then
-		filterOption:setDefault(post_filter,default_type_selection)
+		filterOption:setDefault(post_filter)
 	end
 end
 
