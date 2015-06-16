@@ -397,6 +397,10 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headTabFnc.setDisplayStatus(true)
 
 	backSceneHeaderOption = nil
+
+	if (scrollView) then
+		filterOption:setDefault(post_filter,default_type_selection)
+	end
 end
 
 -- Create the scene
@@ -474,7 +478,7 @@ function scene:createScene( event )
 	-- filterOption = optionModule.new(filterOption)
 	-- scrollView:setScrollViewHead(filterOption, 100)
 
-	filterOption:setDefault(post_filter,default_type_selection)	
+	filterOption:setDefault(post_filter,default_type_selection)
 
 	sceneGroup:insert(scrollView)
 end

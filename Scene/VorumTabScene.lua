@@ -354,6 +354,10 @@ local function headerCreateFnc(newChangeHeaderOption)
 	headTabFnc.setDisplayStatus(true)
 	
 	backSceneHeaderOption = nil
+
+	if (scrollView) then
+		filterOption:setDefault(filterChoice,setDefaultFilterFnc)
+	end
 end
 -- Create the scene
 function scene:createScene( event )
