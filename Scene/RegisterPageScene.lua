@@ -129,7 +129,7 @@ local function birthdaySelection(event)
 			endDate = {day = tonumber(currentTime.day), month = tonumber(currentTime.month), year = tonumber(currentTime.year)},
 			default = {day = day, month = month, year = year},
 		}
-		dayPickerWheel.show(0, display.contentHeight-300, display.contentWidth, 300, date, changedListener)
+		dayPickerWheel.show(20, display.contentHeight-300-20, display.contentWidth - 40, 300, date, changedListener)
 	end
 
 	return true
