@@ -205,8 +205,9 @@ local function createPostTextField(parent, parentType, detail, y, userInputListe
 		y = detail.y
 	end
 	local newTextFieldBg = createPostTextFieldBg(parent, detail, y)
-	local newTextField = coronaTextField:new(detail.x + 10, y + 10, detail.width - 20, detail.height - 20, parent, parentType)
+	local newTextField = coronaTextField.new(detail.x, y, detail.width, detail.height, parent, parentType)
 	newTextField:setFont("Helvetica", 32)
+	newTextField:setBackgroundColor(0, 0, 0, 0)
 	newTextField:setTopPadding(200)
 	newTextField.hasBackground = false
 	newTextField:setUserInputListener(userInputListener)
@@ -418,7 +419,7 @@ local function createScene1()
 	-- title_background_textField.anchorY=0
 	-- displayGroup:insert(title_background_textField)
 	
-	-- post1_title_textField = coronaTextField:new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
+	-- post1_title_textField = coronaTextField.new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
 	-- post1_title_textField:setFont("Helvetica",32)
 	-- post1_title_textField:setTopPadding(200)
 	-- post1_title_textField.hasBackground = false
@@ -440,7 +441,7 @@ local function createScene1()
 	-- description_background_textField.anchorY=0
 	-- displayGroup:insert(description_background_textField)
 	
-	-- post1_description_textField = coronaTextField:new( description_background_textField.x, description_background_textField.y, description_background_textField.width, description_background_textField.height,displayGroup,"displayGroup" )
+	-- post1_description_textField = coronaTextField.new( description_background_textField.x, description_background_textField.y, description_background_textField.width, description_background_textField.height,displayGroup,"displayGroup" )
 	-- post1_description_textField:setTopPadding(200)
 	-- post1_description_textField:setFont("Helvetica",32)
 	-- post1_description_textField.hasBackground = false
@@ -462,7 +463,7 @@ local function createScene1()
 	-- linkToSite_background_textField.anchorY=0
 	-- displayGroup:insert(linkToSite_background_textField)
 	
-	-- post1_linkToSite_textField = coronaTextField:new( linkToSite_background_textField.x, linkToSite_background_textField.y, linkToSite_background_textField.width, linkToSite_background_textField.height,displayGroup,"displayGroup" )
+	-- post1_linkToSite_textField = coronaTextField.new( linkToSite_background_textField.x, linkToSite_background_textField.y, linkToSite_background_textField.width, linkToSite_background_textField.height,displayGroup,"displayGroup" )
 	-- post1_linkToSite_textField:setFont("Helvetica",32)
 	-- post1_linkToSite_textField:setTopPadding(200)
 	-- post1_linkToSite_textField.hasBackground = false
@@ -786,7 +787,7 @@ local function createScene2()
 		-- background_textField.anchorY=0
 		-- displayGroup:insert(background_textField)	
 		
-		-- choiceData[i].textField = coronaTextField:new( background_textField.x, background_textField.y, background_textField.width, background_textField.height,displayGroup,"displayGroup" )
+		-- choiceData[i].textField = coronaTextField.new( background_textField.x, background_textField.y, background_textField.width, background_textField.height,displayGroup,"displayGroup" )
 		-- choiceData[i].textField.anchorX=0
 		-- choiceData[i].textField.anchorY=0
 		-- choiceData[i].textField:setTopPadding(200)
@@ -1377,7 +1378,7 @@ local function createScene3()
 		-- title_background_textField.anchorY=0
 		-- displayGroup:insert(title_background_textField)
 		
-		-- post3_title_textField = coronaTextField:new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
+		-- post3_title_textField = coronaTextField.new( title_background_textField.x, title_background_textField.y, title_background_textField.width, title_background_textField.height,displayGroup,"displayGroup" )
 		-- post3_title_textField:setTopPadding(200)
 		-- post3_title_textField:setFont("Helvetica",32)
 		-- post3_title_textField:setPlaceHolderText(localization.getLocalization("post3_title"))

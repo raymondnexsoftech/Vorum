@@ -643,9 +643,9 @@ function returnGroup.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
 	
 
 	local textFieldWidth = 386
-	local textFieldHeight = 50
+	local textFieldHeight = 60
 	
-	searchTextField = coronaTextField:new((display.contentWidth - textFieldWidth) * 0.5, 200, textFieldWidth, textFieldHeight)
+	searchTextField = coronaTextField.new((display.contentWidth - textFieldWidth) * 0.5, 200, textFieldWidth, textFieldHeight)
 	searchTextField:setFont("Helvetica",32)
 
 	searchTextField:setUserInputListener(searchTextListener)

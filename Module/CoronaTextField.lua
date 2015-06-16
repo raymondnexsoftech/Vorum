@@ -1,76 +1,194 @@
 ---------------------------------------------------------------
 -- CoronaTextField.lua
 --
--- Text field for corona
+-- Text field for corona (V2.0)
 ---------------------------------------------------------------
+
+-- uncomment the below code to get the directory of the file
+--local resDir = (...):match("(.-)[^%.]+$")
+
+-- Local Constant Setting
+local LOCAL_SETTINGS = {
+						RES_DIR = "",					-- Common resource directory for scene
+						DOC_DIR = "",					-- Common document directory for scene
+						}
 
 ---------------------------------------------------------------
 -- Require Parts
 ---------------------------------------------------------------
+require ( "SystemUtility.Debug" )
 
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
+local SCREEN_WIDTH_FOR_SETTING = 320
+local IS_RESCALE_FOR_SCREEN = true
+
+local INPUTFIELD_TO_TOP_SPACE = 100
+local INPUTFIELD_TO_EDGE_SPACE = 100
+local IPHONE_SIM_KEYBOARD_HEIGHT = 216
+local IPHONE_SIM_CANDIDATE_HEIGHT = 36
+local DISPLAY_TEXT_PADDING = 5
+local CORNER_RADIUS = 5
+
+-- DO NOT EDIT THE FOLLOWING CONSTANTS UNTIL YOU KNOW THE MEANING
+if (IS_RESCALE_FOR_SCREEN) then
+	local rescaleScale = display.contentWidth / SCREEN_WIDTH_FOR_SETTING
+	INPUTFIELD_TO_TOP_SPACE = INPUTFIELD_TO_TOP_SPACE * rescaleScale
+	INPUTFIELD_TO_EDGE_SPACE = INPUTFIELD_TO_EDGE_SPACE * rescaleScale
+	IPHONE_SIM_KEYBOARD_HEIGHT = IPHONE_SIM_KEYBOARD_HEIGHT * rescaleScale
+	IPHONE_SIM_CANDIDATE_HEIGHT = IPHONE_SIM_CANDIDATE_HEIGHT * rescaleScale
+	DISPLAY_TEXT_PADDING = DISPLAY_TEXT_PADDING * rescaleScale
+	CORNER_RADIUS = CORNER_RADIUS * rescaleScale
+end
+local DEVICE_PLATFORM = system.getInfo("platformName")
+local DEVICE_ENVIRONMENT = system.getInfo("environment")
+local IS_TEXTFIELD_NEED_PADDING = ((DEVICE_PLATFORM == "iPhone OS") or (DEVICE_ENVIRONMENT == "simulator"))
 local DEFAULT_FONT = native.systemFont
 local DEFAULT_SIZE = 16
 local DEFAULT_TEXT_COLOR = {0, 0, 0, 1}
-local INPUTFIELD_TO_TOP_SPACE = 20
-local INPUTFIELD_TO_EDGE_SPACE = 20
 local TRANSITION_TIME = 200
-local TRANSITION_ON_COMPLETE_TIME = TRANSITION_TIME + 10
-local IPHONE_SIM_KEYBOARD_HEIGHT = 216
-local IPHONE_SIM_CANDIDATE_HEIGHT = 36
 local IPHONE_SIM_KEYBOARD_TRANS_TIME = 200
 
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
-local simulatedKeyboard = nil
-local simulatedCandidate = nil
-
 local activeTextFieldBaseGroup = nil
 
+local textFieldParentResetTimer
+
+local screenMask
+local disableMaskTouch = true
+
+local curParent
+local curParentOrigX
+local curParentOrigY
+local curParentLastX
+local curParentLastY
+
+local simulatedKeyboard
+local simulatedKeyboardTransition
+local simulatedCandidate
+local simulatedCandidateTransition
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
-local updatePlaceHolderVisible
-local setInputFieldProperty
-local updateDisplayText
-local remakeDisplayText
-local textFieldLoseFocus
-local createInputField
-local destroyInputField
-local copyTable
-local parentTransition
-local backButtonTouchListener
-local textFieldEndEditing
 local screenMaskTouchListener
 local textFieldUserInputListener
-local textFieldTouchListener
-local getFocusTransitionCompleteHandler
-local lossFocusTransitionCompleteHandler
-local showSimulatedKeyboard
-local afterHideKeyboardListener
-local afterHideCandidateListener
-local hideSimulatedKeyboard
+local destroyInputField
 
 ---------------------------------------------------------------
 -- Functions
 ---------------------------------------------------------------
-local CoronaTextField = {}
+local coronaTextField = {}
 
+local function copyTable(origTable)
+	local newTable
+	if (type(origTable) == "table") then
+		newTable = {}
+		for k, v in pairs(origTable) do
+			newTable[k] = copyTable(v)
+		end
+	else
+		newTable = origTable
+	end
+	return newTable
+end
+
+local function stopSimulatedKeyboardTransition()
+	if (simulatedKeyboardTransition) then
+		transition.cancel(simulatedKeyboardTransition)
+		simulatedKeyboardTransition = nil
+	end
+	if (simulatedCandidateTransition) then
+		transition.cancel(simulatedCandidateTransition)
+		simulatedCandidateTransition = nil
+	end
+end
+
+local function showSimulatedKeyboard()
+	if (DEVICE_ENVIRONMENT == "simulator") then
+		stopSimulatedKeyboardTransition()
+		if (simulatedKeyboard == nil) then
+			simulatedKeyboard = display.newRect(display.contentWidth * 0.5, display.contentHeight + IPHONE_SIM_CANDIDATE_HEIGHT + (IPHONE_SIM_KEYBOARD_HEIGHT * 0.5
+				), display.contentWidth, IPHONE_SIM_KEYBOARD_HEIGHT)
+			simulatedKeyboard:setFillColor(0.5, 0.5, 0.5, 1)
+		end
+		if (simulatedCandidate == nil) then
+			simulatedCandidate = display.newRect(display.contentWidth * 0.5, display.contentHeight + (IPHONE_SIM_CANDIDATE_HEIGHT * 0.5), display.contentWidth, IPHONE_SIM_CANDIDATE_HEIGHT)
+			simulatedCandidate:setFillColor(0.5, 0.5, 0.5, 0.5)
+		end
+		simulatedKeyboardTransition = transition.to(simulatedKeyboard, {y = display.contentHeight - (IPHONE_SIM_KEYBOARD_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME})
+		simulatedCandidateTransition = transition.to(simulatedCandidate, {y = display.contentHeight - IPHONE_SIM_KEYBOARD_HEIGHT - (IPHONE_SIM_CANDIDATE_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME})
+	end
+end
+
+local function afterHideKeyboardListener(obj)
+	display.remove(simulatedKeyboard)
+	simulatedKeyboard = nil
+end
+
+local function afterHideCandidateListener(obj)
+	display.remove(simulatedCandidate)
+	simulatedCandidate = nil
+end
+
+local function hideSimulatedKeyboard()
+	stopSimulatedKeyboardTransition()
+	if (simulatedKeyboard) then
+		simulatedKeyboardTransition = transition.to(simulatedKeyboard, {y = display.contentHeight + IPHONE_SIM_CANDIDATE_HEIGHT + (IPHONE_SIM_KEYBOARD_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME, onComplete = afterHideKeyboardListener})
+	end
+	if (simulatedCandidate) then
+		simulatedCandidateTransition = transition.to(simulatedCandidate, {y = display.contentHeight + (IPHONE_SIM_CANDIDATE_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME, onComplete = afterHideCandidateListener})
+	end
+end
 
 local function getTextViewWordHeight(baseGroup)
 	local testText = "Ag"
-	local textView = display.newText(testText,-1000,-1000,0,0)
+	local textView = display.newText(testText, -1000, -1000, 0, 0, baseGroup._font, baseGroup._size)
 	textView.size = baseGroup._size
 	local wordHeight = textView.height
-	display:remove(textView)
+	display.remove(textView)
 	textView = nil
 	return wordHeight
 end
 
-updatePlaceHolderVisible = function(baseGroup)
+local function checkParentType(parent)
+	if (type(parent) ~= "table") then
+		return nil
+	elseif (parent._widgetType) then
+		return parent._widgetType		-- "scrollView", "tableView"
+	else
+		return "displayGroup"			-- Assume not the others
+	end
+end
+
+local function stopResetTimer()
+	if (textFieldParentResetTimer) then
+		timer.cancel(textFieldParentResetTimer)
+		textFieldParentResetTimer = nil
+	end
+end
+
+local function backButtonTouchListener(event)
+	if ((event.phase == "down") and (event.keyName == "back")) then
+		textFieldEndEditing()
+		-- destroyInputField(activeTextFieldBaseGroup)
+	end
+end
+
+local function createTouchMask()
+	if (screenMask == nil) then
+		screenMask = display.newRect(display.contentWidth * 0.5, display.contentHeight * 0.5, display.contentWidth, display.contentHeight)
+		screenMask.alpha = 0
+		screenMask.isHitTestable = true
+		screenMask:addEventListener("touch", screenMaskTouchListener)
+	 	activeTextFieldBaseGroup = baseGroup
+	 	Runtime:addEventListener("key", backButtonTouchListener)
+	end
+end
+
+local function updatePlaceHolderVisiblility(baseGroup)
 	if (baseGroup.placeHolder) then
 		if (baseGroup.inputField) then
 			baseGroup.placeHolder.isVisible = false
@@ -84,124 +202,49 @@ updatePlaceHolderVisible = function(baseGroup)
 	end
 end
 
-updateDisplayText = function(baseGroup)
-	if (baseGroup.isSecure == true) then
-		local textLen = 0
-		if (baseGroup._text) then
-			textLen = string.len(baseGroup._text)
-		end
-		local newText = ""
-		for i = 1, textLen do
-			newText = newText .. "*"
-		end
-		baseGroup.displayText.text = newText
-	else
-		baseGroup.displayText.text = baseGroup._text
-	end
---	baseGroup.displayText:setReferencePoint(display.TopRightReferencePoint)
-	baseGroup.displayText.anchorY = 0.5
-	baseGroup.displayText.y = baseGroup.textFieldBg.height * 0.5
-	if (baseGroup._align == "right") then
-		baseGroup.displayText.anchorX = 1
-		baseGroup.displayText.x = baseGroup.textFieldBg.width
-	elseif (baseGroup.align == "center") then
-		baseGroup.displayText.anchorX = 0.5
-		baseGroup.displayText.x = baseGroup.textFieldBg.width * 0.5
-	else
-		baseGroup.displayText.anchorX = 0
-		baseGroup.displayText.x = 0
-	end
-	updatePlaceHolderVisible(baseGroup)
-end
-
-remakeDisplayText = function(baseGroup)
-	if (baseGroup.displayText ~= nil) then
-		-- baseGroup.displayText:removeEventListener("touch", textFieldTouchListener)
-		baseGroup.displayText:removeSelf()
-		baseGroup.displayText = nil
-	end
-	local wordHeight = getTextViewWordHeight(baseGroup)
-	local TextOptions =
-	{
-	    text = baseGroup._text,
-	    x = 0,
-	    y = 0,
-	    width = baseGroup.textFieldBg.width,
-	    height = wordHeight,
-	    font = baseGroup._font,
-	    fontSize = baseGroup._size,
-	    align = baseGroup._align,
-	}
-	baseGroup.displayText = display.newText( TextOptions )
-	-- baseGroup.displayText = display.newText(baseGroup._text, 0, 0, baseGroup.textFieldBg.width, baseGroup._size + 3, baseGroup._font, baseGroup._size)
-
-	baseGroup.displayText.baseGroup = baseGroup
-	if (baseGroup.inputField ~= nil) then
-		baseGroup.displayText.isVisible = false
-	end
-	if (baseGroup.fillColor ~= nil) then
-		baseGroup.displayText:setFillColor(baseGroup.fillColor[1], baseGroup.fillColor[2], baseGroup.fillColor[3], baseGroup.fillColor[4])
-	end
-	baseGroup:insert(baseGroup.displayText)
-	updateDisplayText(baseGroup)
-	-- baseGroup.displayText:addEventListener("touch", textFieldTouchListener)
-end
-
-setInputFieldProperty = function(baseGroup, property)
+local function setInputFieldProperty(baseGroup, property)
 	local _property = "_" .. property
 	if (baseGroup[_property] ~= nil) then
 		baseGroup.inputField[property] = baseGroup[_property]
 	end
 end
 
-textFieldLoseFocus = function(baseGroup)
-	if (baseGroup.parentForShifting ~= nil) then
-		if ((baseGroup.parentOffsetX ~= 0) or (baseGroup.parentOffsetY ~= 0)) then
-			if (baseGroup.parentType == "scrollView") then
-				local scrollViewX, scrollViewY = baseGroup.parentForShifting:getContentPosition()
-				if (baseGroup.parentForShifting._view._height - baseGroup.parentForShifting._view._scrollHeight > scrollViewY) then
-					scrollViewY = baseGroup.parentForShifting._view._height - baseGroup.parentForShifting._view._scrollHeight
+local function parentReturnTransition(listener)
+	if (curParent ~= nil) then
+		if ((curParent.x ~= curParentOrigX) or (curParent.y ~= curParentOrigY)) then
+			local curParentType = checkParentType(curParent)
+			if (curParentType == "scrollView") then
+				local scrollViewX, scrollViewY = curParent:getContentPosition()
+				local scrollViewGroup = curParent:getView()
+				if (scrollViewGroup._height - scrollViewGroup._scrollHeight > scrollViewY) then
+					scrollViewY = scrollViewGroup._height - scrollViewGroup._scrollHeight
 				end
-				baseGroup.parentForShifting:scrollToPosition{y = scrollViewY, time = TRANSITION_TIME}
-				timer.performWithDelay( TRANSITION_ON_COMPLETE_TIME, lossFocusTransitionCompleteHandler(baseGroup) )					
-			elseif (baseGroup.parentType == "displayGroup") then
-				transition.to(baseGroup.parentForShifting, {y = baseGroup.parentForShifting.y - baseGroup.parentOffsetY, time = TRANSITION_TIME})
-				timer.performWithDelay( TRANSITION_ON_COMPLETE_TIME, lossFocusTransitionCompleteHandler(baseGroup) )					
-			else
-				destroyInputField(baseGroup)
+				curParent:scrollToPosition{y = scrollViewY, time = TRANSITION_TIME, onComplete = listener}
+			elseif (curParentType == "tableView") then
+				-- TODO: table view reset
+			elseif (curParentType == "displayGroup") then
+				transition.to(curParent, {y = curParentOrigY, time = TRANSITION_TIME, transition = easing.outSine, onComplete = listener})
 			end
-			baseGroup.parentOffsetX = 0
-			baseGroup.parentOffsetY = 0
-		else
-			destroyInputField(baseGroup)
 		end
-	else
-		destroyInputField(baseGroup)
+		curParentOrigX = 0
+		curParentOrigY = 0
+		curParent =  nil
+	elseif (type(listener) == "function") then
+		listener()
 	end
-	baseGroup.parentOffsetY = 0
 end
 
-createInputField = function(baseGroup)
-	if (baseGroup.screenMask == nil) then
-		baseGroup.screenMask = display.newRect(display.contentWidth * 0.5, display.contentHeight * 0.5, display.contentWidth, display.contentHeight)
-		baseGroup.screenMask.baseGroup = baseGroup
-		baseGroup.screenMask:setFillColor(0, 0, 0, 0.01)
-		baseGroup.screenMask:addEventListener("touch", screenMaskTouchListener)
-	 	activeTextFieldBaseGroup = baseGroup
-	 	Runtime:addEventListener("key", backButtonTouchListener)
-	end
+local function createInputField(baseGroup)
+	createTouchMask()
+	disableMaskTouch = false
 	if (baseGroup.inputField == nil) then
 		baseGroup.displayText.isVisible = false
 		local textFieldContentX, textFieldContentY = baseGroup.textFieldBg:localToContent( 0, 0 )
-		textFieldContentX = textFieldContentX + baseGroup.parentOffsetX
-		textFieldContentY = textFieldContentY + baseGroup.parentOffsetY
-		baseGroup.parentOffsetX = baseGroup.parentOffsetX + baseGroup.prevOffsetX
-		baseGroup.parentOffsetY = baseGroup.parentOffsetY + baseGroup.prevOffsetY
-		baseGroup.prevOffsetX = 0
-		baseGroup.prevOffsetY = 0
 		local textFieldWidth, textFieldHeight = baseGroup.textFieldBg.width, baseGroup.textFieldBg.height
-		textFieldContentX = textFieldContentX
-		textFieldContentY = textFieldContentY
+		if (IS_TEXTFIELD_NEED_PADDING) then
+			textFieldWidth = textFieldWidth - DISPLAY_TEXT_PADDING * 2
+			textFieldHeight = textFieldHeight - DISPLAY_TEXT_PADDING * 2
+		end
 		baseGroup.inputField = native.newTextField(textFieldContentX, textFieldContentY, textFieldWidth, textFieldHeight)
 		baseGroup.inputField.hasBackground = false
 		setInputFieldProperty(baseGroup, "align")
@@ -209,11 +252,11 @@ createInputField = function(baseGroup)
 		setInputFieldProperty(baseGroup, "isSecure")
 		baseGroup.inputField.font = native.newFont(baseGroup._font)
 		setInputFieldProperty(baseGroup, "size")
-		baseGroup.inputField.isFontSizeScaled = true
 		setInputFieldProperty(baseGroup, "text")
+		baseGroup.inputField.isFontSizeScaled = true
 		if (baseGroup.fillColor ~= nil) then
---			baseGroup.inputField:setTextColor(baseGroup.fillColor[1], baseGroup.fillColor[2], baseGroup.fillColor[3], baseGroup.fillColor[4])
-			baseGroup.inputField:setTextColor(baseGroup.fillColor[1] * 255, baseGroup.fillColor[2] * 255, baseGroup.fillColor[3] * 255, baseGroup.fillColor[4] * 255)
+			baseGroup.inputField:setTextColor(unpack(baseGroup.fillColor))
+			-- baseGroup.inputField:setTextColor(baseGroup.fillColor[1] * 255, baseGroup.fillColor[2] * 255, baseGroup.fillColor[3] * 255, baseGroup.fillColor[4] * 255)
 		end
 		if (baseGroup.returnKey ~= nil) then
 			baseGroup.inputField:setReturnKey(baseGroup.returnKey)
@@ -221,135 +264,122 @@ createInputField = function(baseGroup)
 		baseGroup.inputField.baseGroup = baseGroup
 		baseGroup.inputField:addEventListener("userInput", textFieldUserInputListener)
 		native.setKeyboardFocus(baseGroup.inputField)
+		showSimulatedKeyboard()
 	end
-	updatePlaceHolderVisible(baseGroup)
-	showSimulatedKeyboard()
+	activeTextFieldBaseGroup = baseGroup
+	updatePlaceHolderVisiblility(baseGroup)
 end
 
-destroyInputField = function(baseGroup)
-	if (baseGroup.screenMask) then
-		baseGroup.screenMask:removeEventListener("touch", screenMaskTouchListener)
-	 	activeTextFieldBaseGroup = nil
-	 	Runtime:removeEventListener( "key", backButtonTouchListener )
-		baseGroup.screenMask:removeSelf()
-		baseGroup.screenMask = nil
-	end
-	if (baseGroup.inputField ~= nil) then
-		baseGroup.inputField.isVisible = false
-		baseGroup._text = baseGroup.inputField.text
-		baseGroup.inputField:removeEventListener("userInput", textFieldUserInputListener)
-		baseGroup.inputField:removeSelf()
-		baseGroup.inputField = nil
-		baseGroup.displayText.isVisible = true
-		updateDisplayText(baseGroup)
-	end
-	native.setKeyboardFocus(nil)
-	hideSimulatedKeyboard()
-end
-
-copyTable = function(origTable)
-	local newTable
-	if (type(origTable) == "table") then
-		newTable = {}
-		for k, v in pairs(origTable) do
-			newTable[k] = copyTable(origTable[k])
-		end
-	else
-		newTable = origTable
-	end
-	return newTable
-end
-
-parentTransition = function(baseGroup, prevOffsetX, prevOffsetY)
-	baseGroup.prevOffsetX = prevOffsetX
-	baseGroup.prevOffsetY = prevOffsetY
-	if (baseGroup.parentType == "custom") then
-		-- Bypass the "createInputField" and let user call "enableInput" manually
-	elseif (baseGroup.parentForShifting ~= nil) then
-		local textFieldScreenPosX, textFieldScreenPosY = baseGroup.textFieldBg:localToContent( 0, 0 )
-		baseGroup.parentOffsetX = 0
-		baseGroup.parentOffsetY = baseGroup.topPadding - textFieldScreenPosY + (baseGroup.textFieldBg.height * 0.5)
-		if (baseGroup.parentOffsetY > 0) then
-			baseGroup.parentOffsetY = 0
-		end
-		if (baseGroup.parentType == "scrollView") then
-			local scrollViewX, scrollViewY = baseGroup.parentForShifting:getContentPosition()
-			local newScrollX = scrollViewX
-			local newScrollY = scrollViewY
-			if (baseGroup.parentForShifting._view._isHorizontalScrollingDisabled == false) then
-				if ((textFieldScreenPosX - (baseGroup.textFieldBg.width * 0.5) < 0)
-					or (baseGroup.textFieldBg.width + baseGroup.edgePadding * 2 > display.contentWidth)) then
-					baseGroup.parentOffsetX = baseGroup.edgePadding - textFieldScreenPosX + (baseGroup.textFieldBg.width * 0.5)
-				elseif (textFieldScreenPosX + (baseGroup.textFieldBg.width * 0.5) > display.contentWidth) then
-					baseGroup.parentOffsetX = display.contentWidth - baseGroup.edgePadding - textFieldScreenPosX - (baseGroup.textFieldBg.width * 0.5)
-				end
-				newScrollX = scrollViewX + baseGroup.parentOffsetX
-				if (newScrollX > 0) then
-					newScrollX = 0
-					baseGroup.parentOffsetX = newScrollX - scrollViewX
-				elseif (baseGroup.parentForShifting._view._width - baseGroup.parentForShifting._view._scrollWidth > newScrollX) then
-					newScrollX = baseGroup.parentForShifting._view._width - baseGroup.parentForShifting._view._scrollWidth
-					baseGroup.parentOffsetX = newScrollX - scrollViewX
-				end
+local function updateDisplayText(baseGroup)
+	if (baseGroup) then
+		if (baseGroup.isSecure == true) then
+			local textLen = 0
+			if (baseGroup._text) then
+				textLen = string.len(baseGroup._text)
 			end
-			if (baseGroup.parentForShifting._view._isVerticalScrollingDisabled == false) then
-				newScrollY = scrollViewY + baseGroup.parentOffsetY
-				if (newScrollY > 0) then
-					newScrollY = 0
-					baseGroup.parentOffsetY = newScrollY - baseGroup.parentOffsetY
-				end
-			else
-				baseGroup.parentOffsetY = 0
+			local newText = ""
+			for i = 1, textLen do
+				newText = newText .. "*"
 			end
-			if ((baseGroup.parentOffsetX ~= 0) or (baseGroup.parentOffsetY ~= 0)) then
-				baseGroup.parentForShifting:scrollToPosition{x = newScrollX, y = newScrollY, time = TRANSITION_TIME}
-				timer.performWithDelay( TRANSITION_ON_COMPLETE_TIME, getFocusTransitionCompleteHandler(baseGroup) )					
-			else
-				createInputField(baseGroup)
-			end
-		elseif (baseGroup.parentType == "displayGroup") then
-			if (baseGroup.parentOffsetY > 0) then
-				baseGroup.parentOffsetY = 0
-			end
-			if (baseGroup.parentOffsetY ~= 0) then
-				transition.to(baseGroup.parentForShifting, {y = baseGroup.parentForShifting.y + baseGroup.parentOffsetY, time = TRANSITION_TIME})
-				timer.performWithDelay( TRANSITION_ON_COMPLETE_TIME, getFocusTransitionCompleteHandler(baseGroup) )					
-			else
-				createInputField(baseGroup)
-			end
+			baseGroup.displayText.text = newText
 		else
-			createInputField(baseGroup)
+			baseGroup.displayText.text = baseGroup._text
 		end
-	else
-		createInputField(baseGroup)
+		-- baseGroup.displayText.anchorY = 0.5
+		-- baseGroup.displayText.y = baseGroup.textFieldBg.height * 0.5
+		-- if (baseGroup._align == "right") then
+		-- 	baseGroup.displayText.anchorX = 1
+		-- 	baseGroup.displayText.x = baseGroup.textFieldBg.width
+		-- elseif (baseGroup.align == "center") then
+		-- 	baseGroup.displayText.anchorX = 0.5
+		-- 	baseGroup.displayText.x = baseGroup.textFieldBg.width * 0.5
+		-- else
+		-- 	baseGroup.displayText.anchorX = 0
+		-- 	baseGroup.displayText.x = 0
+		-- end
+		updatePlaceHolderVisiblility(baseGroup)
 	end
 end
 
-backButtonTouchListener = function(event)
-	if ((event.phase == "down") and (event.keyName == "back")) then
-		textFieldEndEditing(activeTextFieldBaseGroup)
-		-- destroyInputField(activeTextFieldBaseGroup)
+local function remakeDisplayText(baseGroup)
+	if (baseGroup.displayText ~= nil) then
+		display.remove(baseGroup.displayText)
+		baseGroup.displayText = nil
+	end
+	local wordHeight = getTextViewWordHeight(baseGroup)
+	local textOptions =
+	{
+	    text = baseGroup._text,
+	    x = DISPLAY_TEXT_PADDING,
+	    y = DISPLAY_TEXT_PADDING,
+	    width = baseGroup.textFieldBg.width - (DISPLAY_TEXT_PADDING * 2),
+	    height = wordHeight,
+	    font = baseGroup._font,
+	    fontSize = baseGroup._size,
+	    align = baseGroup._align,
+	}
+	baseGroup.displayText = display.newText( textOptions )
+	baseGroup.displayText.anchorX = 0
+	baseGroup.displayText.anchorY = 0
+	-- baseGroup.displayText = display.newText(baseGroup._text, 0, 0, baseGroup.textFieldBg.width, baseGroup._size + 3, baseGroup._font, baseGroup._size)
+
+	baseGroup.displayText.baseGroup = baseGroup
+	if (baseGroup.inputField ~= nil) then
+		baseGroup.displayText.isVisible = false
+	end
+	if (baseGroup.fillColor ~= nil) then
+		baseGroup.displayText:setFillColor(unpack(baseGroup.fillColor))
+	end
+	baseGroup:insert(baseGroup.displayText)
+	updateDisplayText(baseGroup)
+end
+
+destroyInputField = function()
+	if (activeTextFieldBaseGroup) then
+		if (screenMask) then
+		 	Runtime:removeEventListener("key", backButtonTouchListener)
+			display.remove(screenMask)
+			screenMask = nil
+		end
+		if (activeTextFieldBaseGroup.inputField ~= nil) then
+			activeTextFieldBaseGroup.inputField.isVisible = false
+			activeTextFieldBaseGroup._text = activeTextFieldBaseGroup.inputField.text
+			activeTextFieldBaseGroup.inputField:removeEventListener("userInput", textFieldUserInputListener)
+			display.remove(activeTextFieldBaseGroup.inputField)
+			activeTextFieldBaseGroup.inputField = nil
+			activeTextFieldBaseGroup.displayText.isVisible = true
+			updateDisplayText(activeTextFieldBaseGroup)
+		end
+	 	activeTextFieldBaseGroup = nil
+		native.setKeyboardFocus(nil)
+		hideSimulatedKeyboard()
 	end
 end
 
-textFieldEndEditing = function(baseGroup)
-	if (baseGroup.userInputListener ~= nil) then
-		baseGroup._text = baseGroup.inputField.text
-		local userInputEvent = {
-								name = "userInput",
-								target = baseGroup.inputField,
-								phase = "ended"
-								}
-		baseGroup.userInputListener(userInputEvent)
+local function textFieldLoseFocus()
+	destroyInputField()
+	parentReturnTransition()
+end
+
+local function textFieldEndEditing()
+	if (activeTextFieldBaseGroup) then
+		if (activeTextFieldBaseGroup.userInputListener ~= nil) then
+			activeTextFieldBaseGroup._text = activeTextFieldBaseGroup.inputField.text
+			local userInputEvent = {
+									name = "userInput",
+									target = activeTextFieldBaseGroup.inputField,
+									phase = "ended"
+									}
+			activeTextFieldBaseGroup.userInputListener(userInputEvent)
+		end
+		textFieldLoseFocus()
 	end
-	textFieldLoseFocus(baseGroup)
 end
 
 screenMaskTouchListener = function(event)
-	if (event.phase == "ended") then
-		textFieldEndEditing(event.target.baseGroup)
+	if (event.phase == "began") then
+		textFieldParentResetTimer = timer.performWithDelay(1, textFieldEndEditing, 1)
 	end
-	return true
 end
 
 textFieldUserInputListener = function(event)
@@ -358,103 +388,194 @@ textFieldUserInputListener = function(event)
 	if (event.phase == "editing") then
 	elseif (event.phase == "ended") then
 		baseGroup._text = baseGroup.inputField.text
-		isLoseFocus = true
+		-- isLoseFocus = true
 	elseif (event.phase == "submitted") then
 		baseGroup._text = baseGroup.inputField.text
-		if (baseGroup.nextTextField) then
-			if ((baseGroup.jumpNextCallback == nil) or (baseGroup.jumpNextCallback(baseGroup))) then
-				destroyInputField(baseGroup)
-				parentTransition(baseGroup.nextTextField, baseGroup.parentOffsetX, baseGroup.parentOffsetY)
-				baseGroup.parentOffsetX = 0
-				baseGroup.parentOffsetY = 0
+		if ((baseGroup.jumpNextCallback == nil) or (baseGroup.jumpNextCallback(baseGroup))) then
+			if (baseGroup.nextTextField) then
+				baseGroup.nextTextField:enterEditMode()
+			else
+				isLoseFocus = true
 			end
-		else
-			isLoseFocus = true
 		end
-    end
+		-- if (baseGroup.nextTextField) then
+		-- 	if ((baseGroup.jumpNextCallback == nil) or (baseGroup.jumpNextCallback(baseGroup))) then
+		-- 		-- destroyInputField(baseGroup)
+		-- 		-- parentTransition(baseGroup.nextTextField, baseGroup.parentOffsetX, baseGroup.parentOffsetY)
+		-- 		-- baseGroup.parentOffsetX = 0
+		-- 		-- baseGroup.parentOffsetY = 0
+		-- 		baseGroup.nextTextField:enterEditMode()
+		-- 	end
+		-- else
+		-- 	isLoseFocus = true
+		-- end
+	end
 	if (baseGroup.userInputListener ~= nil) then
 		baseGroup.userInputListener(event)
 	end
 	if (isLoseFocus) then
-		textFieldLoseFocus(baseGroup)
+		textFieldLoseFocus()
 	end
 end
 
-textFieldTouchListener = function(event)
-	local baseGroup = event.target.baseGroup
+local function parentTransitionCompleteListener(baseGroup)
+	return function()
+				createInputField(baseGroup)
+			end
+end
+
+local function parentTransition(baseGroup)
+	local isCreateTextFieldNow = false
+	if (baseGroup.parentForShifting ~= nil) then
+		if (curParent ~= baseGroup.parentForShifting) then
+			curParent = baseGroup.parentForShifting
+			curParentOrigX = curParent.x
+			curParentOrigY = curParent.y
+			curParentLastX = nil
+			curParentLastY = nil
+		end
+		local textFieldScreenPosX, textFieldScreenPosY = baseGroup.textFieldBg:localToContent(0, 0)
+		local parentOffsetX = 0
+		local parentOffsetY = baseGroup.topPadding - textFieldScreenPosY + (baseGroup.textFieldBg.height * 0.5)
+		-- if (parentOffsetY > 0) then
+		-- 	parentOffsetY = 0
+		-- end
+		local parentType = checkParentType(baseGroup.parentForShifting)
+		if (parentType == "scrollView") then
+			local scrollViewX, scrollViewY = baseGroup.parentForShifting:getContentPosition()
+			local scrollViewGroup = baseGroup.parentForShifting:getView()
+			local newScrollX = scrollViewX
+			local newScrollY = scrollViewY
+			if (scrollViewGroup._isHorizontalScrollingDisabled ~= true) then
+				if ((textFieldScreenPosX - (baseGroup.textFieldBg.width * 0.5) < 0)
+					or (baseGroup.textFieldBg.width + baseGroup.edgePadding * 2 > display.contentWidth)) then
+					parentOffsetX = baseGroup.edgePadding - textFieldScreenPosX + (baseGroup.textFieldBg.width * 0.5)
+				elseif (textFieldScreenPosX + (baseGroup.textFieldBg.width * 0.5) > display.contentWidth) then
+					parentOffsetX = display.contentWidth - baseGroup.edgePadding - textFieldScreenPosX - (baseGroup.textFieldBg.width * 0.5)
+				end
+				if (curParentLastX) then
+					newScrollX = curParentLastX + parentOffsetX
+				else
+					newScrollX = scrollViewX + parentOffsetX
+				end
+				if (newScrollX > 0) then
+					newScrollX = 0
+					parentOffsetX = newScrollX - scrollViewX
+				elseif (scrollViewGroup._width - scrollViewGroup._scrollWidth > newScrollX) then
+					newScrollX = scrollViewGroup._width - scrollViewGroup._scrollWidth
+					parentOffsetX = newScrollX - scrollViewX
+				end
+			end
+			if (scrollViewGroup._isVerticalScrollingDisabled ~= true) then
+				if (curParentLastY) then
+					newScrollY = curParentLastY + parentOffsetY
+				else
+					newScrollY = scrollViewY + parentOffsetY
+				end
+				if (newScrollY > 0) then
+					newScrollY = 0
+					parentOffsetY = newScrollY - parentOffsetY
+				end
+			else
+				parentOffsetY = 0
+			end
+			curParentLastX = newScrollX
+			curParentLastY = newScrollY
+			if ((parentOffsetX ~= 0) or (parentOffsetY ~= 0)) then
+				local onScrollCompleteListener = parentTransitionCompleteListener(baseGroup)
+				baseGroup.parentForShifting:scrollToPosition{x = newScrollX, y = newScrollY, time = TRANSITION_TIME, onComplete = onScrollCompleteListener}
+			else
+				isCreateTextFieldNow = true
+			end
+		elseif (parentType == "tableView") then
+			-- TODO: table view moving
+		elseif (parentType == "displayGroup") then
+			if (parentOffsetY > 0) then
+				parentOffsetY = 0
+			end
+			if (parentOffsetY ~= 0) then
+				curParentLastX = 0
+				curParentLastY = baseGroup.parentForShifting.y + parentOffsetY
+				local onTransitionCompleteListener = parentTransitionCompleteListener(baseGroup)
+				transition.to(baseGroup.parentForShifting, {y = baseGroup.parentForShifting.y + parentOffsetY, time = TRANSITION_TIME, transition = easing.outSine, onComplete = onTransitionCompleteListener})
+			else
+				isCreateTextFieldNow = true
+			end
+		else
+			isCreateTextFieldNow = true
+		end
+	else
+		isCreateTextFieldNow = true
+	end
+	createTouchMask()
+	disableMaskTouch = true
+	if (isCreateTextFieldNow) then
+		createInputField(baseGroup)
+	end
+end
+
+local function checkResetlastParent(baseGroup)
+	if (activeTextFieldBaseGroup) then
+		destroyInputField()
+	end
+	if (curParent ~= baseGroup.parentForShifting) then
+		parentReturnTransition(function()
+									parentTransition(baseGroup)
+								end)
+	else
+		parentTransition(baseGroup)
+	end
+end
+
+local function textFieldTouchListener(event)
+	local baseGroup = event.target.parent
+	if (baseGroup.touchListener ~= nil) then
+		if (baseGroup.touchListener(event) ~= true) then
+			if (event.target.isFocus) then
+				event.target.isFocus = false
+				display.getCurrentStage():setFocus(nil)
+			end
+			return false
+		end
+	end
 	if (event.phase == "began") then
+		stopResetTimer()
 		event.target.isFocus = true
 		display.getCurrentStage():setFocus(event.target)
-	elseif (event.phase == "ended") then
-		if (event.target.isFocus == true) then
-			parentTransition(baseGroup, 0, 0)
+	elseif (event.target.isFocus) then
+		if (event.phase == "ended") then
+			baseGroup:enterEditMode()
 		end
-		event.target.isFocus = false
-		display.getCurrentStage():setFocus(nil)
-	end
-	if (baseGroup.touchListener ~= nil) then
-		if (baseGroup.touchListener(event) == true) then
-			return true
+		if ((event.phase == "ended") or (event.phase == "cancelled")) then
+			event.target.isFocus = false
+			display.getCurrentStage():setFocus(nil)
 		end
 	end
 	return true
 end
 
-getFocusTransitionCompleteHandler = function(baseGroup)
-	createInputField(baseGroup)
-end
-
-lossFocusTransitionCompleteHandler = function(baseGroup)
-	destroyInputField(baseGroup)
-end
-
-showSimulatedKeyboard = function()
-	if (simulatedKeyboard ~= nil) then
-		simulatedKeyboard:removeSelf()
-		simulatedKeyboard = nil
-	end
-	if (system.getInfo("environment") == "simulator") then 
-		if (system.getInfo( "model" ) == "iPhone") then
-			simulatedKeyboard = display.newRect(display.contentWidth * 0.5, display.contentHeight + IPHONE_SIM_CANDIDATE_HEIGHT + (IPHONE_SIM_KEYBOARD_HEIGHT * 0.5
-				), display.contentWidth, IPHONE_SIM_KEYBOARD_HEIGHT)
-			simulatedKeyboard:setFillColor(0.5, 0.5, 0.5, 1)
-			simulatedCandidate = display.newRect(display.contentWidth * 0.5, display.contentHeight + (IPHONE_SIM_CANDIDATE_HEIGHT * 0.5), display.contentWidth, IPHONE_SIM_CANDIDATE_HEIGHT)
-			simulatedCandidate:setFillColor(0.5, 0.5, 0.5, 0.5)
-			transition.to(simulatedKeyboard, {y = display.contentHeight - (IPHONE_SIM_KEYBOARD_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME})
-			transition.to(simulatedCandidate, {y = display.contentHeight - IPHONE_SIM_KEYBOARD_HEIGHT - (IPHONE_SIM_CANDIDATE_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME})
-		end
-	end
-end
-
-afterHideKeyboardListener = function(obj)
-	simulatedKeyboard:removeSelf()
-	simulatedKeyboard = nil
-end
-
-afterHideCandidateListener = function(obj)
-	simulatedCandidate:removeSelf()
-	simulatedCandidate = nil
-end
-
-hideSimulatedKeyboard = function()
-	if (system.getInfo( "model" ) == "iPhone") then
-		transition.to(simulatedKeyboard, {y = display.contentHeight + IPHONE_SIM_CANDIDATE_HEIGHT + (IPHONE_SIM_KEYBOARD_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME, onComplete = afterHideKeyboardListener})
-		transition.to(simulatedCandidate, {y = display.contentHeight + (IPHONE_SIM_CANDIDATE_HEIGHT * 0.5), time = IPHONE_SIM_KEYBOARD_TRANS_TIME, onComplete = afterHideCandidateListener})
-	end
-end
-
-
-function CoronaTextField:new(left, top, width, height, parentForShifting, parentType)
+-- function coronaTextField.new(parent, centerX, centerY, width, height, [, isRoundedRect][, parentForShifting])
+function coronaTextField.new(...)
 	local baseGroup = display.newGroup()
+	local argIdx = 1
+	if (type(arg[argIdx]) == "table") then
+		arg[argIdx]:insert(baseGroup)
+		argIdx = argIdx + 1
+	end
 
-	baseGroup.x = left
-	baseGroup.y = top
-	baseGroup.parentForShifting = parentForShifting
-	baseGroup.parentType = parentType
-	baseGroup.parentOffsetX = 0
-	baseGroup.parentOffsetY = 0
-	baseGroup.prevOffsetX = 0
-	baseGroup.prevOffsetY = 0
+	baseGroup.x = arg[argIdx]
+	baseGroup.y = arg[argIdx+1]
+	local width = arg[argIdx+2]
+	local height = arg[argIdx+3]
+	argIdx = argIdx + 4
+	local isRoundedRect
+	if (type(arg[argIdx]) == "boolean") then
+		isRoundedRect = arg[argIdx]
+		argIdx = argIdx + 1
+	end
+	if (type(arg[argIdx]) == "table") then
+		baseGroup.parentForShifting = arg[argIdx]
+	end
 	baseGroup.topPadding = INPUTFIELD_TO_TOP_SPACE
 	baseGroup.edgePadding = INPUTFIELD_TO_EDGE_SPACE
 
@@ -462,8 +583,12 @@ function CoronaTextField:new(left, top, width, height, parentForShifting, parent
 	baseGroup._font = DEFAULT_FONT
 	baseGroup._size = DEFAULT_SIZE
 
-	baseGroup.textFieldBg = display.newRect(width * 0.5, height * 0.5, width, height)
-	baseGroup.textFieldBg.baseGroup = baseGroup
+	if (isRoundedRect) then
+		baseGroup.textFieldBg = display.newRoundedRect(width * 0.5, height * 0.5, width, height, CORNER_RADIUS)
+	else
+		baseGroup.textFieldBg = display.newRect(width * 0.5, height * 0.5, width, height)
+	end
+	-- baseGroup.textFieldBg.baseGroup = baseGroup
 	baseGroup:insert(baseGroup.textFieldBg)
 	remakeDisplayText(baseGroup)
 
@@ -523,46 +648,39 @@ function CoronaTextField:new(left, top, width, height, parentForShifting, parent
 							end
 	setmetatable(baseGroup, baseGroupMT)
 
-	function baseGroup:touchListener(listener)
-		self.touchListener = listener
-	end
-
 	function baseGroup:setFillColor(...)
 		self.fillColor = arg
 
-		if (#self.fillColor >= 3) then
-			if (#self.fillColor < 4) then
-				self.fillColor[#self.fillColor + 1] = 1
-			end
-			if (self.inputField ~= nil) then
-				self.inputField:setTextColor(self.fillColor[1] * 255, self.fillColor[2] * 255, self.fillColor[3] * 255, self.fillColor[4] * 255)
-			end
-			self.displayText:setFillColor(self.fillColor[1], self.fillColor[2], self.fillColor[3], self.fillColor[4])
+		if (self.inputField) then
+			self.inputField:setTextColor(unpack(self.fillColor))
+		end
+		if (self.displayText) then
+			self.displayText:setFillColor(unpack(self.fillColor))
 		end
 	end
 
-	baseGroup:setFillColor(DEFAULT_TEXT_COLOR[1], DEFAULT_TEXT_COLOR[2], DEFAULT_TEXT_COLOR[3], DEFAULT_TEXT_COLOR[4])
 	baseGroup.inputField = nil
+	baseGroup:setFillColor(unpack(DEFAULT_TEXT_COLOR))
 
-	function baseGroup:setReturnKey(...)
-		self.returnKey = {...}
+	function baseGroup:setReturnKey(key)
+		self.returnKey = key
 
-		if (self.inputField ~= nil) then
-			self.inputField:setReturnKey(...)
+		if (self.inputField) then
+			self.inputField:setReturnKey(self.returnKey)
 		end
 	end
 
 	function baseGroup:setBackgroundColor(...)
-		self.textFieldBg:setFillColor(...)
+		self.textFieldBg:setFillColor(unpack(arg))
 	end
 
 	function baseGroup:setFont(font, size)
 		self._font = font
 		self._size = size
-		if (self.inputField ~= nil) then
-			destroyInputField(self)
-			createInputField(self)
-		end
+		-- if (self.inputField) then
+		-- 	destroyInputField(self)
+		-- 	createInputField(self)
+		-- end
 		remakeDisplayText(self)
 	end
 
@@ -574,12 +692,17 @@ function CoronaTextField:new(left, top, width, height, parentForShifting, parent
 		self.userInputListener = listener
 	end
 
-	function baseGroup:enableInput()
-		createInputField(self)
+	-- function baseGroup:enableInput()
+	-- 	createInputField(self)
+	-- end
+
+	function baseGroup:enterEditMode()
+		checkResetlastParent(baseGroup)
+		-- parentTransition(baseGroup)
 	end
 
 	function baseGroup:inputEnd()
-		textFieldEndEditing(self)
+		textFieldEndEditing()
 	end
 
 	function baseGroup:setTopPadding(topPadding)
@@ -600,7 +723,7 @@ function CoronaTextField:new(left, top, width, height, parentForShifting, parent
 	end
 
 	function baseGroup:setPlaceHolderText(text)
-		if (text == "") then
+		if ((text == nil) or (text == "")) then
 			if (self.placeHolder) then
 				display.remove(self.placeHolder)
 				self.placeHolder = nil
@@ -615,7 +738,7 @@ function CoronaTextField:new(left, top, width, height, parentForShifting, parent
 			else
 				self.placeHolder.text = text
 			end
-			updatePlaceHolderVisible(baseGroup)
+			updatePlaceHolderVisiblility(self)
 		end
 	end
 
@@ -624,4 +747,4 @@ function CoronaTextField:new(left, top, width, height, parentForShifting, parent
 	return baseGroup
 end
 
-return CoronaTextField
+return coronaTextField

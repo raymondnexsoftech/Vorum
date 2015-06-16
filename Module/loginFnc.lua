@@ -172,7 +172,7 @@ local function popupLinkTextField()
 
 	popupGroup = popup.getPopupGroup()
 	
-	popup_textField_username = coronaTextField:new(  -250, -130, 500, 80,popupGroup, "displayGroup")
+	popup_textField_username = coronaTextField.new(  -250, -130, 500, 80,popupGroup, "displayGroup")
 	popup_textField_username.hasBackground = false
 	popup_textField_username:setFont("Helvetica",32)
 	popup_textField_username:setTopPadding(200)
@@ -182,7 +182,7 @@ local function popupLinkTextField()
 		popup_textField_username.text = popup_tempLastTryAccountName
 	end
 	
-	popup_textField_password = coronaTextField:new(  -250, -30, 500, 80,popupGroup, "displayGroup")
+	popup_textField_password = coronaTextField.new(  -250, -30, 500, 80,popupGroup, "displayGroup")
 	popup_textField_password.hasBackground = false
 	popup_textField_password:setFont("Helvetica",32)
 	popup_textField_password:setTopPadding(200)

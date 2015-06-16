@@ -174,8 +174,9 @@ forgetPasswordPopupFnc = function ()
 	forgetPasswordText.anchorY = 0
 	forgetPasswordText:setFillColor( 0,0,0 )
 
-	forgetPassword_popup_textField_username = coronaTextField:new(  -250, forgetPasswordText.y+forgetPasswordText.height+40, 500, 80,forgetPassword_popupGroup, "displayGroup")
-	forgetPassword_popup_textField_username.hasBackground = false
+	forgetPassword_popup_textField_username = coronaTextField.new(  -250, forgetPasswordText.y+forgetPasswordText.height+40, 500, 80,forgetPassword_popupGroup, "displayGroup")
+	forgetPassword_popup_textField_username:setBackgroundColor(0, 0, 0, 0)
+	-- forgetPassword_popup_textField_username.hasBackground = false
 	forgetPassword_popup_textField_username:setFont("Helvetica",32)
 	forgetPassword_popup_textField_username:setTopPadding(200)
 	forgetPassword_popup_textField_username:setPlaceHolderText(localization.getLocalization("login_username_textField_placeholder"))
@@ -408,24 +409,26 @@ function scene:createScene( event )
 	local textField_width = background_textField_width-100-3
 	local textField_height = background_textField_height/2-1
 	
-	textField_username = coronaTextField:new( textField_x, background_textField.y+1, textField_width - 10, textField_height,group_login, "displayGroup" )
+	textField_username = coronaTextField.new( textField_x, background_textField.y+1, textField_width - 10, textField_height,group_login, "displayGroup" )
 	textField_username:setFont("Helvetica",32)
 	textField_username.anchorX=0
 	textField_username.anchorY=0
 	textField_username:setTopPadding(200)
 	textField_username:setPlaceHolderText(localization.getLocalization("login_username_textField_placeholder"))
-	textField_username.hasBackground = false
+	textField_username:setBackgroundColor(0, 0, 0, 0)
+	-- textField_username.hasBackground = false
 	-- textField_username.isFontSizeScaled = true
 	group_login:insert(textField_username)
 	
 	local textField_username_total_height = textField_username.y+textField_username.height
-	textField_password = coronaTextField:new( textField_x, textField_username_total_height, textField_width - 10, textField_height,group_login, "displayGroup" )
+	textField_password = coronaTextField.new( textField_x, textField_username_total_height, textField_width - 10, textField_height,group_login, "displayGroup" )
 	textField_password:setFont("Helvetica",32)
 	textField_password.anchorX=0
 	textField_password.anchorY=0
 	textField_password:setTopPadding(200)
 	textField_password:setPlaceHolderText(localization.getLocalization("login_password_textField_placeholder"))
-	textField_password.hasBackground = false
+	textField_password:setBackgroundColor(0, 0, 0, 0)
+	-- textField_password.hasBackground = false
 	textField_password.isSecure = true
 	-- textField_password.isFontSizeScaled = true
 	group_login:insert(textField_password)

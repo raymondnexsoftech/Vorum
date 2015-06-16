@@ -529,12 +529,13 @@ function scene:createScene( event )
 	displayGroup:insert(email_grayBackground)
 	
 	local email_textField_total_height = account_background_textField_y + 77 -- original value: 297
-	textField_password = coronaTextField:new( textField_x, email_textField_total_height, textField_width, textField_height,displayGroup,"displayGroup" )
+	textField_password = coronaTextField.new( textField_x, email_textField_total_height, textField_width, textField_height,displayGroup,"displayGroup" )
 	textField_password.anchorX=0
 	textField_password.anchorY=0
 	textField_password:setTopPadding(200)
 	textField_password:setPlaceHolderText(localization.getLocalization("register_password_textField_placeholder"))
-	textField_password.hasBackground = false
+	textField_password:setBackgroundColor(0, 0, 0, 0)
+	-- textField_password.hasBackground = false
 	textField_password.isSecure = true
 	textField_password:setFont("Helvetica",32)
 	-- textField_password.isFontSizeScaled = true
@@ -542,12 +543,13 @@ function scene:createScene( event )
 	displayGroup:insert(textField_password)
 	
 	local textField_password_total_height = textField_password.y+textField_password.height
-	textField_confirmPassword = coronaTextField:new( textField_x, textField_password_total_height, textField_width, textField_height,displayGroup,"displayGroup" )
+	textField_confirmPassword = coronaTextField.new( textField_x, textField_password_total_height, textField_width, textField_height,displayGroup,"displayGroup" )
 	textField_confirmPassword.anchorX=0
 	textField_confirmPassword.anchorY=0
 	textField_confirmPassword:setTopPadding(200)
 	textField_confirmPassword:setPlaceHolderText(localization.getLocalization("register_comfirmPassword_textField_placeholder"))
-	textField_confirmPassword.hasBackground = false
+	textField_confirmPassword:setBackgroundColor(0, 0, 0, 0)
+	-- textField_confirmPassword.hasBackground = false
 	textField_confirmPassword.isSecure = true
 	textField_confirmPassword:setFont("Helvetica",32)
 	-- textField_confirmPassword.isFontSizeScaled = true
@@ -625,12 +627,13 @@ function scene:createScene( event )
 	local profile_textField_width = profile_background_textField_width-121-1
 	local profile_textField_height = profile_background_textField_height/2-1
 	
-	profile_textField_name = coronaTextField:new( profile_textField_x, profile_background_textField.y, profile_textField_width, profile_textField_height,displayGroup,"displayGroup" )
+	profile_textField_name = coronaTextField.new( profile_textField_x, profile_background_textField.y, profile_textField_width, profile_textField_height,displayGroup,"displayGroup" )
 	profile_textField_name.anchorX=0
 	profile_textField_name.anchorY=0
 	profile_textField_name:setTopPadding(200)
 	profile_textField_name:setPlaceHolderText(localization.getLocalization("register_name_textField_placeholder"))
-	profile_textField_name.hasBackground = false
+	profile_textField_name:setBackgroundColor(0, 0, 0, 0)
+	-- profile_textField_name.hasBackground = false
 	profile_textField_name:setFont("Helvetica",32)
 	-- profile_textField_name.isFontSizeScaled = true
 	profile_textField_name:setUserInputListener( textListener )
