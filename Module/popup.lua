@@ -454,9 +454,8 @@ function moduleGroup.popup(newModuleData)
 	background.isHitTestable = true
 	displayGroup:insert(background)
 	
-	if(not moduleData.touchBgNotCancel)then
-		background:addEventListener("touch",touchBackgroundCancelFnc)
-	end
+	background:addEventListener("touch",touchBackgroundCancelFnc)
+
 	if(moduleData.popupBgImagePath)then
 		popupBackground = display.newImage(moduleData.popupBgImagePath,true)
 		popupBackground.x = 0
