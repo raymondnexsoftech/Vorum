@@ -274,7 +274,8 @@ function FunctionGroup.show(postGroup, postPartData, creatorData,scrollViewObj)
 		btnIndex = addActionButton(localization.getLocalization("postButton_shareToFacebook"), shareToFacebookFnc, btnIndex)
 	end
 	
-	if(creatorData and userData.id == creatorData.id)then
+	if (((creatorData) and (userData.id == creatorData.id))
+		or ((postPartData.creator ~= nil) and (postPartData.creator.id == userData.id))) then
 		-- Temporary no this function now
 		btnIndex = addActionButton(localization.getLocalization("postButton_delete"), deleteFnc, btnIndex)
 	else
