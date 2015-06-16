@@ -24,7 +24,6 @@ local coronaTextField = require("Module.CoronaTextField")
 require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local addPhotoFnc = require("Function.addPhoto")
-local birthSelectFnc = require("Function.birthSelectFnc")
 local saveData = require( "SaveData.SaveData" )
 -- local networkFunction = require("Network.NetworkFunction")
 local geolocationUtility = require("SystemUtility.GeolocationUtility")
@@ -39,9 +38,12 @@ local optionModule = require("Module.Option")
 local newNetworkFunction = require("Network.newNetworkFunction")
 local hardwareButtonHandler = require("ProjectObject.HardwareButtonHandler")
 local geolocationUtility = require("SystemUtility.GeolocationUtility")
+local dayPickerWheel = require("ProjectObject.DayPickerWheel")
+
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
+local MONTH_ARRAY = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }
 
 ---------------------------------------------------------------
 -- Variables
@@ -56,12 +58,11 @@ local scrollView
 local scene = storyboard.newScene()
 
 --birthday
-local year = 1970
-local month = "March"
-local day = 1
+local year
+local month
+local day
 local text_birthday
 local booldean_birthHadSelected = false
-local month_array = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }
 --textField
 -- local textField_username
 local email_textField
@@ -82,8 +83,6 @@ local temp_userIconUrl
 
 local profile_button_addPhoto
 local havePhoto = false
-
-
 
 local setupCountry_checkbox_trueBox
 local needSetupCountry = false
@@ -133,17 +132,24 @@ local function textListener( event )
 end
 
 
-local function birthdayCallBackUpdate(data_year,data_month,data_day)
-	year = tonumber(data_year)
-	month = data_month
-	day = tonumber(data_day)
-	text_birthday.text = day.."/"..month.."/"..year
+local function changedListener(value)
+	year = tonumber(value.year)
+	month = tonumber(value.month)
+	day = tonumber(value.day)
+	text_birthday.text = day.."/"..tostring(MONTH_ARRAY[month]).."/"..year
 	text_birthday:setFillColor(0,0,0)
 end
 local function birthdaySelection(event)
 	if(event.phase=="ended"or event.phase=="cancelled")then
 		booldean_birthHadSelected = true
-		birthSelectFnc.birthdaySelection(event,year,month,day,birthdayCallBackUpdate,scrollView)
+		local currentTime = os.date("*t")
+		
+		local date = {
+			startDate = {day = 1, month = 1, year = 1900},
+			endDate = {day = tonumber(currentTime.day), month = tonumber(currentTime.month), year = tonumber(currentTime.year)},
+			default = {day = day, month = month, year = year},
+		}
+		dayPickerWheel.show(0, display.contentHeight-300, display.contentWidth, 300, date, changedListener)
 	end
 	return true
 end
@@ -346,17 +352,10 @@ local function updateFnc(event)
 	local day_num
 	
 	if(booldean_birthHadSelected)then
-		-- print("update birth")
-		for i=1,#month_array do
-			if(month==month_array[i])then
-				month_num = i
-				if(month_num<10)then
-					month_num = "0"..tostring(month_num)
-				else
-					month_num = tostring(month_num)
-				end
-				break
-			end
+		if(month<10)then
+			month_num = "0"..tostring(month)
+		else
+			month_num = tostring(month)
 		end
 		if(day<10)then
 			day_num = "0"..tostring(day)
@@ -371,9 +370,6 @@ local function updateFnc(event)
 	else
 		uploadedPictureFnc()
 	end
-
-	
-	
 end
 
 local function touch_updateFnc(event)
@@ -444,10 +440,16 @@ end
 function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
 	sceneGroup = self.view
+
+	booldean_birthHadSelected = false
+
 	displayGroup = display.newGroup()
 
 	newUserData = {}
 	userData = saveData.load(global.userDataPath)
+
+
+
 
 	userId = userData.id
 
@@ -455,8 +457,6 @@ function scene:createScene( event )
 	saveData.delete("profileData.txt", system.TemporaryDirectory)
 	
 	temp_userIconUrl = userData.profile_pic
-	
-	
 	
 	display.setStatusBar( display.HiddenStatusBar )
 	display.setDefault( "background", 187/255, 235/255, 1 )	
@@ -846,7 +846,6 @@ function scene:createScene( event )
 	
 	email_grayBackground:toFront()
 	
-
 	--load data
 	if(userData)then
 		if(userData.email)then
@@ -856,7 +855,10 @@ function scene:createScene( event )
 			profile_textField_name.text = userData.name
 		end
 		if(userData.dateOfBirth)then
-			birthSelectFnc.loadData(userData.dateOfBirth,birthdayCallBackUpdate)
+			year = tonumber(string.sub(userData.dateOfBirth,1,4))
+			month = tonumber(string.sub(userData.dateOfBirth,6,7))
+			day = tonumber(string.sub(userData.dateOfBirth,9,10))
+			text_birthday.text = day.."/"..tostring(MONTH_ARRAY[month]).."/"..year
 		end
 	end
 	

@@ -23,7 +23,6 @@ local coronaTextField = require("Module.CoronaTextField")
 require ( "SystemUtility.Debug" )
 local localization = require("Localization.Localization")
 local addPhotoFnc = require("Function.addPhoto")
-local birthSelectFnc = require("Function.birthSelectFnc")
 -- local networkFunction = require("Network.NetworkFunction")
 local geolocationUtility = require("SystemUtility.GeolocationUtility")
 local saveData = require( "SaveData.SaveData" )
@@ -34,10 +33,12 @@ local optionModule = require("Module.Option")
 local newNetworkFnc = require("Network.newNetworkFunction")
 local buttonModule = require("Module.buttonModule")
 local hardwareButtonHandler = require("ProjectObject.HardwareButtonHandler")
+local dayPickerWheel = require("ProjectObject.DayPickerWheel")
+
 ---------------------------------------------------------------
 -- Constants
 ---------------------------------------------------------------
-
+local MONTH_ARRAY = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
@@ -55,14 +56,14 @@ local agree_checkbox_background2
 local registerPhoto
 
 --birthday
-local year = 1970
-local month = "March"
-local day = 1
+local currentTime = os.date("*t")
+local year = currentTime.year
+local month = currentTime.month
+local day = currentTime.day
 local text_birthday
 local booldean_birthHadSelected = false
-local month_array = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" }
+
 --textField
--- local textField_username
 local profile_button_addPhoto
 local email_textField
 local textField_password
@@ -111,18 +112,24 @@ local function textListener( event )
     end
 end
 
-
-local function birthdayCallBackUpdate(data_year,data_month,data_day)
-	year = tonumber(data_year)
-	month = data_month
-	day = tonumber(data_day)
-	text_birthday.text = day.."/"..month.."/"..year
+local function changedListener(value)
+	year = tonumber(value.year)
+	month = tonumber(value.month)
+	day = tonumber(value.day)
+	text_birthday.text = day.."/"..tostring(MONTH_ARRAY[month]).."/"..year
 	text_birthday:setFillColor(0,0,0)
 end
 local function birthdaySelection(event)
 	if(event.phase=="ended"or event.phase=="cancelled")then
 		booldean_birthHadSelected = true
-		birthSelectFnc.birthdaySelection(event,year,month,day,birthdayCallBackUpdate,scrollView)
+		currentTime = os.date("*t")
+
+		local date = {
+			startDate = {day = 1, month = 1, year = 1900},
+			endDate = {day = tonumber(currentTime.day), month = tonumber(currentTime.month), year = tonumber(currentTime.year)},
+			default = {day = day, month = month, year = year},
+		}
+		dayPickerWheel.show(0, display.contentHeight-300, display.contentWidth, 300, date, changedListener)
 	end
 
 	return true
@@ -285,7 +292,6 @@ local function GPSOptionsListener(event)
     end
 end
 
-
 local function countryCheckingAndRegister(event)
 	native.setActivityIndicator( false )
 	if(event.isNetworkError)then
@@ -364,16 +370,10 @@ local function registerFnc(event)
 		local month_num
 		local day_num
 		if(booldean_birthHadSelected)then
-			for i=1,#month_array do
-				if(month==month_array[i])then
-					month_num = i
-					if(month_num<10)then
-						month_num = "0"..tostring(month_num)
-					else
-						month_num = tostring(month_num)
-					end
-					break
-				end
+			if(month<10)then
+				month_num = "0"..tostring(month)
+			else
+				month_num = tostring(month)
 			end
 			if(day<10)then
 				day_num = "0"..tostring(day)
@@ -381,7 +381,6 @@ local function registerFnc(event)
 				day_num = tostring(day)
 			end
 			userData.dateOfBirth = year.."-"..month_num.."-"..day_num
-		
 		end
 		
 		geolocationUtility.getCountryByCurrentLocation(countryCheckingAndRegister) 
@@ -394,11 +393,18 @@ end
 -- Create the scene
 function scene:createScene( event )
 	debugLog( "Creating " .. LOCAL_SETTINGS.NAME .. " Scene")
+
 	local sceneGroup = self.view
 	local displayGroup = display.newGroup()
 	
 	display.setStatusBar( display.HiddenStatusBar )
 	display.setDefault( "background", 187/255, 235/255, 1 )	
+
+	currentTime = os.date("*t")
+	year = currentTime.year
+	month = currentTime.month
+	day = currentTime.day
+	booldean_birthHadSelected = false
 	
 	scrollView = widget.newScrollView
 	{
@@ -531,8 +537,6 @@ function scene:createScene( event )
 	confirmPassword_icon.anchorX=0
 	confirmPassword_icon.anchorY=0
 	displayGroup:insert(confirmPassword_icon)
-			
-
 	
 	local text_acconut =
 	{
