@@ -917,11 +917,10 @@ local function newPostFnc(event)
 		local isCouponTextExist = false
 		if ((post3_title_textField ~= nil) and (string.len(post3_title_textField.text) > 0)) then
 			isCouponTextExist = true
-		end
-
-		if(string.len(post3_title_textField.text)>200)then
-			native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputCouponTitle_limited"),{localization.getLocalization("ok")})
-			return false
+			if(string.len(post3_title_textField.text)>200)then
+				native.showAlert(localization.getLocalization("inputCheck_title"),localization.getLocalization("inputCouponTitle_limited"),{localization.getLocalization("ok")})
+				return false
+			end
 		end
 
 		if (addPhotoFnc.getImageRealPath(global.post3CouponImage)) then
