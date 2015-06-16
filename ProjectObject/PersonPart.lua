@@ -688,13 +688,19 @@ function returnGroup.create(input_personData,input_scrollView)
 
 	userIconFnc({path = "Image/User/anonymous.png", baseDir = system.ResourceDirectory})--temp image
 	
+	local text_username_y = 155
+	local text_username_height = 33
+	if (system.getInfo("platformName") == "Android") then
+		text_username_y = text_username_y - 10
+		text_username_height = text_username_height + 8
+	end
 	text_username =
 	{
 		text = "...", -- get data from server
 		x = 158,
-		y = 155,
+		y = text_username_y,
 		width = 130,
-		height = 33, 
+		height = text_username_height, 
 		font = "Helvetica",
 		fontSize=30
 	}

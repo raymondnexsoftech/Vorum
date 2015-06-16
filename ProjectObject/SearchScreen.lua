@@ -425,12 +425,19 @@ local function createResult(resultData)
 	group_thisResult:insert( text_comment )
 	
 	if(searchType=="post")then
+		local createdBy_y = line_bottom.y-15
+		local createdBy_height = 28
+		if (system.getInfo("platformName") == "Android") then
+			createdBy_y = createdBy_y - 10
+			createdBy_height = createdBy_height + 10
+		end
+
 		local createdBy = {
 			text = localization.getLocalization("searchScreen_by")..tostring(temp_creatorName), 
 			x = display.contentWidth - 30,
-			y = line_bottom.y-15,
+			y = createdBy_y,
 			width = 200,
-			height = 28, 
+			height = createdBy_height, 
 			font = "Helvetica",
 			fontSize = 25,
 			align = "right",

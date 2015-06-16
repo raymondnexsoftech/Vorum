@@ -264,13 +264,18 @@ local function headerCreateFnc(newChangeHeaderOption)
 	
 
 	if(headerObjects.title.width > 320)then
+		local headerTitle_height = 50
+		if (system.getInfo("platformName") == "Android") then
+			headerTitle_height = headerTitle_height + 10
+		end
 		display.remove(headerObjects.title)
 		headerObjects.title = {
 			text = memberData.name, 
 			width = 320,
-			height = 50, 
+			height = headerTitle_height, 
 			font = "Helvetica", 
-			fontSize=40
+			fontSize=40,
+			align = "center",
 		}
 		headerObjects.title = display.newText(headerObjects.title)
 	end
