@@ -269,6 +269,8 @@ end
 local function reloadNewPost()
 	cancelAllLoad()
 
+	headTabFnc.setDisplayStatus(true)
+
 	setActivityIndicatorFnc(true)
 	isNotShownNoPost = false
 	getFilterData("new")

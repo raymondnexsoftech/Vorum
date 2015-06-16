@@ -311,6 +311,8 @@ local function reloadNewPost()
 	getPostParams.pushed_time = nil
 	getPostParams.limit = getNewPostNum
 
+	headTabFnc.setDisplayStatus(true)
+
 	scrollView:deleteAllPost()
 	if(post_filter == "myPost")then
 		newNetworkFunction.getMyPost(getPostParams, getMyPostListener)
