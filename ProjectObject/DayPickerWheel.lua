@@ -23,7 +23,7 @@ local widget = require("widget")
 -- Constants
 ---------------------------------------------------------------
 local SCREEN_RATIO = display.pixelHeight / display.contentHeight
-local ROW_HEIGHT = 30 * SCREEN_RATIO
+local ROW_HEIGHT = 40 * SCREEN_RATIO
 local ROUNDED_RECT_CORNER_RADIUS = 10 * SCREEN_RATIO
 local ROUNDED_RECT_STROKE_WIDTH = 4 * SCREEN_RATIO
 local FONT_SIZE = ROW_HEIGHT * 0.8
@@ -324,6 +324,7 @@ function dayPickerWheel.show(left, top, width, height, ...)
 				display.remove(greyMask)
 			end
 		end
+		return true
 	end
 	greyMask:addEventListener("touch", pickerGreyMaskListener)
 	bg = display.newRoundedRect(left - ROUNDED_RECT_STROKE_WIDTH, top - ROUNDED_RECT_STROKE_WIDTH, width + ROUNDED_RECT_STROKE_WIDTH * 2, height + ROUNDED_RECT_STROKE_WIDTH * 2, ROUNDED_RECT_CORNER_RADIUS)
