@@ -145,9 +145,13 @@ function shareListener(event)
 		local code = tonumber(response.code)
 		if(code==25)then
 			--fail
+			native.showAlert(localization.getLocalization("sharePostFailed"),localization.getLocalization("cannotShareThisPost"),{localization.getLocalization("ok")})
 		elseif(code==26)then
 			--success
 			native.showAlert(localization.getLocalization("sharePostSuccessTitle"),localization.getLocalization("sharePostSuccess"),{localization.getLocalization("ok")})
+		elseif(code==56)then
+			--already shared / creator
+			native.showAlert(localization.getLocalization("sharePostFailed"),localization.getLocalization("creatorOrAlreadyShared"),{localization.getLocalization("ok")})
 		else
 			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
 		end

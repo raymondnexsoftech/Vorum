@@ -262,6 +262,10 @@ return {
 					reportPostSuccess = "Thanks for the feedback. Our team will review your report shortly.",
 					sharePostSuccess = "The post has been shared to your own wall.",
 					deletePostSuccess = "Delete post successfully.",
+
+					sharePostFailed = "Share Post Failed",
+					cannotShareThisPost = "Cannot share this post.",
+					creatorOrAlreadyShared = "You are the creator or you are already shared this post.",
 					--create post and new coupon success
 					newPostSuccessTitle = "Create a new post successfully",
 					newCouponSuccessTitle = "Create new post and coupon successfully",

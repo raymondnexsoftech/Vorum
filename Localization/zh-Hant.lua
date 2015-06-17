@@ -267,6 +267,10 @@ return {
 					reportPostSuccess = "多謝你的意見，我們會盡快檢查此帖。",
 					sharePostSuccess = "此帖已分享到你的牆上。",
 					deletePostSuccess = "刪除成功。",
+
+					sharePostFailed = "分享帖子失敗",
+					cannotShareThisPost = "未能分享此帖子到你的牆上。",
+					creatorOrAlreadyShared = "你是此帖作者，或你已分享此帖子。",
 					--create post and new coupon success
 					newPostSuccessTitle = "創建帖子成功",
 					newCouponSuccessTitle = "創建帖子和優惠卷成功",
