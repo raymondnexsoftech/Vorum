@@ -24,6 +24,7 @@ local searchScreen = require("ProjectObject.SearchScreen")
 local functionalOption = require("Module.FunctionalOption")
 local addPhotoFnc = require("Function.addPhoto")
 local tagSelectionFnc = require("Function.tagSelectionFnc")
+local tunePhotoModule = require("Module.TunePhoto")
 
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
@@ -123,6 +124,7 @@ local function notificationListener( event, isRestartApp )
 						functionalOption.hide()
 						addPhotoFnc.forceExit()
 						tagSelectionFnc.forceExit()
+						tunePhotoModule.hide()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end

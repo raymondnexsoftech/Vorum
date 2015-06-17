@@ -267,6 +267,10 @@ end
 
 function moduleGroup.hide()
 
+	if (displayGroup == nil) then
+		return
+	end
+
 	optionField_doneButton:removeEventListener("touch",doneFnc)
 	optionField_cancelButton:removeEventListener("touch",cancelFnc)
 	
