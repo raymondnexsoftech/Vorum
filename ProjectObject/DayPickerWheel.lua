@@ -178,8 +178,11 @@ local function updatePickerWheelWithDate(columns, startDate, endDate, curDate, t
 		updateColumnBottomPadding(columns.day)
 	end
 	goToRow(columns.year, curDate.year - startDate.year + 1, topPadding, 0)
+	columns.year.lastValue = curDate.year
 	goToRow(columns.month, curDate.month - startMonth + 1, topPadding, 0)
+	columns.month.lastValue = curDate.month
 	goToRow(columns.day, curDate.day - startDay + 1, topPadding, 0)
+	columns.day.lastValue = curDate.day
 	return curDate
 end
 
@@ -229,7 +232,13 @@ local function enterFrameListener()
 						local value = {}
 						for k2, v2 in pairs(curPicker.columns) do
 							local nearestRow = checkNearestRow(v2, curPicker.topPadding)
-							value[k2] = v2:getRowAtIndex(nearestRow).value
+							local curColumnSelectedRow = v2:getRowAtIndex(nearestRow)
+							if (curColumnSelectedRow) then
+								value[k2] = curColumnSelectedRow.value
+								v2.lastValue = curColumnSelectedRow.value
+							else
+								value[k2] = v2.lastValue
+							end
 						end
 						value = updatePickerWheelWithDate(curPicker.columns, curPicker.startDate, curPicker.endDate, value, curPicker.topPadding, curPicker.fontSize)
 						if (curPicker.listener) then
