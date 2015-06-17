@@ -19,6 +19,7 @@ local headTabFnc = require( "ProjectObject.HeadTabFnc" )
 local noticeBadge = require("ProjectObject.NoticeBadge")
 
 local imageViewer = require("Module.ImageViewer")
+local catScreen = require("ProjectObject.CatScreen")
 
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
@@ -113,6 +114,7 @@ local function notificationListener( event, isRestartApp )
 							tabbar:setSelected(global.currentSceneNumber)  
 						end
 						imageViewer.forceExit()
+						catScreen.hide()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end
