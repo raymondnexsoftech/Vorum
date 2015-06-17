@@ -907,6 +907,10 @@ function imageViewer.reloadImage()
 	end
 end
 
+function imageViewer.forceExit()
+	exitViewerComplete()
+end
+
 return imageViewer
 
 -- TODO: slide inertia on zoom

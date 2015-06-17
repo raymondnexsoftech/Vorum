@@ -17,6 +17,9 @@ local localization = require("Localization.Localization")
 local notifications = require( "plugin.notifications" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
 local noticeBadge = require("ProjectObject.NoticeBadge")
+
+local imageViewer = require("Module.ImageViewer")
+
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
 -- Constants
@@ -109,6 +112,7 @@ local function notificationListener( event, isRestartApp )
 							stage:insert( tabbar )
 							tabbar:setSelected(global.currentSceneNumber)  
 						end
+						imageViewer.forceExit()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end
