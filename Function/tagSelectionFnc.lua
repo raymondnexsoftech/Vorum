@@ -257,5 +257,13 @@ function returnGroup.tagSelection(callBackFnc)
 		return group_cat
 	end
 end
+
+function returnGroup.forceExit()
+	if (group_cat) then
+		display.remove(group_cat)
+		group_cat = nil
+	end
+end
+
 return returnGroup
 

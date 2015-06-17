@@ -23,6 +23,7 @@ local catScreen = require("ProjectObject.CatScreen")
 local searchScreen = require("ProjectObject.SearchScreen")
 local functionalOption = require("Module.FunctionalOption")
 local addPhotoFnc = require("Function.addPhoto")
+local tagSelectionFnc = require("Function.tagSelectionFnc")
 
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
@@ -121,6 +122,7 @@ local function notificationListener( event, isRestartApp )
 						searchScreen.forceExit()
 						functionalOption.hide()
 						addPhotoFnc.forceExit()
+						tagSelectionFnc.forceExit()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end
