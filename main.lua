@@ -25,6 +25,7 @@ local functionalOption = require("Module.FunctionalOption")
 local addPhotoFnc = require("Function.addPhoto")
 local tagSelectionFnc = require("Function.tagSelectionFnc")
 local tunePhotoModule = require("Module.TunePhoto")
+local dayPickerWheel = require("ProjectObject.DayPickerWheel")
 
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
@@ -125,6 +126,7 @@ local function notificationListener( event, isRestartApp )
 						addPhotoFnc.forceExit()
 						tagSelectionFnc.forceExit()
 						tunePhotoModule.hide()
+						dayPickerWheel.forceExit()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end
