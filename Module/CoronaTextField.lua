@@ -76,6 +76,7 @@ local simulatedCandidateTransition
 local screenMaskTouchListener
 local textFieldUserInputListener
 local destroyInputField
+local textFieldEndEditing
 
 ---------------------------------------------------------------
 -- Functions
@@ -361,7 +362,7 @@ local function textFieldLoseFocus()
 	parentReturnTransition()
 end
 
-local function textFieldEndEditing()
+textFieldEndEditing = function()
 	if (activeTextFieldBaseGroup) then
 		if (activeTextFieldBaseGroup.userInputListener ~= nil) then
 			activeTextFieldBaseGroup._text = activeTextFieldBaseGroup.inputField.text
