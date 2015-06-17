@@ -748,4 +748,15 @@ function coronaTextField.new(...)
 	return baseGroup
 end
 
+local function coronaTextFieldSyetemEvent(event)
+--	print( "System event name and type: " .. event.name, event.type )
+	if (event.type == "applicationStart") then
+	elseif (event.type == "applicationExit") then
+	elseif (event.type == "applicationSuspend") then
+		textFieldEndEditing()
+	elseif (event.type == "applicationResume") then
+	end
+end
+Runtime:addEventListener("system", coronaTextFieldSyetemEvent)
+
 return coronaTextField
