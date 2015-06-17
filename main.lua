@@ -95,7 +95,23 @@ local function notificationListener( event, isRestartApp )
 				loadingDataOption.params.isNotic = true
 				storyboard.gotoScene("Scene.LoadingScene",loadingDataOption)
 			else
-				storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
+				local curSceneName = storyboard.getCurrentSceneName()
+				if ((curSceneName ~= "Scene.LoginPageScene") and (curSceneName ~= "Scene.RegisterPageScene")) then
+					header = headTabFnc.getHeader()
+					tabbar = headTabFnc.getTabbar()
+					storyboard.hideOverlay()
+					timer.performWithDelay(1 ,function(event)
+						stage = display.getCurrentStage()
+						if (header) then
+							stage:insert( header )
+						end
+						if (tabbar) then
+							stage:insert( tabbar )
+							tabbar:setSelected(global.currentSceneNumber)  
+						end
+						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
+					end)
+				end
 			end
 		end
 		-- for k, v in pairs(event) do
