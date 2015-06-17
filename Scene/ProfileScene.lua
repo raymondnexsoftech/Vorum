@@ -266,7 +266,7 @@ local function headerCreateFnc(newChangeHeaderOption)
 	if(headerObjects.title.width > 320)then
 		local headerTitle_height = 50
 		if (system.getInfo("platformName") == "Android") then
-			headerTitle_height = headerTitle_height + 10
+			headerTitle_height = headerTitle_height + 7
 		end
 		display.remove(headerObjects.title)
 		headerObjects.title = {
