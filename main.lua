@@ -176,17 +176,4 @@ if ( launchArgs and launchArgs.notification ) then
 	
 end
 
-local function simulatedReceiveNotification(event)
-	if event.phase == "ended" then
-		local event = {}
-		event.type = "remote"
-		event.applicationState = "inactive"
-		notificationListener( event, false )
-	end
-	return true
-end
-local simulatedReceiveNotificationBtn = display.newRect(300, 0, 100, 100)
-simulatedReceiveNotificationBtn:addEventListener("touch", simulatedReceiveNotification)
-timer.performWithDelay(100, function() simulatedReceiveNotificationBtn:toFront(); end , 0)
-
 storyboard.gotoScene("Scene.LoadingScene")
