@@ -271,6 +271,7 @@ return {
 					sharePostFailed = "分享帖子失敗",
 					cannotShareThisPost = "未能分享此帖子到你的牆上。",
 					creatorOrAlreadyShared = "你是此帖作者，或你已分享此帖子。",
+					friendPostCannotBeShared = "只限朋友的帖子不能分享。",
 					--create post and new coupon success
 					newPostSuccessTitle = "創建帖子成功",
 					newCouponSuccessTitle = "創建帖子和優惠卷成功",

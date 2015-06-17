@@ -152,6 +152,9 @@ function shareListener(event)
 		elseif(code==56)then
 			--already shared / creator
 			native.showAlert(localization.getLocalization("sharePostFailed"),localization.getLocalization("creatorOrAlreadyShared"),{localization.getLocalization("ok")})
+		elseif(code==57)then
+			--cannot share friend post
+			native.showAlert(localization.getLocalization("sharePostFailed"),localization.getLocalization("friendPostCannotBeShared"),{localization.getLocalization("ok")})
 		else
 			native.showAlert(localization.getLocalization("unknownErrorTitle"),localization.getLocalization("unknownErrorDesc"),{localization.getLocalization("ok")})
 		end
@@ -282,7 +285,7 @@ function FunctionGroup.show(postGroup, postPartData, creatorData,scrollViewObj)
 		or ((postPartData.creator ~= nil) and (postPartData.creator.id == userData.id))) then
 		-- Temporary no this function now
 		btnIndex = addActionButton(localization.getLocalization("postButton_delete"), deleteFnc, btnIndex)
-	else
+	elseif (postPartData.friend_only == "0") then
 		btnIndex = addActionButton(localization.getLocalization("postButton_shareToMyWall"), shareFnc, btnIndex)
 	end
 	

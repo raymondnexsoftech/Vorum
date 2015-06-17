@@ -266,6 +266,7 @@ return {
 					sharePostFailed = "Share Post Failed",
 					cannotShareThisPost = "Cannot share this post.",
 					creatorOrAlreadyShared = "You are the creator or you are already shared this post.",
+					friendPostCannotBeShared = "Friend Post cannot be shared.",
 					--create post and new coupon success
 					newPostSuccessTitle = "Create a new post successfully",
 					newCouponSuccessTitle = "Create new post and coupon successfully",
