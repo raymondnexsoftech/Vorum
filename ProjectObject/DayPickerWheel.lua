@@ -317,6 +317,16 @@ function dayPickerWheel.show(left, top, width, height, ...)
 	greyMask = display.newRect(display.contentWidth * 0.5, display.contentHeight * 0.5, display.contentWidth, display.contentHeight)
 	greyMask:setFillColor(0)
 	greyMask.alpha = 0.2
+
+	local function removePickerWheel()
+		display.remove(bg)
+		display.remove(selectionRect)
+		for k, v in pairs(pickerWheelColumn) do
+			display.remove(v)
+		end
+		display.remove(greyMask)
+	end
+
 	local function pickerGreyMaskListener(event)
 		if (event.phase == "began") then
 			display.getCurrentStage():setFocus(event.target)
@@ -325,16 +335,12 @@ function dayPickerWheel.show(left, top, width, height, ...)
 			if (event.phase == "ended") then
 				display.getCurrentStage():setFocus(nil)
 				event.target.isFocus = false
-				display.remove(bg)
-				display.remove(selectionRect)
-				for k, v in pairs(pickerWheelColumn) do
-					display.remove(v)
-				end
-				display.remove(greyMask)
+				removePickerWheel()
 			end
 		end
 		return true
 	end
+
 	greyMask:addEventListener("touch", pickerGreyMaskListener)
 	bg = display.newRoundedRect(left - ROUNDED_RECT_STROKE_WIDTH, top - ROUNDED_RECT_STROKE_WIDTH, width + ROUNDED_RECT_STROKE_WIDTH * 2, height + ROUNDED_RECT_STROKE_WIDTH * 2, ROUNDED_RECT_CORNER_RADIUS)
 	bg.anchorX = 0
@@ -436,10 +442,21 @@ function dayPickerWheel.show(left, top, width, height, ...)
 																						topPadding = topPadding,
 																						fontSize = fontSize,
 																						listener = valueChangedListener,
+																						removeListener = removePickerWheel,
 																					}
 									Runtime:removeEventListener("enterFrame", enterFrameListener)
 									Runtime:addEventListener("enterFrame", enterFrameListener)
 								end, 1)
+end
+
+function dayPickerWheel.forceExit()
+	for i = 1, #dayPickerWheelArray do
+		dayPickerWheelArray[i].removeListener()
+	end
+end
+
+function dayPickerWheel.isPickerWheelExist()
+	return (#dayPickerWheelArray > 0)
 end
 
 return dayPickerWheel
