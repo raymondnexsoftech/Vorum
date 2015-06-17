@@ -96,7 +96,11 @@ local needSetupCountry = false
 ---------------------------------------------------------------
 -- Function for back button
 local function onBackButtonPressed()
-	storyboard.gotoScene("Scene.SettingTabScene", global.backSceneOption)
+	if (dayPickerWheel.isPickerWheelExist()) then
+		dayPickerWheel.forceExit()
+	else
+		storyboard.gotoScene("Scene.SettingTabScene", global.backSceneOption)
+	end
 end
 
 

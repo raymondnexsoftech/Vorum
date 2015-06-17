@@ -93,7 +93,11 @@ local goToLoginSceneOption =
 ---------------------------------------------------------------
 -- Function for back button
 local function onBackButtonPressed()
-	storyboard.gotoScene( "Scene.LoginPageScene",goToLoginSceneOption)
+	if (dayPickerWheel.isPickerWheelExist()) then
+		dayPickerWheel.forceExit()
+	else
+		storyboard.gotoScene( "Scene.LoginPageScene",goToLoginSceneOption)
+	end
 end
 local function textListener( event )
     if ( event.phase == "began" ) then
