@@ -777,4 +777,10 @@ function returnGroup.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
 	Runtime:addEventListener( "key", onKeyEvent )
 end
 
+function returnGroup.forceExit()
+	if (screenGroup) then
+		cancelSearchScene(true)
+	end
+end
+
 return returnGroup

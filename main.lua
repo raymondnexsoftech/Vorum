@@ -20,6 +20,7 @@ local noticeBadge = require("ProjectObject.NoticeBadge")
 
 local imageViewer = require("Module.ImageViewer")
 local catScreen = require("ProjectObject.CatScreen")
+local searchScreen = require("ProjectObject.SearchScreen")
 
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
@@ -115,6 +116,7 @@ local function notificationListener( event, isRestartApp )
 						end
 						imageViewer.forceExit()
 						catScreen.hide()
+						searchScreen.forceExit()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end
