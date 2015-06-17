@@ -754,8 +754,8 @@ function returnGroup.searchScreenDisplay(sceneOptions,sceneData,headerCreateFnc)
 	-- filterOption = optionModule.new(filterOption)
 	
 	-- scrollView:setScrollViewHead(filterOption, 100)
-	local scrollViewPadding = display.newRect(0, 0, display.contentWidth, 20)
-	scrollView:setScrollViewHead(scrollViewPadding, 20)
+	-- local scrollViewPadding = display.newRect(0, 0, display.contentWidth, 20)
+	-- scrollView:setScrollViewHead(scrollViewPadding, 20)
 	--------------- search type (post and people) end
 	screenGroup:insert(scrollView)
 	------ set default search type	
