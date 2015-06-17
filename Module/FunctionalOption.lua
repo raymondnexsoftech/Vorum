@@ -144,6 +144,9 @@ function moduleGroup.display()
 	end})
 end
 function moduleGroup.hide()
+	if (group_displayScreen == nil) then
+		return
+	end
 	--remove object function
 	bgcanCancel = false
 	for i = 1, #moduleData.choiceFnc do
