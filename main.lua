@@ -22,6 +22,7 @@ local imageViewer = require("Module.ImageViewer")
 local catScreen = require("ProjectObject.CatScreen")
 local searchScreen = require("ProjectObject.SearchScreen")
 local functionalOption = require("Module.FunctionalOption")
+local addPhotoFnc = require("Function.addPhoto")
 
 notifications.registerForPushNotifications()
 ---------------------------------------------------------------
@@ -119,6 +120,7 @@ local function notificationListener( event, isRestartApp )
 						catScreen.hide()
 						searchScreen.forceExit()
 						functionalOption.hide()
+						addPhotoFnc.forceExit()
 						storyboard.gotoScene("Scene.NoticeTabScene",loadingDataOption)
 					end)
 				end
@@ -167,5 +169,18 @@ if ( launchArgs and launchArgs.notification ) then
 	notificationListener( launchArgs.notification, true )
 	
 end
+
+local function simulatedReceiveNotification(event)
+	if event.phase == "ended" then
+		local event = {}
+		event.type = "remote"
+		event.applicationState = "inactive"
+		notificationListener( event, false )
+	end
+	return true
+end
+local simulatedReceiveNotificationBtn = display.newRect(300, 0, 100, 100)
+simulatedReceiveNotificationBtn:addEventListener("touch", simulatedReceiveNotification)
+timer.performWithDelay(100, function() simulatedReceiveNotificationBtn:toFront(); end , 0)
 
 storyboard.gotoScene("Scene.LoadingScene")

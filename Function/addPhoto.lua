@@ -57,6 +57,8 @@ local loadingIcon
 local resizedFileName
 local tuneImageOption
 local optionVaule
+
+local isNeedQuitModule = false
 ---------------------------------------------------------------
 -- Functions Prototype
 ---------------------------------------------------------------
@@ -78,6 +80,16 @@ local function setActivityIndicatorFnc(boolean_loading)
 		loadingIcon:setEnable(false)
 	end
 end
+local function checkIsNeedQuitModule()
+	if (isNeedQuitModule) then
+		isNeedQuitModule = false
+		setActivityIndicatorFnc(false)--set activity true to show loading
+		functionalOption.hide()
+		return true
+	end
+	return false
+end
+
 local function doesFileExist( fname, path )
 
     local results = false
@@ -282,7 +294,9 @@ local function tunePhoto_removeKeyEvent()
 end
 
 local function sessionComplete(event)
-	
+	if (checkIsNeedQuitModule() == true) then
+		return false
+	end
 	local boolean_havePhoto = doesFileExist(DESTINATION.filename,DESTINATION.baseDir)
 	if(not boolean_havePhoto)then
 		setActivityIndicatorFnc(false)--set activity true to show loading
@@ -415,6 +429,10 @@ function returnGroup.addPhoto(event)
 		endListener = addPhoto_removeKeyEvent,
 	}
 	functionalOption.create(optionVaule)
+end
+
+function returnGroup.forceExit()
+	isNeedQuitModule = true
 end
 
 return returnGroup
