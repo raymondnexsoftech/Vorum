@@ -35,10 +35,13 @@ local newNetworkFunction = require("Network.newNetworkFunction")
 -- Constants
 ---------------------------------------------------------------
 
-local RANK_NUM_X = 356
+local RANK_NUM_X = 335
 local USERICON_WIDTH = 102
 local USERICON_HEIGHT = 102
 local USERICON_MASKPATH = "Image/User/creatorMask.png"
+
+local BUTTON_X = 450
+
 ---------------------------------------------------------------
 -- Variables
 ---------------------------------------------------------------
@@ -88,6 +91,18 @@ local text_totalVoted
 local text_totalPosts
 
 local requestParams = {}
+
+local function convertNumToNotationString(num)
+	if (type(num) == "number") then
+		if (num > 1000000) then			-- 1M
+			return string.format("%d.%01dM", math.floor(num / 1000000), math.floor(num / 100000) % 10)
+		elseif (num > 1000) then			-- 1M
+			return string.format("%d.%01dk", math.floor(num / 1000), math.floor(num / 100) % 10)
+		end
+		return tostring(num)
+	end
+	return "0"
+end
 
 local function noFnc(event)
 	if ( phase == "moved" ) then
@@ -160,12 +175,10 @@ local function changeRelationshiplistener(event)
 				local msgBody = string.format(localization.getLocalization("friendRequest_requestCancelled_Body"), text_username.text)
 				native.showAlert(localization.getLocalization("friendRequest_requestCancelled"),msgBody,{localization.getLocalization("ok")})
 			-- elseif (response.code == 46) then
-			-- 	-- TODO: rejected
 			elseif ((response.code == 39) or (response.code == 36)) then
 				local msgBody = string.format(localization.getLocalization("friendRequest_nowFriend_Body"), text_username.text)
 				native.showAlert(localization.getLocalization("friendRequest_nowFriend"),msgBody,{localization.getLocalization("ok")})
 			-- elseif (response.code == 50) then
-			-- 	-- TODO: unfriend
 			end
 		end
 	end
@@ -391,22 +404,38 @@ function returnGroup.updateUserData(userProfileData)
 		text_userlive.text = ""
 	end
 	if(userProfileData.info)then
+
 		if(userProfileData.info.medal)then
 			if(userProfileData.info.medal.gold)then
-				text_gold.text = userProfileData.info.medal.gold
+				text_gold.text = convertNumToNotationString(tonumber(userProfileData.info.medal.gold))
 			end
 			if(userProfileData.info.medal.silver)then
-				text_silver.text = userProfileData.info.medal.silver
+				text_silver.text = convertNumToNotationString(tonumber(userProfileData.info.medal.silver))
 			end
 			if(userProfileData.info.medal.bronze)then
-				text_brown.text = userProfileData.info.medal.bronze
+				text_brown.text = convertNumToNotationString(tonumber(userProfileData.info.medal.bronze))
 			end
 		end
+		local maxTextWidth = math.max(math.max(text_gold.contentWidth, text_silver.contentWidth), text_brown.contentWidth)
+		text_gold.x = 430 - maxTextWidth
+		if (image_gold) then
+			image_gold.x = 430 - maxTextWidth - 35
+		end
+		text_silver.x = 430 - maxTextWidth
+		if (image_silver) then
+			image_silver.x = 430 - maxTextWidth - 35
+		end
+		text_brown.x = 430 - maxTextWidth
+		if (image_brown) then
+			image_brown.x = 430 - maxTextWidth - 35
+		end
 		if(userProfileData.info.post_cnt)then
-			text_totalPosts.text = tostring(userProfileData.info.post_cnt)..localization.getLocalization("personalInfo_posts")
+			text_totalPosts.text = tostring(convertNumToNotationString(tonumber(userProfileData.info.post_cnt)))
+									.. localization.getLocalization("personalInfo_posts")
 		end
 		if(userProfileData.info.vote_cnt)then
-			text_totalVoted.text = tostring(userProfileData.info.vote_cnt)..localization.getLocalization("personalInfo_voted")
+			text_totalVoted.text = tostring(convertNumToNotationString(tonumber(userProfileData.info.vote_cnt)))
+									.. localization.getLocalization("personalInfo_voted")
 		end
 	end
 	if(userProfileData.profile_pic and userProfileData.profile_pic=="")then
@@ -468,7 +497,7 @@ relationshipButtonGeneration = function ()
 			strokeColor = { default={ 0, 0, 0 }, over={ 0, 0, 0 } },
 			strokeWidth =0
 		}
-		relationshipButton.x = 458
+		relationshipButton.x = BUTTON_X
 		relationshipButton.y = text_totalVoted.y+text_totalVoted.height+20
 		relationshipButton.anchorX=0
 		relationshipButton.anchorY=0
@@ -494,7 +523,7 @@ relationshipButtonGeneration = function ()
 			strokeColor = { default={ 0, 0, 0 }, over={ 0, 0, 0 } },
 			strokeWidth =0
 		}
-		relationshipButton.x = 458
+		relationshipButton.x = BUTTON_X
 		relationshipButton.y = text_totalVoted.y+text_totalVoted.height+20
 		relationshipButton.anchorX=0
 		relationshipButton.anchorY=0
@@ -522,7 +551,7 @@ relationshipButtonGeneration = function ()
 			strokeColor = { default={ 0, 0, 0 }, over={ 0, 0, 0 } },
 			strokeWidth =0
 		}
-		relationshipButton.x = 458
+		relationshipButton.x = BUTTON_X
 		relationshipButton.y = text_totalVoted.y+text_totalVoted.height+5
 		relationshipButton.anchorX=0
 		relationshipButton.anchorY=0
@@ -544,7 +573,7 @@ relationshipButtonGeneration = function ()
 			strokeColor = { default={ 0, 0, 0 }, over={ 0, 0, 0 } },
 			strokeWidth =0
 		}
-		relationshipButton2.x = 458
+		relationshipButton2.x = BUTTON_X
 		relationshipButton2.y = relationshipButton.y+relationshipButton.height+10
 		relationshipButton2.anchorX=0
 		relationshipButton2.anchorY=0
@@ -570,7 +599,7 @@ relationshipButtonGeneration = function ()
 			strokeColor = { default={ 0, 0, 0 }, over={ 0, 0, 0 } },
 			strokeWidth =0
 		}
-		relationshipButton.x = 458
+		relationshipButton.x = BUTTON_X
 		relationshipButton.y = text_totalVoted.y+text_totalVoted.height+20
 		relationshipButton.anchorX=0
 		relationshipButton.anchorY=0
@@ -674,7 +703,7 @@ function returnGroup.create(input_personData,input_scrollView)
 	background_user_part.anchorY=0
 	group_personPart:insert(background_user_part)
 
-	user_icon_background = display.newCircle(group_personPart, 73, 198, 58)
+	user_icon_background = display.newCircle(group_personPart, 68, 198, 58)
 	user_icon_background.anchorX = 0.5
 	user_icon_background.anchorY = 0.5
 
@@ -697,9 +726,9 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_username =
 	{
 		text = "...", -- get data from server
-		x = 158,
+		x = 140,
 		y = text_username_y,
-		width = 130,
+		width = 180,
 		height = text_username_height, 
 		font = "Helvetica",
 		fontSize=30
@@ -713,7 +742,7 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_userlive =
 	{
 		text = "...", -- get data from server
-		x = 158,
+		x = 140,
 		y = text_username.y+text_username.height+19,
 		width = 0,
 		height = 0, 
@@ -737,12 +766,12 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_gold =
 	{
 		text = 0, -- get data from server
-		x = image_gold.x+image_gold.width+10,
+		x = image_gold.x+image_gold.width+5,
 		y = image_gold.y,
-		width = 0,
-		height = 0, 
+		-- width = 0,
+		-- height = 0, 
 		font = "Helvetica",
-		fontSize=24
+		fontSize=20
 	}
 	text_gold = display.newText(text_gold);
 	text_gold:setFillColor(1, 1, 1 )
@@ -761,12 +790,12 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_silver =
 	{
 		text = 0, -- get data from server
-		x = image_silver.x+image_silver.width+10,
+		x = image_silver.x+image_silver.width+5,
 		y = image_silver.y,
-		width = 0,
-		height = 0, 
+		-- width = 0,
+		-- height = 0, 
 		font = "Helvetica",
-		fontSize=24
+		fontSize=20
 	}
 	text_silver = display.newText(text_silver);
 	text_silver:setFillColor(1, 1, 1 )
@@ -785,12 +814,12 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_brown =
 	{
 		text = 0, -- get data from server
-		x = image_brown.x+image_brown.width+10,
+		x = image_brown.x+image_brown.width+5,
 		y = image_brown.y,
-		width = 0,
-		height = 0, 
+		-- width = 0,
+		-- height = 0, 
 		font = "Helvetica",
-		fontSize=24
+		fontSize=20
 	}
 	text_brown = display.newText(text_brown);
 	text_brown:setFillColor(1, 1, 1 )
@@ -801,32 +830,32 @@ function returnGroup.create(input_personData,input_scrollView)
 	text_totalVoted =
 	{
 		text = 0 .. localization.getLocalization("personalInfo_voted"), -- get data from server
-		x = 458,
+		x = 483,
 		y = 150,
 		width = 0,
 		height = 0, 
 		font = "Helvetica",
-		fontSize=20
+		fontSize=17
 	}
 	text_totalVoted = display.newText(text_totalVoted);
 	text_totalVoted:setFillColor(1, 1, 1 )
-	text_totalVoted.anchorX=0
+	-- text_totalVoted.anchorX=0
 	text_totalVoted.anchorY=0
 	group_personPart:insert(text_totalVoted)
 	
 	text_totalPosts =
 	{
 		text = 0 .. localization.getLocalization("personalInfo_posts"), -- get data from server
-		x = 624,
+		x = 587,
 		y = 150,
 		width = 0,
 		height = 0, 
 		font = "Helvetica",
-		fontSize=20
+		fontSize=17
 	}
 	text_totalPosts = display.newText(text_totalPosts);
 	text_totalPosts:setFillColor(1, 1, 1 )
-	text_totalPosts.anchorX=1
+	-- text_totalPosts.anchorX=1
 	text_totalPosts.anchorY=0
 	group_personPart:insert(text_totalPosts)
 
@@ -854,7 +883,7 @@ function returnGroup.create(input_personData,input_scrollView)
 			strokeColor = { default={ 0, 0, 0 }, over={ 0, 0, 0 } },
 			strokeWidth =0
 		}
-		relationshipButton.x = text_totalVoted.x
+		relationshipButton.x = BUTTON_X --text_totalVoted.x
 		relationshipButton.y = text_totalVoted.y+text_totalVoted.height+20
 		relationshipButton.anchorX=0
 		relationshipButton.anchorY=0
