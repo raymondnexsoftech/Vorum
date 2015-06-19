@@ -266,8 +266,20 @@ function facebookLogin.login(listener)
 			if (response.code == 7) then
 				facebookModule.request("me", getUserFacebookDetailListener)
 				return
+			elseif (response.code == 14) then -- email still not verified
+				local messageBody = string.format(localization.getLocalization("loginError_AssociatedEmailNoVerified"), response.email)
+				native.showAlert(localization.getLocalization("loginError_errorTitle"),
+									messageBody,
+									{localization.getLocalization("yes"), localization.getLocalization("no")},
+									function(event)
+										if (event.index == 1) then
+											networkFunction.resendVerificationEmail(response.email)
+											native.showAlert(localization.getLocalization("resendVerificationEmail"),
+																localization.getLocalization("resendVerificationEmail"),
+																{localization.getLocalization("ok")})
+										end
+									end)
 			else
-				-- other error
 				listener(event)
  			end
 		else

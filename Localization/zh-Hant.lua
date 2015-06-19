@@ -235,6 +235,7 @@ return {
 					loginError_wrongData = "你的名稱或密碼錯誤",
 					loginError_emailNoAt = "電郵地址無效",
 					loginError_emailNoVerified = "你的電郵地址尚未認證。重發確認電郵？",
+					loginError_AssociatedEmailNoVerified = "你的電郵地址 \"%s\" 尚未認證。重發確認電郵？",
 					--register success
 					registerSuccess_registerTitle = "註冊成功",
 					registerSuccess_register = "你將會收到一封激活帳號的電子郵件。請激活你的帳號後登入。",

@@ -229,6 +229,7 @@ return {
 					loginError_wrongData = "Your username or password is wrong.",
 					loginError_emailNoAt = "Please ensure the email correct.",
 					loginError_emailNoVerified = "Your email is still not verified. Resend verification email?",
+					loginError_AssociatedEmailNoVerified = "Your email \"%s\" is still not verified. Resend verification email?",
 					--register success
 					registerSuccess_registerTitle = "Register success",
 					registerSuccess_register = "You will receive a email. Please verify your account through email then login.",
