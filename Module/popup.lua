@@ -222,7 +222,9 @@ end
 
 local function touchBackgroundCancelFnc(event)
 	if(event.phase=="ended" or event.phase=="cancelled")then
-		moduleGroup.hide()
+		if (moduleData.touchBgNotCancel ~= true) then
+			moduleGroup.hide()
+		end
 	end
 	return true
 end
