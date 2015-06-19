@@ -175,7 +175,7 @@ forgetPasswordPopupFnc = function ()
 	forgetPasswordText:setFillColor( 0,0,0 )
 
 	forgetPassword_popup_textField_username = coronaTextField.new(  -250, forgetPasswordText.y+forgetPasswordText.height+40, 500, 80,forgetPassword_popupGroup, "displayGroup")
-	forgetPassword_popup_textField_username:setBackgroundColor(0, 0, 0, 0)
+	-- forgetPassword_popup_textField_username:setBackgroundColor(0, 0, 0, 0)
 	-- forgetPassword_popup_textField_username.hasBackground = false
 	forgetPassword_popup_textField_username:setFont("Helvetica",32)
 	forgetPassword_popup_textField_username:setTopPadding(200)
