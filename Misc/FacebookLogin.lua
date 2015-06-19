@@ -274,7 +274,7 @@ function facebookLogin.login(listener)
 									function(event)
 										if (event.index == 1) then
 											networkFunction.resendVerificationEmail(response.email)
-											native.showAlert(localization.getLocalization("resendVerificationEmail"),
+											native.showAlert(localization.getLocalization("resendVerificationEmail_Title"),
 																localization.getLocalization("resendVerificationEmail"),
 																{localization.getLocalization("ok")})
 										end

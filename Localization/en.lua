@@ -232,8 +232,9 @@ return {
 					loginError_AssociatedEmailNoVerified = "Your email \"%s\" is still not verified. Resend verification email?",
 					--register success
 					registerSuccess_registerTitle = "Register success",
-					registerSuccess_register = "You will receive a email. Please verify your account through email then login.",
-					resendVerificationEmail = "Verification email has been sent.",
+					registerSuccess_register = "You will receive a email. Please verify your account through email then login. Please also check the junk mail if you did not receive in inbox",
+					resendVerificationEmail_Title = "Verification email sent",
+					resendVerificationEmail = "Verification email has been sent. Please also check the junk mail if you did not receive in inbox.",
 					--register fail
 					registerFail_registerTitle = "Register Fail",
 					registerFail_invalidEmail = "Invalid email address",

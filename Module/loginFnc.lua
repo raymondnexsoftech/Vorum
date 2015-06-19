@@ -63,7 +63,7 @@ local function responseCodeAlertBox(code)
 							function(event)
 								if (event.index == 1) then
 									newNetworkFunction.resendVerificationEmail(username)
-									native.showAlert(localization.getLocalization("resendVerificationEmail"),
+									native.showAlert(localization.getLocalization("resendVerificationEmail_Title"),
 														localization.getLocalization("resendVerificationEmail"),
 														{localization.getLocalization("ok")})
 								end
