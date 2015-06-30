@@ -11,9 +11,18 @@ local storyboard = require ( "storyboard" )
 require ( "SystemUtility.Debug" )
 local global = require( "GlobalVar.global" )
 local saveData = require( "SaveData.SaveData" )
+local localization = require("Localization.Localization")
+
+--setting language
+local langSetting = saveData.load(global.languageDataPath)
+if(langSetting)then
+	if(langSetting.locale)then
+		localization.setLocale(langSetting.locale)
+	end
+end
+
 local networkFunction = require("Network.newNetworkFunction")
 local json = require( "json" )
-local localization = require("Localization.Localization")
 local notifications = require( "plugin.notifications" )
 local headTabFnc = require( "ProjectObject.HeadTabFnc" )
 local noticeBadge = require("ProjectObject.NoticeBadge")
@@ -46,20 +55,10 @@ local password
 -- display.setStatusBar( display.HiddenStatusBar )
 display.setStatusBar( display.TranslucentStatusBar )
 
-
---setting language
-local langSetting = saveData.load(global.languageDataPath)
 local isOriginalDesign = saveData.load(global.isOrigDesignPath)
 if ((isOriginalDesign ~= nil) and (isOriginalDesign.isOriginalDesign ~= nil)) then
 	global.isOriginalDesign = isOriginalDesign.isOriginalDesign
 end
-
-if(langSetting)then
-	if(langSetting.locale)then
-		localization.setLocale(langSetting.locale)
-	end
-end
-
 
 local function onSceneTransitionKeyEvent(event)
 	if event.phase == "up" and event.keyName == "back" then
