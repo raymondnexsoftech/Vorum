@@ -26,6 +26,7 @@ local boolean_isNotice = false
 local returnGroup = {}
 
 -- for login
+local username
 local password
 local sessionToken
 
@@ -62,11 +63,14 @@ local function responseCodeAlertBox(code)
 							{localization.getLocalization("yes"), localization.getLocalization("no")},
 							function(event)
 								if (event.index == 1) then
-									newNetworkFunction.resendVerificationEmail(username)
+									if (username) then
+										newNetworkFunction.resendVerificationEmail(username)
+									end
 									native.showAlert(localization.getLocalization("resendVerificationEmail_Title"),
 														localization.getLocalization("resendVerificationEmail"),
 														{localization.getLocalization("ok")})
 								end
+								username = nil
 							end)
 	elseif(code==3)then -- missing some required field(s)
 		native.showAlert(localization.getLocalization("loginError_errorTitle"),localization.getLocalization("loginError_wrongData"),{localization.getLocalization("ok")})
@@ -126,6 +130,7 @@ function returnGroup.login(userData,input_boolean_isNotice,isComeFromLoginPage)
 
 	isFromLoginPage = isComeFromLoginPage or false
 	
+	username = userData.username
 	password = userData.password
 
 	newNetworkFunction.updateLoginData(userData)
