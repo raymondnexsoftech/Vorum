@@ -296,7 +296,7 @@ return {
 					inputCheck_emailNoAt = "Please ensure the email correct.",
 					inputCheck_chooseGender = "You must choose a gender.",
 					inputCheck_agreeCheckBoxTitle = "The terms and conitions",
-					inputCheck_agreeCheckBox = "Yuu must agree the terms and conditions.",
+					inputCheck_agreeCheckBox = "You must agree the terms and conditions.",
 					inputQuestion_limited = "Question input limited to 30 characters.",
 					inputDesc_limited = "Description input limited to 100 characters.",
 					inputPost2Desc_limited = "Description input %s limited to 30 characters.",
