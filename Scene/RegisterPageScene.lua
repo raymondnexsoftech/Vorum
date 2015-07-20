@@ -34,6 +34,7 @@ local newNetworkFnc = require("Network.newNetworkFunction")
 local buttonModule = require("Module.buttonModule")
 local hardwareButtonHandler = require("ProjectObject.HardwareButtonHandler")
 local dayPickerWheel = require("ProjectObject.DayPickerWheel")
+local loginFnc = require("Module.loginFnc")
 
 ---------------------------------------------------------------
 -- Constants
@@ -245,8 +246,16 @@ local function registerUserListener(event)
 			-- print(event[1].response)
 			saveData.delete("profileData.txt", system.TemporaryDirectory)
 			addPhotoFnc.deleteTempImage(global.registerImagePath)
-			native.showAlert(localization.getLocalization("registerSuccess_registerTitle"),localization.getLocalization("registerSuccess_register"),{localization.getLocalization("ok")})
-			storyboard.gotoScene( "Scene.LoginPageScene",goToLoginSceneOption)
+
+			-- below two line is used for verifying email
+			-- native.showAlert(localization.getLocalization("registerSuccess_registerTitle"),localization.getLocalization("registerSuccess_register"),{localization.getLocalization("ok")})
+			-- storyboard.gotoScene( "Scene.LoginPageScene",goToLoginSceneOption)
+			
+			-- auto login
+			local loginData = {}
+			loginData.username = string.lower(email_textField.text)
+			loginData.password = textField_password.text
+			loginFnc.login(loginData)
 		end
 		
 	end
