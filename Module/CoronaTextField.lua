@@ -589,6 +589,7 @@ function coronaTextField.new(...)
 	else
 		baseGroup.textFieldBg = display.newRect(width * 0.5, height * 0.5, width, height)
 	end
+	baseGroup.textFieldBg.isHitTestable = true
 	-- baseGroup.textFieldBg.baseGroup = baseGroup
 	baseGroup:insert(baseGroup.textFieldBg)
 	remakeDisplayText(baseGroup)
