@@ -37,7 +37,8 @@ local saveData = require( "SaveData.SaveData" )
 local IS_DEBUG_ON = false
 
 -- local API_BASE = "http://aws.lwhken.info/vorum/index.php/rest/"
-local API_BASE = "http://52.24.97.183/vorum/rest/"
+-- local API_BASE = "http://52.24.97.183/vorum/rest/"
+local API_BASE = "https://uat.votingapp.nexsoftech.com/index.php/rest/"
 local API_USER_BASE = API_BASE .. "user"
 local API_FILE_BASE = API_BASE .. "file"
 local API_POST_BASE = API_BASE .. "post"
