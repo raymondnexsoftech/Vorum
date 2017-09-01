@@ -17,7 +17,7 @@ local LOCAL_SETTINGS = {
 -- Require Parts
 ---------------------------------------------------------------
 require ( "SystemUtility.Debug" )
-local facebook = require( "facebook" )
+-- local facebook = require( "facebook" )
 local json = require("json")
 
 ---------------------------------------------------------------
@@ -115,7 +115,7 @@ local function facebookModuleListener(event)
 				facebookUserId = nil
 				facebookAccessToken = event.token
 				local params = {fields = "id"}
-				facebook.request("me", "GET", params)
+				-- facebook.request("me", "GET", params)
 				isGettingFacebookUserId = true
 				return
 			else
@@ -176,7 +176,7 @@ function facebookModule.login(...)
 	end
 	local function logoutListener(event)
 		facebookUserInstantListener["login"] = loginListener
-		facebook.login(facebookNewAppId, facebookModuleListener, permissions)
+		-- facebook.login(facebookNewAppId, facebookModuleListener, permissions)
 	end
 	if (isLogoutFirst) then
 		facebookModule.logout(logoutListener)
@@ -189,7 +189,7 @@ function facebookModule.logout(listener)
 	if (type(listener) == "function") then
 		if (facebookAccessToken) then
 			facebookUserInstantListener["logout"] = listener
-			facebook.logout()
+			-- facebook.logout()
 		else
 			local event = {
 								name = "fbconnect",
@@ -217,7 +217,7 @@ local function createCheckTokenValidListener(facebookActionCallback, instantList
 				else
 					facebookUserInstantListener["login"] = loginListener
 					facebookNewAppId = facebookAppId
-					facebook.login(facebookNewAppId, facebookModuleListener, {"publish_actions"})
+					-- facebook.login(facebookNewAppId, facebookModuleListener, {"publish_actions"})
 				end
 			end
 end
@@ -230,7 +230,7 @@ function facebookModule.showDialog(action, params, showDialogListener)
 		params = nil
 	end
 	local function showDialogCallback()
-		facebook.showDialog(action, params)
+		-- facebook.showDialog(action, params)
 	end
 	local instantRequestListener = createCheckTokenValidListener(showDialogCallback, "dialog", showDialogListener)
 	if (facebookAccessToken) then
@@ -255,7 +255,7 @@ function facebookModule.request(path, ...)
 		argIdx = argIdx + 1
 	end
 	local function requestCallback()
-		facebook.request(path, httpMethod, params)
+		-- facebook.request(path, httpMethod, params)
 	end
 	local instantRequestListener = createCheckTokenValidListener(requestCallback, "request", requestListener)
 	if (facebookAccessToken) then
